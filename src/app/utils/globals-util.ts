@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { isDevMode } from '@angular/core';
 
 export class RackhdLocalStorage {
   constructor () {}
@@ -8,8 +9,10 @@ export class RackhdLocalStorage {
   }
 
   static getBaseUrl(): string {
-    return (RackhdLocalStorage.isSecured() ? 'https://' : 'http://') +
-      window.localStorage.getItem('rackhd.northboundApi');
+
+      return isDevMode()? 'http://localhost:4000': (RackhdLocalStorage.isSecured() ? 'https://' : 'http://') + 
+        window.localStorage.getItem('rackhd.northboundApi');
+
   }
 
   static getToken(): string {
