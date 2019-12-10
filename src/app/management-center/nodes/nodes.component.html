@@ -33,6 +33,13 @@
       <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">OBM</ng-container>
       </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: true}">IBM</ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="skuComparator">
+        <ng-container *clrDgHideableColumn="{hidden: true}">SKU</ng-container>
+        <clr-dg-string-filter [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
+      </clr-dg-column>
 
       <clr-dg-row *clrDgItems="let node of nodeStore" [clrDgItem]="node">
         <clr-dg-cell>{{node.id}}</clr-dg-cell>
