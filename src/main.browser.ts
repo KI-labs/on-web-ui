@@ -10,6 +10,10 @@ import { environment } from 'environments/environment';
  */
 import { AppModule } from './app';
 
+import { makeServer } from "./miragejs/server.js";
+
+makeServer(); 
+
 /**
  * Bootstrap our Angular app with a top level NgModule
  */
