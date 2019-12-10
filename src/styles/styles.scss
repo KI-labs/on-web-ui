@@ -10,6 +10,10 @@
 @import '../../node_modules/jsoneditor/src/css/jsoneditor.css';
 @import '../../node_modules/@clr/ui/clr-ui.min.css';
 
+html, body, main{
+  height: 100vh;
+}
+
 .content-container {
   overflow: auto;
 }
