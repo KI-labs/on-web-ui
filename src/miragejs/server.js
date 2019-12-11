@@ -1,5 +1,5 @@
 import { Server, Model } from "miragejs";
-import { routes } from "./routes";
+import { routes } from "./routes/index.js";
 var db = require("./db.json");
 
 export function makeServer({ environment = "development" } = {}) {
@@ -13,6 +13,10 @@ export function makeServer({ environment = "development" } = {}) {
       profile: Model,
       sku: Model,
       template: Model,
+      graph: Model,
+      catalog: Model,
+      config: Model,
+      file: Model,
       workflow: Model
     }
   });
