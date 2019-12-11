@@ -29,7 +29,7 @@ export class NodesComponent implements OnInit {
   nodeTypes: NodeType[];
   nodesTypeCountMatrix = {};
 
-  selectedType: string;
+  selectedType: string = 'Compute'
   selectedSku: string;
   selectedNode: Node;
   selectedNodes: Node[];
