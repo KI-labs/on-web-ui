@@ -29,7 +29,7 @@ export class NodesComponent implements OnInit {
   nodeTypes: NodeType[];
   nodesTypeCountMatrix = {};
 
-  selectedType: string = 'Compute'
+  selectedType: string
   selectedSku: string;
   selectedNode: Node;
   selectedNodes: Node[];
@@ -83,6 +83,8 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     let self = this;
+    this.selectedType = 'Compute'; 
+    this.typeFilterValue =  this.selectedType
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
