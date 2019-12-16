@@ -18,6 +18,7 @@ export class InventoryHeaderComponent implements OnInit {
   @Input() isDeleteRequired: boolean = true;
   @Input() isCreateRequired: boolean = true;
   @Input() isCancelRequired: boolean = false;
+  @Input() isCleanRequired: boolean = false;
 
   @Output() filter = new EventEmitter();
   @Output() action = new EventEmitter();
@@ -64,6 +65,10 @@ export class InventoryHeaderComponent implements OnInit {
 
   onBatchDelete() {
     this.action.emit("Delete");
+  }
+
+  onBatchClean(){
+    this.action.emit("Clean");
   }
 
   onBatchCancel() {
