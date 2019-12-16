@@ -38,6 +38,9 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">OBM</ng-container>
       </clr-dg-column>
       <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">IP</ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: false}">IBM</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="skuComparator">
@@ -52,6 +55,9 @@
         <clr-dg-cell>{{node.identifiers}}</clr-dg-cell>
         <clr-dg-cell (click)="goToShowObmDetail(node)">
           <u *ngIf="node.obms && node.obms.length > 0" class="grid-item">{{node.obms ? node.obms.length : 0}} OBMs</u>
+        </clr-dg-cell>
+        <clr-dg-cell (click)="goToShowIPsDetail(node)">
+            <u *ngIf="node.type === 'compute'" class="grid-item">Show IPs</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="goToShowIbmDetail(node)">
           <u *ngIf="node.ibms && node.ibms.length > 0"  class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
@@ -83,6 +89,10 @@
 
   <details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
     [title]="'obm for node ' + (selectedObms && selectedObms[0] && selectedObms[0].node)">
+  </details-modal>
+
+  <details-modal [(isPop)]="isShowIPsDetail" [data]="selectedIPs"
+    [title]="'IPs for node ' + (selectedNode && selectedNode.id)">
   </details-modal>
 
   <details-modal [(isPop)]="isShowIbmDetail" [data]="selectedIbms"

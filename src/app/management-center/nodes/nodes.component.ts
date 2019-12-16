@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ObmService } from 'app/services/rackhd/obm.service';
 import { SkusService } from 'app/services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
+import { CatalogsService } from 'app/services/rackhd/catalogs.service';
+
 import {
   AlphabeticalComparator,
   DateComparator,
@@ -37,6 +39,9 @@ export class NodesComponent implements OnInit {
 
   isShowObmDetail: boolean;
   selectedObms: OBM[];
+
+  isShowIPsDetail: boolean;
+  selectedIPs: string[];
 
   isShowIbmDetail: boolean;
   selectedIbms: OBM[];
@@ -78,6 +83,7 @@ export class NodesComponent implements OnInit {
     public nodeService: NodeService,
     public obmService: ObmService,
     public ibmService: IbmService,
+    public catalogService: CatalogsService,
     public skuService: SkusService,
     private fb: FormBuilder) {}
 
@@ -239,6 +245,13 @@ export class NodesComponent implements OnInit {
 
   }
 
+  goToShowIPsDetail(node: Node) {
+    this.selectedNode = node;
+    this.selectedIPs = [];
+    this.getIPsById(node.id);
+    this.isShowIPsDetail = true;
+  }
+
   goToShowIbmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
@@ -269,6 +282,17 @@ export class NodesComponent implements OnInit {
     this.obmService.getByIdentifier(identifier)
       .subscribe(data => {
         this.selectedObms.push(data);
+      });
+  }
+
+  getIPsById(identifier: string): void {
+    this.catalogService.getSource(identifier, '')
+      .subscribe(data => {
+        data.forEach(catalog => {
+          if(catalog.data['IP Address']!== undefined){
+            this.selectedIPs.push(catalog.data['IP Address'])
+          }
+        })
       });
   }
 
