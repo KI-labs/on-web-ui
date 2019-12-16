@@ -1,19 +1,15 @@
 <div class="app-nodes">
 
   <div class="row toolbar status-header">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 status-button"
-      *ngFor="let type of nodeTypes"
-      (click)="selectType(type)"
-      [class.selected]="selectedType==type.displayName">
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 status-button" *ngFor="let type of nodeTypes"
+      (click)="selectType(type)" [class.selected]="selectedType==type.displayName">
       <h2>{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
       <span class="font-bold">{{ type.displayName }}</span>
     </div>
   </div>
 
   <div class="grid-header">
-    <inventory-header [allItems]="allNodes"
-      [name]="'Node'"
-      (action)="onAction($event)" (filter)="onFilter($event)">
+    <inventory-header [allItems]="allNodes" [name]="'Node'" (action)="onAction($event)" (filter)="onFilter($event)">
     </inventory-header>
   </div>
 
@@ -38,10 +34,10 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">OBM</ng-container>
       </clr-dg-column>
       <clr-dg-column>
-        <ng-container *clrDgHideableColumn="{hidden: false}">IBM</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">IBM</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="skuComparator">
-        <ng-container *clrDgHideableColumn="{hidden: false}">SKU</ng-container>
+        <ng-container *clrDgHideableColumn="{hidden: true}">SKU</ng-container>
         <clr-dg-string-filter [clrDgStringFilter]="skuFilter"></clr-dg-string-filter>
       </clr-dg-column>
 
@@ -54,7 +50,7 @@
           <u *ngIf="node.obms && node.obms.length > 0" class="grid-item">{{node.obms ? node.obms.length : 0}} OBMs</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="goToShowIbmDetail(node)">
-          <u *ngIf="node.ibms && node.ibms.length > 0"  class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
+          <u *ngIf="node.ibms && node.ibms.length > 0" class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
         </clr-dg-cell>
         <clr-dg-cell (click)="goToShowSkuDetail(node)">
           <u class="grid-item">{{node.sku ? node.sku.split('/')[4] : ''}}</u>
@@ -77,8 +73,7 @@
     </div>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]=selectedNode
-    [title]="'node ' + (selectedNode && selectedNode.id)">
+  <details-modal [(isPop)]="isShowDetail" [data]=selectedNode [title]="'node ' + (selectedNode && selectedNode.id)">
   </details-modal>
 
   <details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
@@ -132,7 +127,7 @@
               formControlName="otherConfig">
             </textarea>
             <div class="alertMessage" *ngIf="!jsonValid">
-                Invalid JSON payload.
+              Invalid JSON payload.
             </div>
           </div>
         </section>
@@ -144,8 +139,7 @@
     </div>
   </clr-modal>
 
-  <confirm-modal [(isPop)]="isDelete" title="nodes"
-    (confirm)="onConfirm($event)" [data]="selectedNodes">
+  <confirm-modal [(isPop)]="isDelete" title="nodes" (confirm)="onConfirm($event)" [data]="selectedNodes">
   </confirm-modal>
 
 </div>
