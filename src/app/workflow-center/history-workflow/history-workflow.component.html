@@ -78,6 +78,7 @@
         <clr-dg-action-overflow>
           <button class="action-item" (click)="onDelete(workflow)">Delete</button>
           <button class="action-item" (click)="onGetDetails(workflow)">Detail</button>
+          <button class="action-item" (click)="onAddTask(workflow)">Add Task</button>
           <button class="action-item" (click)="gotoCanvas(workflow)">Canvas</button>
         </clr-dg-action-overflow>
         <clr-dg-cell>{{workflow.id}}</clr-dg-cell>
@@ -124,5 +125,27 @@
     [(isPop)]="isShowModal" title="graph objects" displayAttr="instanceId"
     (confirm)="onConfirm($event)" [data]="selectedWorkflows">
   </confirm-modal>
+
+  <clr-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+    [(clrModalOpen)]="isShowModal"
+    [clrModalSize]="'lg'">
+    <!-- <h3 class="modal-title">{{action}}</h3> -->
+    <h3 class="modal-title">{{action}} on workflow {{selectedWorkflow.id}}</h3>
+    <div class="modal-body">
+      <form [formGroup]="taskFormGroup" novalidate>
+        <section class="form-block compact">
+            <textarea id="tasks" rows='8' formControlName="tasks">
+            </textarea>
+            <div class="alertMessage" *ngIf="!tasksJsonValid">
+                Invalid JSON payload.
+            </div>
+        </section>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
+    </div>
+  </clr-modal>
 
 </div>
