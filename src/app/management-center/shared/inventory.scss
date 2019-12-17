@@ -12,6 +12,9 @@
   .selected {
     margin-top: 1em;
   }
+  .datagrid-host{
+    max-height: calc(100vh - 300px);
+  }
 }
 
 .status-header {
