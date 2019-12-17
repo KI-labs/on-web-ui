@@ -29,7 +29,7 @@ export class NodesComponent implements OnInit {
   nodeTypes: NodeType[];
   nodesTypeCountMatrix = {};
 
-  selectedType: string
+  selectedType: string;
   selectedSku: string;
   selectedNode: Node;
   selectedNodes: Node[];
@@ -79,12 +79,12 @@ export class NodesComponent implements OnInit {
     public obmService: ObmService,
     public ibmService: IbmService,
     public skuService: SkusService,
-    private fb: FormBuilder) {}
+    private fb: FormBuilder) { }
 
   ngOnInit() {
     let self = this;
-    this.selectedType = 'Compute'; 
-    this.typeFilterValue =  this.selectedType
+    this.selectedType = 'Compute';
+    this.typeFilterValue = this.selectedType;
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
