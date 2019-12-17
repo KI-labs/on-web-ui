@@ -19,14 +19,12 @@ import { DropdownGroupComponent } from './dropdown-group/dropdown-group.componen
     ClarityModule,
   ],
   exports: [
-    //InventoryFooterComponent,
     InventoryHeaderComponent,
     GridDetailsModalComponent,
     GridConfirmModalComponent,
     DropdownGroupComponent,
   ],
   declarations: [
-   // InventoryFooterComponent,
     InventoryHeaderComponent,
     GridDetailsModalComponent,
     GridConfirmModalComponent,
