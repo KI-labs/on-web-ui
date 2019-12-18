@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -80,7 +80,7 @@ export class ProfilesComponent implements OnInit {
   }
 
   create(){
-    this.action = "Upload";
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
@@ -97,19 +97,19 @@ export class ProfilesComponent implements OnInit {
 
   onUpdate(profile: Profile){
     this.selectedProfile = profile;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onGetDetails(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(profile.name);
   };
 
   onGetRawData(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Raw"
+    this.action = 'Raw'
     this.getRawData(profile.name);
   };
 

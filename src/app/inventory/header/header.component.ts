@@ -55,18 +55,18 @@ export class InventoryHeaderComponent implements OnInit {
   }
 
   onCreate() {
-    this.action.emit("Create");
+    this.action.emit('Create');
   }
 
   onRefresh() {
-    this.action.emit("Refresh");
+    this.action.emit('Refresh');
   }
 
   onBatchDelete() {
-    this.action.emit("Delete");
+    this.action.emit('Delete');
   }
 
   onBatchCancel() {
-    this.action.emit("Cancel")
+    this.action.emit('Cancel')
   }
 }

@@ -24,7 +24,7 @@ export class GridDetailsModalComponent {
   @Input() size: string = 'lg';
   @Input() title: string;
   @Input() data: any;
-  @Input() dataType: string = "Details";
+  @Input() dataType: string = 'Details';
   @Input() get isPop() {
     return this.isPopValue;
   }

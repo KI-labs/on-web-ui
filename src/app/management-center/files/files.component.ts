@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -89,13 +89,13 @@ export class FilesComponent implements OnInit {
   }
 
   create(){
-    this.action = "Upload";
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
   batchDelete() {
     if (!_.isEmpty(this.selectedFiles)){
-      this.action = "Delete";
+      this.action = 'Delete';
       this.isShowModal = true;
     }
   };
@@ -147,25 +147,25 @@ export class FilesComponent implements OnInit {
 
   onUpdate(file: File){
     this.selectedFile = file;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onDelete(file: File) {
     this.selectedFiles = [file];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
   };
 
   onGetDetails(file: File) {
     this.selectedFile = file;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(file.filename);
   };
 
   onGetRawData(file: File) {
     this.selectedFile = file;
-    this.action = "Raw"
+    this.action = 'Raw'
     this.getRawData(file.filename);
   };
 

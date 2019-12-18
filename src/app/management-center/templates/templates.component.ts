@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -90,25 +90,25 @@ export class TemplatesComponent implements OnInit {
   }
 
   create(){
-    this.action = "Upload";
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
   onUpdate(template: Template){
     this.selectedTemplate = template;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onGetDetails(template: Template) {
     this.selectedTemplate = template;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(template.name);
   };
 
   onGetRawData(template: Template) {
     this.selectedTemplate = template;
-    this.action = "Raw"
+    this.action = 'Raw'
     this.getRawData(template.name);
   };
 

@@ -8,8 +8,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-route/app-routing.module';
 import { IconService } from './icon.service';
-import {ErrorHandlerService} from "./error-handler.service";
-import {GlobalAlertService} from "./global-alert.service";
+import { ErrorHandlerService } from './error-handler.service';
+import { GlobalAlertService } from './global-alert.service';
 
 
 

@@ -19,8 +19,8 @@ export class Workflow {
 }
 
 export const WORKFLOW_URL = {
-  getAllUrl: "/workflows",
-  getByIdentifierUrl: "/workflows/",
+  getAllUrl: '/workflows',
+  getByIdentifierUrl: '/workflows/',
 }
 
-export const HISTORY_WORKFLOW_STATUS = ["succeeded", "failed", "cancelled"];
+export const HISTORY_WORKFLOW_STATUS = ['succeeded', 'failed', 'cancelled'];

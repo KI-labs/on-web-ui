@@ -95,8 +95,8 @@ export class CanvasGraphComponent implements OnInit {
     // this.canvas.render_connection_arrows = false; //No arrows for line
     this.canvas.always_render_background = false;
     this.canvas.background_image = ''; //Don't use background
-    this.canvas.title_text_font = "bold 12px Arial";
-    this.canvas.inner_text_font = "normal 10px Arial";
+    this.canvas.title_text_font = 'bold 12px Arial';
+    this.canvas.inner_text_font = 'normal 10px Arial';
     this.canvas.render_shadows = false; //Node shadow
     this.canvas.render_connections_border = false;
     this.canvas.show_info = false; //Hide info on left-top corner
@@ -196,7 +196,7 @@ export class CanvasGraphComponent implements OnInit {
       //this.workflow may be undefined.
       _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
-          task['waitOn'] = _.assign(task["waitOn"] || {}, {[preTask.label]: waitOnText});
+          task['waitOn'] = _.assign(task['waitOn'] || {}, {[preTask.label]: waitOnText});
         }
       });
     }
@@ -304,7 +304,7 @@ export class CanvasGraphComponent implements OnInit {
           self.graphTaskService.getByIdentifier(injectName)
           .subscribe(task => {
             let data = {};
-            let label = "new-task-" + uuid().substr(0, 10);
+            let label = 'new-task-' + uuid().substr(0, 10);
             _.assign(data, {'label': label});
             _.assign(data, {'taskDefinition': task});
             node.properties.task = data;
@@ -342,7 +342,7 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   addInput(value, options, e, menu, node){
-    node.addInput("waitOn", global.LiteGraph.EVENT);
+    node.addInput('waitOn', global.LiteGraph.EVENT);
     // this.afterWorkflowUpdate();
   }
 
@@ -370,8 +370,8 @@ export class CanvasGraphComponent implements OnInit {
     let nodeInputSlotIndexes = {};
     let drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
     _.forEach(this.workflow.tasks, (task) => {
-      if ( task.taskStartTime && task.state === "pending"){
-        task.state = "running";
+      if ( task.taskStartTime && task.state === 'pending'){
+        task.state = 'running';
       }
       let position = positionMatrix[task[taskIdentifierKey]];
       let node = drawUtils.createTaskNode(task, position);

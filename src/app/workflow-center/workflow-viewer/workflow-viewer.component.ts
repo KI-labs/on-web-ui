@@ -20,7 +20,7 @@ import * as _ from 'lodash';
 })
 
 export class WorkflowViewerComponent implements OnInit, AfterViewInit {
-  @ViewChild("viewCanvas") viewCanvas: any;
+  @ViewChild('viewCanvas') viewCanvas: any;
   onWorkflowInput = new EventEmitter();
   graphId: string;
   isDefinition: boolean = false; // true: graph definition; false: graph object
@@ -50,8 +50,8 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
       this.graphId = params && (params.graphId || params.graphName);
     });
     this.service = this.isDefinition ? this.graphService : this.workflowService;
-    this.fieldList = this.isDefinition ? ["injectableName", "friendlyName"] : ["instanceId", "name", "node"];
-    this.labelList = this.isDefinition ? ["InjectableName", "FriendlyName"] : ["GraphId", "Name", "Node"];
+    this.fieldList = this.isDefinition ? ['injectableName', 'friendlyName'] : ['instanceId', 'name', 'node'];
+    this.labelList = this.isDefinition ? ['InjectableName', 'FriendlyName'] : ['GraphId', 'Name', 'Node'];
     this.offsetList = this.isDefinition ? [0, 0] : [0, 0, 0];
     this.columnList = this.isDefinition ? [5, 5] : [4, 4, 3];
     this.widthList = this.isDefinition ? [47, 47] : [42, 47, 28];

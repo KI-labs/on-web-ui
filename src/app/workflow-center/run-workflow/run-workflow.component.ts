@@ -27,8 +27,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   @ViewChild('jsoneditor') jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
-    title: "",
-    note: "",
+    title: '',
+    note: '',
     type: 1
   };
   showModal: boolean;
@@ -43,8 +43,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   selNodeStore: any [] = [];
   selectedNode: any;
 
-  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
+  filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
+  filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
   filterColumns = [4, 4, 4, 4, 4, 4];
 
   constructor(
@@ -79,8 +79,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   resetModalInfo() {
     this.modalInformation = {
-      title: "",
-      note: "",
+      title: '',
+      note: '',
       type: 1
     };
   }
@@ -118,12 +118,12 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   getNodeSku(node): Observable<string> {
     let hasSkuId = !!node.sku;
-    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    let isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
-      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+      return this.skuService.getByIdentifier(node.sku.split('/').pop())
       .pipe(map(data => data.name));
     } else if (isComputeWithoutSku) {
-      return this.catalogsService.getSource(node.id, "ohai")
+      return this.catalogsService.getSource(node.id, 'ohai')
       .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
@@ -132,7 +132,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   getNodeObm(node): Observable<string> {
     if (!_.isEmpty(node.obms)) {
-      let obmId = node.obms[0].ref.split("/").pop();
+      let obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
       .pipe(map(data => data.config.host));
     } else {
@@ -162,9 +162,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
         this.getNodeTag(node).pipe(catchError( () => of(null)))
       ).pipe(
           map(results => {
-            node["sku"] = results[0];
-            node["obms"] = results[1];
-            node["tags"] = results[2];
+            node['sku'] = results[0];
+            node['obms'] = results[1];
+            node['tags'] = results[2];
           })
       );
     });
@@ -187,7 +187,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     else
       subNote = `without node`;
     this.modalInformation = {
-      title: "Reminder",
+      title: 'Reminder',
       note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
       type: 1
     };
@@ -202,8 +202,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
       data => {
         this.graphId = data.instanceId;
         this.modalInformation = {
-          title: "Post Workflow Successfully!",
-          note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+          title: 'Post Workflow Successfully!',
+          note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
           type: 2
         };
       },

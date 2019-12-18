@@ -76,7 +76,7 @@ export class DrawUtils {
 
       // get error log of invalid tasks
       if (task.state === 'failed' || task.state === 'error' ||
-        task.state === "cancelled" || task.state === "timeout") {
+        task.state === 'cancelled' || task.state === 'timeout') {
         taskNode.properties.log = task.error;
       }
       return taskNode;
@@ -113,7 +113,7 @@ export class DrawUtils {
         canvas.height = this.canvas.height;
       }
       if (!this.bgctx)
-        this.bgctx = this.bgcanvas.getContext("2d");
+        this.bgctx = this.bgcanvas.getContext('2d');
       var ctx = this.bgctx;
       if (ctx.start)
         ctx.start();
@@ -157,7 +157,7 @@ export class DrawUtils {
           if (pattern) {
             ctx.fillStyle = pattern;
             ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
-            ctx.fillStyle = "transparent";
+            ctx.fillStyle = 'transparent';
           }
 
           ctx.globalAlpha = 1.0;
@@ -172,23 +172,23 @@ export class DrawUtils {
         //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
 
         //bg
-        ctx.strokeStyle = "transparent"; //change border to white
+        ctx.strokeStyle = 'transparent'; //change border to white
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
         if (this.render_connections_shadows) {
-          ctx.shadowColor = "#000";
+          ctx.shadowColor = '#000';
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
           ctx.shadowBlur = 6;
         }
         else
-          ctx.shadowColor = "rgba(0,0,0,0)";
+          ctx.shadowColor = 'rgba(0,0,0,0)';
 
         //draw connections
         if (!this.live_mode)
           this.drawConnections(ctx);
 
-        ctx.shadowColor = "rgba(0,0,0,0)";
+        ctx.shadowColor = 'rgba(0,0,0,0)';
 
         //restore state
         ctx.restore();

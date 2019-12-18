@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey} from '../../utils/inventory-operator';
+import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
@@ -51,7 +51,7 @@ export class ConfigComponent implements OnInit {
         let _data = [];
         _.forEach(_.keys(data), (key) => {
           //Remove unnecessary enviroment configures
-          if (key.match("^[a-z].*")) {
+          if (key.match('^[a-z].*')) {
             _data.push({key: key, value: data[key]})
           }
         })
@@ -65,7 +65,7 @@ export class ConfigComponent implements OnInit {
     this.isShowUpdateStatus = true;
     this.selectedConfig = {key: null, value: null};
     this.modalFormGroup.setValue({key: null, value: null});
-    this.modalAction = "Create";
+    this.modalAction = 'Create';
     this.isShowModal = true;
   };
 
@@ -94,11 +94,11 @@ export class ConfigComponent implements OnInit {
     this.selectedConfig = item;
     this.configureType = typeof item.value;
     //Configure values can be string, number or object;
-    let value = (this.configureType === "object")
+    let value = (this.configureType === 'object')
       ? JSON.stringify(this.selectedConfig.value)
       : this.selectedConfig.value;
     this.modalFormGroup.setValue({key: item.key, value: value});
-    this.modalAction = "Update";
+    this.modalAction = 'Update';
     this.isShowModal = true;
   };
 
@@ -111,17 +111,17 @@ export class ConfigComponent implements OnInit {
   // onGetRawData() {};
 
   getHttpMethod(){
-    if (this.modalAction === "Create") { return "put";}
-    if (this.modalAction === "Update") { return "patch";}
+    if (this.modalAction === 'Create') { return 'put';}
+    if (this.modalAction === 'Update') { return 'patch';}
   };
 
   onSubmit(){
-    let key: any = this.modalFormGroup.get("key").value;
-    let value: any = this.modalFormGroup.get("value").value;
+    let key: any = this.modalFormGroup.get('key').value;
+    let value: any = this.modalFormGroup.get('value').value;
     let method: string = this.getHttpMethod();
-    if (this.configureType === "number") {
+    if (this.configureType === 'number') {
       value = parseInt(value);
-    } else if(this.configureType === "object"){
+    } else if(this.configureType === 'object'){
       value = JSON.parse(value);
     }
     let payload = {};

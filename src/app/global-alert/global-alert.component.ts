@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
-import {GlobalAlertService} from "../services/core/global-alert.service";
+import { GlobalAlertService } from '../services/core/global-alert.service';
 
 @Component({
   selector: 'app-global-alert',

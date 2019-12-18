@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -66,11 +66,11 @@ export class HistoryWorkflowComponent implements OnInit {
     );
     createComparator(
       this.gridComparators,
-      ["node", "name", "injectableName", "domain", 'status'],
+      ['node', 'name', 'injectableName', 'domain', 'status'],
       new Workflow()
     );
     this.modalTypes = new ModalTypes(
-      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
+      ['Detail', 'Tasks', 'Options', 'Instance Id', 'Context', 'Definition']
     );
     this.isShowModal = false;
     this.getAll();
@@ -141,7 +141,7 @@ export class HistoryWorkflowComponent implements OnInit {
     .subscribe(
       data => {
         this.rawData = data;
-        this.action = "Definition"
+        this.action = 'Definition'
         this.isShowModal = true;
       }
     )
@@ -155,7 +155,7 @@ export class HistoryWorkflowComponent implements OnInit {
 
   batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Delete";
+      this.action = 'Delete';
       this.isShowModal = true;
     }
   };
@@ -188,20 +188,20 @@ export class HistoryWorkflowComponent implements OnInit {
 
   onDelete(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
   };
 
   onBatchCancel() {
     if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Cancel";
+      this.action = 'Cancel';
       this.isShowModal = true;
     }
   };
 
   onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Cancel";
+    this.action = 'Cancel';
     this.isShowModal = true;
   };
 
@@ -211,7 +211,7 @@ export class HistoryWorkflowComponent implements OnInit {
 
   onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.instanceId);
   };
 
@@ -223,7 +223,7 @@ export class HistoryWorkflowComponent implements OnInit {
 
   gotoCanvas(workflow){
     let graphId = workflow.instanceId;
-    let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
+    let url = '/workflowCenter/workflowViewer?graphId=' + graphId;
     this.router.navigateByUrl(url);
   }
 

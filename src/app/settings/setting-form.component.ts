@@ -125,15 +125,15 @@ export class SettingComponent implements OnInit, AfterViewInit {
   }
 
   handleAuthChanged(value: boolean) {
-    let authItems = ["rackhdPassword", "rackhdUsername", "rackhdAuthToken"];
+    let authItems = ['rackhdPassword', 'rackhdUsername', 'rackhdAuthToken'];
     _.forEach(authItems, (item) => {
       let formItem = this.settingFormGroup.get('rackhdAuth.' + item);
       value ? formItem.enable() : formItem.disable();
     })
     if (!value) {
-      this.settingService.authToken = "";
+      this.settingService.authToken = '';
       this.settingFormGroup.patchValue({
-        rackhdAuth: {rackhdAuthToken: ""}
+        rackhdAuth: {rackhdAuthToken: ''}
       });
     }
     this.checkboxChanged();
@@ -150,10 +150,10 @@ export class SettingComponent implements OnInit, AfterViewInit {
       return this.rackhdService.apiPing()
       .subscribe(
         data => {
-          this.apiErrorMsg = "";
+          this.apiErrorMsg = '';
         },
         err => {
-          this.apiErrorMsg = "RackHD northbound API is inaccessible";
+          this.apiErrorMsg = 'RackHD northbound API is inaccessible';
         }
       )
     }
@@ -166,21 +166,21 @@ export class SettingComponent implements OnInit, AfterViewInit {
       this.settingFormGroup.get('rackhdAuth.rackhdPassword').value
     ).subscribe(
       data => {
-        this.settingService.authToken = data["token"];
+        this.settingService.authToken = data['token'];
         this.settingFormGroup.patchValue({
           rackhdAuth: {
-            rackhdAuthToken: data["token"] || ''
+            rackhdAuthToken: data['token'] || ''
           }
         });
         this.tokenDirty = true;
-        this.tokenErrorMsg = "";
+        this.tokenErrorMsg = '';
         this.accessRackhdApi();
       },
       err => {
         if (err.status === 404) {
-          this.tokenErrorMsg = "Get token failed, please check if authenticate is enabled in RackHD."
+          this.tokenErrorMsg = 'Get token failed, please check if authenticate is enabled in RackHD.'
         } else {
-          this.tokenErrorMsg = "Get token failed, please check if RackHD Northbound API is correct."
+          this.tokenErrorMsg = 'Get token failed, please check if RackHD Northbound API is correct.'
         }
         // this.accessRackhdApi();
       }

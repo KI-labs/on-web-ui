@@ -30,9 +30,9 @@ export class SettingService {
     let globalKey = 'rackhd.' + key;
     let value = window.localStorage.getItem(globalKey);
     if (!value //window.localStorage only stores string
-      || value === "undefined"
-      || value === "null") { return RACKHD_CONFIG[key]; }
-    if (value === "false") return false;
+      || value === 'undefined'
+      || value === 'null') { return RACKHD_CONFIG[key]; }
+    if (value === 'false') return false;
     return value;
   }
 
@@ -65,15 +65,15 @@ export class SettingService {
   }
 
   generateToken(user: string, password: string): Observable<any> {
-    let url = this.northboundApi.split("/")[0];
+    let url = this.northboundApi.split('/')[0];
     let body = {
       username: user,
       password: password,
-      role: "Administrator"
+      role: 'Administrator'
     }
-    url = (this.connSecured ? "https" : "http") + "://" + url + "/login";
+    url = (this.connSecured ? 'https' : 'http') + '://' + url + '/login';
     return this.http.post(url, JSON.stringify(body),
-      {headers: new HttpHeaders({"Content-Type": "application/json"})}
+      {headers: new HttpHeaders({'Content-Type': 'application/json'})}
     ).pipe(
       timeout(500)
     );

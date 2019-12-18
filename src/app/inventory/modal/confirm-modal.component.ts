@@ -23,8 +23,8 @@ export class GridConfirmModalComponent {
   @Input() size: string = 'lg'; // Modal size
   @Input() title: string; // Modal key title
   @Input() data: any; // Data to be shown
-  @Input() displayAttr: string = "id"; // Attribute of data to be shown
-  @Input() action: string = "delete"; // Modal action 
+  @Input() displayAttr: string = 'id'; // Attribute of data to be shown
+  @Input() action: string = 'delete'; // Modal action 
   @Input() get isPop() { // Modal popup flag input
     return this.isPopValue;
   }
@@ -39,10 +39,10 @@ export class GridConfirmModalComponent {
   constructor(){}
 
   onReject(){
-    this.confirm.emit("reject");
+    this.confirm.emit('reject');
   }
 
   onAccept(){
-    this.confirm.emit("accept");
+    this.confirm.emit('accept');
   }
 }

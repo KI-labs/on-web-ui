@@ -4,7 +4,7 @@ import { HttpErrorResponse, HttpResponse, HttpClient } from '@angular/common/htt
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
-import { SKU, SKU_URL} from 'app/models/sku';
+import { SKU, SKU_URL } from 'app/models/sku';
 
 import { RackhdLocalStorage as RackHD } from 'app/utils/globals-util';
 import { RackhdHttpService } from 'app/utils/rackhd-http';
@@ -20,7 +20,7 @@ export class SkusService extends RackhdHttpService {
     return this.post(jsonData);
   }
 
-  public uploadByPost(file, identifier?:string): Observable<any> {
+  public uploadByPost(file, identifier?: string): Observable<any> {
     return this.upload(file, identifier, 'post');
   }
 

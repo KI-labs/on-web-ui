@@ -1,4 +1,4 @@
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import * as _ from 'lodash';
 
 export class AlphabeticalComparator<T> implements Comparator<T> {
@@ -21,7 +21,7 @@ export class DateComparator implements Comparator<Node> {
     }
 
     parseTime(time){
-      if(typeof time === "number") {
+      if(typeof time === 'number') {
         return time;
       }
       return Date.parse(time);
@@ -45,7 +45,7 @@ export class ObjectFilterByKey<T> implements StringFilter<T> {
     if (typeof originValue === 'undefined') {
       return false;
     }
-    stringValue = (typeof originValue === "object") ? JSON.stringify(originValue) : originValue.toString();
+    stringValue = (typeof originValue === 'object') ? JSON.stringify(originValue) : originValue.toString();
     return stringValue.toLowerCase().indexOf(searchKey) >= 0;
   }
 }
@@ -70,7 +70,7 @@ export class StringOperator {
         if (typeof originValue === 'undefined') {
           return true;
         }
-        let stringValue = (typeof data[item] === "object") ? JSON.stringify(originValue) : originValue.toString();
+        let stringValue = (typeof data[item] === 'object') ? JSON.stringify(originValue) : originValue.toString();
         if(this.contain(stringValue, term)){
           flag = true;
           return false;
@@ -83,14 +83,14 @@ export class StringOperator {
 
 export function createFilters<T> (obj: any, filterKeys: string[], model: T): void {
   _.map(filterKeys, key => {
-    let _key = key + "Filter";
+    let _key = key + 'Filter';
     obj[_key] = new ObjectFilterByKey<T>(key);
   })
 }
 
 export function createComparator<T> (obj: any, comparatorKeys: string[], model: T): void {
   _.map(comparatorKeys, key => {
-    let _key = key + "Comparator";
+    let _key = key + 'Comparator';
     obj[_key] = new AlphabeticalComparator<T>(key);
   })
 }

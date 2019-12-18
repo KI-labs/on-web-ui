@@ -71,7 +71,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       default:
         this.allData = _.map(this.data, (value, key) => {
           let _value = _.pick(value, this.fields);
-          _value["index"] = key;
+          _value['index'] = key;
           return _value;
         });
         let filtered = this.filterByFormGroup(this.allData);
@@ -197,16 +197,16 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   }
 
   onClear(field: string) {
-    this.filterForm.patchValue({[field]: ""});
+    this.filterForm.patchValue({[field]: ''});
     this.searchTerms.next({
       field: field,
-      value: ""
+      value: ''
     });
     this.cleared.emit(field);
   }
 
   onReset(field: string) {
     this.reset();
-    this.cleared.emit("all");
+    this.cleared.emit('all');
   }
 }

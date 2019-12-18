@@ -60,13 +60,13 @@ export class OsInstallComponent implements OnInit {
   searchTerms = new Subject<string>();
 
   selNodeStore: any[] = [];
-  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
+  filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
+  filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
   filterColumns = [4, 4, 4, 4, 4, 4];
   selectedNode: any;
   nodeStore: Array<any> = [];
 
-  submitInfo = { status: "Are you sure to submit the workflow ?" };
+  submitInfo = { status: 'Are you sure to submit the workflow ?' };
 
   constructor(
     public nodeService: NodeService,
@@ -220,9 +220,9 @@ export class OsInstallComponent implements OnInit {
         this.getNodeTag(node).pipe(catchError( () => of(null)))
       ).pipe(
           map(results => {
-            node["sku"] = results[0];
-            node["obms"] = results[1];
-            node["tags"] = results[2];
+            node['sku'] = results[0];
+            node['obms'] = results[1];
+            node['tags'] = results[2];
           })
       );
     });
@@ -237,12 +237,12 @@ export class OsInstallComponent implements OnInit {
 
   getNodeSku(node): Observable<string> {
     let hasSkuId = !!node.sku;
-    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    let isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
-      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+      return this.skuService.getByIdentifier(node.sku.split('/').pop())
         .pipe( map(data => data.name) );
     } else if (isComputeWithoutSku) {
-      return this.catalogsService.getSource(node.id, "ohai")
+      return this.catalogsService.getSource(node.id, 'ohai')
         .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
@@ -251,7 +251,7 @@ export class OsInstallComponent implements OnInit {
 
   getNodeObm(node): Observable<string> {
     if (!_.isEmpty(node.obms)) {
-      let obmId = node.obms[0].ref.split("/").pop();
+      let obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
         .pipe( map(data => data.config.host) );
     } else {
@@ -402,7 +402,7 @@ export class OsInstallComponent implements OnInit {
       if (this.payloadForm.value['osType'] === 'esxi') {
         installDisk = { 'installDisk': this.payloadForm.value['installDisk'] };
       } else {
-        installDisk = { 'installDisk': "/dev/" + this.payloadForm.value['installDisk'] };
+        installDisk = { 'installDisk': '/dev/' + this.payloadForm.value['installDisk'] };
       }
     }
 
@@ -415,25 +415,25 @@ export class OsInstallComponent implements OnInit {
       }
 
       let ipv4 = {
-        "ipAddr": this.payloadForm.value['ipAddress'],
-        "gateway": this.payloadForm.value['gateway'],
-        "netmask": this.payloadForm.value['netmask']
+        'ipAddr': this.payloadForm.value['ipAddress'],
+        'gateway': this.payloadForm.value['gateway'],
+        'netmask': this.payloadForm.value['netmask']
       };
 
       if (this.payloadForm.value['osType'] === 'esxi') {
         let vmnic = 'vmnic' + this.selectedNetworkDevice.substring(3);
         let networkDevices = {
           'networkDevices': [{
-            "device": vmnic,
-            "ipv4": ipv4
+            'device': vmnic,
+            'ipv4': ipv4
           }]
         };
         _.assign(generalJson, networkDevices);
       } else {
         let networkDevices = {
           'networkDevices': [{
-            "device": this.selectedNetworkDevice,
-            "ipv4": ipv4
+            'device': this.selectedNetworkDevice,
+            'ipv4': ipv4
           }]
         };
         _.assign(generalJson, networkDevices);

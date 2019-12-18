@@ -54,7 +54,7 @@ export class WorkflowsComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.getAll();
-    this.modalTypes = new ModalTypes(["Tasks", "Detail", "Options"]);
+    this.modalTypes = new ModalTypes(['Tasks', 'Detail', 'Options']);
   }
 
   getAll(): void {
@@ -111,7 +111,7 @@ export class WorkflowsComponent implements OnInit {
 
   batchDelete() {
     if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Delete";
+      this.action = 'Delete';
       this.isShowModal = true;
     }
   };
@@ -120,7 +120,7 @@ export class WorkflowsComponent implements OnInit {
     if(!this.modalFormGroup){
       this.createFormGroup();
     }
-    this.action = "Create";
+    this.action = 'Create';
     this.isShowModal = true;
   }
 
@@ -146,19 +146,19 @@ export class WorkflowsComponent implements OnInit {
   onUpdate(workflow: Graph){
     this.selectedWorkflow = workflow;
     this.createFormGroup(this.selectedWorkflow);
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onDelete(workflow: Graph) {
     this.selectedWorkflows = [workflow];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
   };
 
   onGetDetails(workflow: Graph) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.injectableName);
   };
 
@@ -188,7 +188,7 @@ export class WorkflowsComponent implements OnInit {
 
   gotoCanvas(workflow){
     let graphName = workflow.injectableName;
-    let url = "/workflowCenter/workflowViewer?graphName=" + graphName;
+    let url = '/workflowCenter/workflowViewer?graphName=' + graphName;
     this.router.navigateByUrl(url);
   }
 

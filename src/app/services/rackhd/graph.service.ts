@@ -17,9 +17,9 @@ export class GraphService extends RackhdHttpService {
 
   public getInitGraph(): any {
     return {
-      "friendlyName": "",
-      "injectableName": "",
-      "tasks": []
+      'friendlyName': '',
+      'injectableName': '',
+      'tasks': []
     }
   }
 

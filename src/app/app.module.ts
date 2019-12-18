@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
  * Otherwise the interceptor and mock api calling may not work properly.
  */
 import { HttpClientModule } from '@angular/common/http';
-import {ComponentRef, Injector, NgModule} from '@angular/core';
+import { ComponentRef, Injector, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 /**
  * Third Party Modules
@@ -98,7 +98,7 @@ import { GlobalAlertComponent } from './global-alert/global-alert.component';
 export class AppModule {
   constructor(public iconService: IconService, public injector: Injector) {
     // must be called once to init IconService
-    window["appInjector"] = this.injector;
+    window['appInjector'] = this.injector;
     iconService.load();
   }
 }
