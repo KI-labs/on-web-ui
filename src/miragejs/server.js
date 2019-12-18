@@ -1,6 +1,6 @@
 import { Server, Model, Serializer } from "miragejs";
-import { routes } from "./routes/index.js";
-var db = require("./db.json");
+import { routes as _routes } from "./routes/index.js";
+var _db = require("./db/index.js");
 
 const CustomSerializer = Serializer.extend({
   serialize(object) {
@@ -30,12 +30,17 @@ export function makeServer({ environment = "development" } = {}) {
       config: Model,
       file: Model,
       workflow: Model
+    },
+
+    routes(){
+      _routes(this)
+    },
+
+    seeds(server){
+      server.db.loadData(_db)
     }
+
   });
-
-  server.routes = routes(server);
-
-  server.db.loadData(db);
 
   return server;
 }

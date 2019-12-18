@@ -1,0 +1,155 @@
+[
+        {
+          "id": "5d9b463a4588b5784bd4fabf",
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c5:a9"
+          }
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac0",
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c7:05"
+          }
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad2",
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c4:a1"
+          }
+        },
+        {
+          "id": "5d9b46914588b5784bd4faef",
+          "node": "/api/2.0/nodes/5d9b45fa4588b5784bd4fa85",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d4:31:91"
+          }
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb02",
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c4:9b"
+          }
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb15",
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:b2:2e:dd"
+          }
+        },
+        {
+          "id": "5d9b47514588b5784bd4fb2d",
+          "node": "/api/2.0/nodes/5d9b45e84588b5784bd4fa4b",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c3:87"
+          }
+        },
+        {
+          "id": "5d9b5b8a4588b5784bd4fbb3",
+          "node": "/api/2.0/nodes/5d9b5b084588b5784bd4fb2e",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:be:dd"
+          }
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc5",
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d3:2d:15"
+          }
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd2",
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c3:87"
+          }
+        },
+        {
+          "id": "5d9b6e5e4588b5784bd4fc01",
+          "node": "/api/2.0/nodes/5d9b6ddb4588b5784bd4fbd9",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:be:dd"
+          }
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc88",
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c4:dd"
+          }
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fca0",
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d4:31:91"
+          }
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd04",
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d4:2a:c3"
+          }
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd33",
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:be:dd"
+          }
+        },
+        {
+          "id": "5d9b95904588b5784bd4fd4b",
+          "node": "/api/2.0/nodes/5d9b7d604588b5784bd4fcbe",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c2:1f"
+          }
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd7b",
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "service": "ipmi-obm-service",
+          "config": {
+            "user": "admin",
+            "host": "6c:92:bf:d0:c2:1f"
+          }
+        }
+      ]

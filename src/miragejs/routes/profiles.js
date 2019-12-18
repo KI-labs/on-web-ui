@@ -5,6 +5,5 @@ export default function profilesRoutes(server){
 
     return schema.obms.create(attrs);
   });
-
 }
 

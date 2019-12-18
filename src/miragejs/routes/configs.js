@@ -9,9 +9,7 @@ export default function configRoutes(server){
 
     server.patch("/config", (schema, request) => {
       let attrs = JSON.parse(request.requestBody);
-      console.log(attrs)
 
-    
       return schema.configs.create(attrs);
     });
 }

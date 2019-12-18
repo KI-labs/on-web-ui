@@ -4,9 +4,8 @@ export default function catalogsRoutes(server) {
     return server.db.catalogs.filter(catalog => {
       if (catalog.node === `/api/2.0/nodes/${request.params.id}`) {
         return catalog.source === "dmi";
-      } else {
-        return false;
-      }
+      } 
+      return false
     });
   });
   server.get("nodes/:id/catalogs/", (schema, request) => {

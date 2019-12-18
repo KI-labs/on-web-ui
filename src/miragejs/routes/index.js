@@ -16,17 +16,19 @@ export function routes(server) {
   server.urlPrefix = "http://127.0.0.1:9090";
   server.namespace = "/api/2.0";
 
-  nodesRoutes(server);
-  obmsRoutes(server);
-  pollersRoutes(server);
-  profilesRoutes(server);
-  skusRoutes(server);
-  templatesRoutes(server);
-  graphsRoutes(server);
-  configsRoutes(server);
-  filesRoutes(server);
-  catalogsRoutes(server);
-  workflowsRoutes(server);
-  tagsRoutes(server);
-  tasksRoutes(server);
+  [
+    nodesRoutes,
+    obmsRoutes,
+    pollersRoutes,
+    profilesRoutes,
+    skusRoutes,
+    templatesRoutes,
+    graphsRoutes,
+    configsRoutes,
+    filesRoutes,
+    catalogsRoutes,
+    workflowsRoutes,
+    tagsRoutes,
+    tasksRoutes
+  ].forEach(routes => routes(server))
 }

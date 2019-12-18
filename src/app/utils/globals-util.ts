@@ -8,10 +8,8 @@ export class RackhdLocalStorage {
   }
 
   static getBaseUrl(): string {
-
       return (RackhdLocalStorage.isSecured() ? 'https://' : 'http://') + 
         window.localStorage.getItem('rackhd.northboundApi');
-
   }
 
   static getToken(): string {
