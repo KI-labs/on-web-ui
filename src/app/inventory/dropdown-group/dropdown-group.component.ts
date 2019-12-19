@@ -110,12 +110,12 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
       this.fieldsRequired = _.fill(Array(inputCount), false);
     }
     this.classList = _.map(this.offsets, (offset, key) => {
-      return `col-lg-${this.columns[key]} col-lg-offset-${offset}`;
+      return `clr-col-lg-${this.columns[key]} clr-col-lg-offset-${offset}`;
     });
     let buttonColumn = 12;
     buttonColumn = Math.abs(12 - _.sum(this.columns) - _.sum(this.offsets)) % 12;
     buttonColumn = buttonColumn ? buttonColumn : 12;
-    this.resetClass = `col-lg-${buttonColumn}`;
+    this.resetClass = `clr-col-lg-${buttonColumn}`;
   }
 
   createFormGroup(): void {

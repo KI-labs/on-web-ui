@@ -231,8 +231,7 @@ export class NodesComponent implements OnInit {
     this.selectedObms = [];
     if (node.obms.length > 0) {
       for (const entry of node.obms) {
-        // TODO: old line const obmId = entry.ref.split('/').pop(); obms are supusedly a array of strings not object need to be checked afterwards
-        const obmId = entry.split('/').pop();
+        const obmId = entry.ref.split('/').pop();
         this.getObmById(obmId);
       }
       this.isShowObmDetail = true;
@@ -245,8 +244,7 @@ export class NodesComponent implements OnInit {
     this.selectedObms = [];
     if (node.ibms.length > 0) {
       for (const entry of node.ibms) {
-        // TODO: const ibmId = entry.ref.split('/').pop();
-        const ibmId = entry.split('/').pop();
+        const ibmId = entry.ref.split('/').pop();
         this.getIbmById(ibmId);
       }
       this.isShowIbmDetail = true;

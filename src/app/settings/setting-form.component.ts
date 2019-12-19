@@ -79,7 +79,8 @@ export class SettingComponent implements OnInit, AfterViewInit {
         rackhdAuthToken: new FormControl(
           {value: this.settingService.authToken, disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
-        )
+        ),
+        
       })
     });
   }

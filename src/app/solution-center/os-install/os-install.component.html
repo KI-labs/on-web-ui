@@ -1,18 +1,18 @@
 <div class="content-container row offset-bottom">
-  <div class="col-md-12 col-xs-12 col-lg-12 title">
+  <div class="clr-col-md-12 clr-col-12 clr-col-lg-12 title">
     <h4>OS Install</h4>
   </div>
-  <div class='col-md-12 col-xs-12 col-lg-12 os-install-note'>
+  <div class='clr-col-md-12 clr-col-12 clr-col-lg-12 os-install-note'>
       The fields with * below are required!
   </div>
-  <div class="col-md-12 col-xs-12 col-lg-12 bottom-gap">
+  <div class="clr-col-md-12 clr-col-12 clr-col-lg-12 bottom-gap">
     <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[4]" id="dropdown-group-0"
       [labels]="['Node']" [labelBold]="false" [fieldsRequired]="[true]" isDefaultForm="true"
       (selected)="onNodeSelect($event)" (cleared)="onReset()">
     </dropdown-group>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
     <div class="filter-by">
       <label class="filter-title">
         <b>Filter Node</b>
@@ -26,15 +26,15 @@
     </div>
   </div>
 
-  <div class="col-md-7 bottom-button">
+  <div class="clr-col-md-7 bottom-button">
     <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
     <form class="compact" [formGroup]="payloadForm" novalidate>
       <section class="form-block my-form-block bottom-gap">
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+          <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="selects_1" class="required" [class.invalid]="formClassInvalid('osType')">OS Type
               </label>
@@ -46,7 +46,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+          <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="selects_2" class="required" [class.invalid]="formClassInvalid('version')">Version
               </label>
@@ -61,7 +61,7 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+          <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="formFields_1" class="required" [class.invalid]="formClassInvalid('rootPassword')">Root Password</label>
               <label class="root-passowrd">
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+          <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="selects_4">Install Disk</label>
               <div class="select">
@@ -85,7 +85,7 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-10 col-md-10 col-sm-10 com-xs-10">
+          <div class="clr-col-lg-10 clr-col-md-10 clr-col-sm-10 com-xs-10">
             <div class="form-group">
               <label class="required os-install-repo">Repo URL</label>
               <label for="formFields_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md input-width" [class.invalid]="formClassInvalid('repoUrl')">
@@ -98,7 +98,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+          <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
             <div class="form-group">
               <label for="selects_5">Network Interface</label>
               <div class="select">
@@ -119,7 +119,7 @@
         </legend>
         <section class="networkOptions">
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
               <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_3">
                 IP Address
               </label>
@@ -127,7 +127,7 @@
                 <input type="text" id="formFields_3" formControlName="ipAddress"/>
               </label>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
               <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_2">
                 DNS Servers
               </label>
@@ -138,7 +138,7 @@
           </div>
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
               <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_5">
                 Netmask
               </label>
@@ -146,7 +146,7 @@
                 <input type="text" id="formFields_5" formControlName="netmask"/>
               </label>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
+            <div class="clr-col-lg-6 clr-col-md-6 clr-col-sm-6 com-xs-6">
               <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_4">
                 Gateway
               </label>
@@ -163,7 +163,7 @@
     </form>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
     <label>
       <b>Payload:</b>
     </label>

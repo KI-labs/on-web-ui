@@ -1,3 +1,5 @@
 .app-catalogs {
+    display: flex;
+    flex-direction: column;
     @import "../shared/inventory";
 }

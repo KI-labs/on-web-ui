@@ -11,18 +11,27 @@ export class Node {
     id: string;
     identifiers: Array<string>;
     name: string;
-    obms: string[];
+    obms: Obms[];
     tags: string;
     pollers: string;
     relations: string[];
     sku?: string;
     type: string;
     workflows: string;
-    ibms: string[];
+    ibms: Ibms[];
 
     discoveredTime: string;
     manufacturer?: string;
     model: string;
+}
+
+class Obms {
+    service: string;
+    ref: string;
+}
+
+class Ibms {
+    ref: string;
 }
 
 export class NodeType {

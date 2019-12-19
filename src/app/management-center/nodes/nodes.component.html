@@ -1,7 +1,7 @@
 <div class="app-nodes">
 
-  <div class="row toolbar status-header">
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 status-button" *ngFor="let type of nodeTypes"
+  <div class="clr-row toolbar status-header">
+    <div class="clr-col-lg-1 clr-col-md-1 clr-col-sm-1 clr-col-1 status-button" *ngFor="let type of nodeTypes"
       (click)="selectType(type)" [class.selected]="selectedType==type.displayName">
       <h2>{{ nodesTypeCountMatrix[type.identifier] || 0 }}</h2>
       <span class="font-bold">{{ type.displayName }}</span>
