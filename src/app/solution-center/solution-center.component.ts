@@ -7,10 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SolutionCenterComponent implements OnInit {
 
-  constructor() {
-  }
-
-  ngOnInit() {
+  // tslint-disable-next-line
+  public ngOnInit() {
   }
 
 }

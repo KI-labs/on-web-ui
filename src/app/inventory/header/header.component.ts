@@ -11,26 +11,26 @@ import { StringOperator } from '../../utils/inventory-operator';
 })
 
 export class InventoryHeaderComponent implements OnInit {
-  @Input() allItems: any;
-  @Input() name: string;
-  @Input() isSearchRequired: boolean = true;
-  @Input() isRefreshRequired: boolean = true;
-  @Input() isDeleteRequired: boolean = true;
-  @Input() isCreateRequired: boolean = true;
-  @Input() isCancelRequired: boolean = false;
+  @Input() public allItems: any;
+  @Input() public name: string;
+  @Input() public isSearchRequired: boolean = true;
+  @Input() public isRefreshRequired: boolean = true;
+  @Input() public isDeleteRequired: boolean = true;
+  @Input() public isCreateRequired: boolean = true;
+  @Input() public isCancelRequired: boolean = false;
 
-  @Output() filter = new EventEmitter();
-  @Output() action = new EventEmitter();
+  @Output() public filter = new EventEmitter();
+  @Output() public action = new EventEmitter();
 
-  searchValue:string = '';
-  filteredItems: any[];
-  searchTerms = new Subject<string>();
+  public searchValue: string = '';
+  public filteredItems: any[];
+  public searchTerms = new Subject<string>();
 
   constructor() {
   }
 
-  ngOnInit() {
-    let searchTrigger = this.searchTerms.pipe(
+  public ngOnInit() {
+    const searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
@@ -41,32 +41,32 @@ export class InventoryHeaderComponent implements OnInit {
     searchTrigger.subscribe();
   }
 
-  search(term: string) {
+  public search(term: string) {
     this.filteredItems = StringOperator.search(term, this.allItems);
     this.filter.emit(this.filteredItems);
   }
 
-  onSearch(term) {
+  public onSearch(term) {
     this.searchTerms.next(term);
   }
 
-  onClear() {
+  public onClear() {
     this.searchTerms.next('');
   }
 
-  onCreate() {
-    this.action.emit("Create");
+  public onCreate() {
+    this.action.emit('Create');
   }
 
-  onRefresh() {
-    this.action.emit("Refresh");
+  public onRefresh() {
+    this.action.emit('Refresh');
   }
 
-  onBatchDelete() {
-    this.action.emit("Delete");
+  public onBatchDelete() {
+    this.action.emit('Delete');
   }
 
-  onBatchCancel() {
-    this.action.emit("Cancel")
+  public onBatchCancel() {
+    this.action.emit('Cancel');
   }
 }

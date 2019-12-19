@@ -7,8 +7,8 @@ describe('Header', () => {
   });
 
   it('should have logo', () => {
-    let subject = element(by.css('.logo-placeholder')).isPresent();
-    let result  = true;
+    const subject = element(by.css('.logo-placeholder')).isPresent();
+    const result  = true;
     expect(subject).toEqual(result);
   });
 

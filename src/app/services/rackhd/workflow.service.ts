@@ -5,7 +5,6 @@ import { NodeService } from 'app/services/rackhd/node.service';
 import { RackhdLocalStorage as RackHD } from 'app/utils/globals-util';
 import { Observable } from 'rxjs/Observable';
 
-
 import {
   HttpErrorResponse,
   HttpResponse,
@@ -36,14 +35,14 @@ export class WorkflowService extends RackhdHttpService {
     return Observable.of(HISTORY_WORKFLOW_STATUS).delay(5);
   }
 
-  public runWorkflow(nodeId: string, workflowName: string, payload: object): Observable<any>{
-    let param = WORKFLOW_URL.getAllUrl + "?name=" + workflowName;
+  public runWorkflow(nodeId: string, workflowName: string, payload: object): Observable<any> {
+    const param = WORKFLOW_URL.getAllUrl + '?name=' + workflowName;
     return this.nodeService.postByIdentifier(nodeId, payload, param);
   }
 
   public cancelActiveWorkflow(nodeId: string): Observable<any[]> {
-    let param = "/workflows/action";
-    let payload = { "command": "cancel" };
+    const param = '/workflows/action';
+    const payload = { command: 'cancel' };
     return this.nodeService.putByIdentifier(nodeId, payload, param);
   }
 

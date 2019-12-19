@@ -1,4 +1,4 @@
-import { NgModule }             from '@angular/core';
+import { NgModule } from '@angular/core';
 import {
   RouterModule,
   PreloadAllModules
@@ -10,7 +10,7 @@ import { ROUTES } from './app.routes';
 @NgModule({
   imports: [
     RouterModule.forRoot(ROUTES, {
-      //If we don't want to use hash mode, we need to change RackHD
+      // If we don't want to use hash mode, we need to change RackHD
       // useHash: Boolean(history.pushState) === true,
       useHash: true,
       preloadingStrategy: PreloadAllModules

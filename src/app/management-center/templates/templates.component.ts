@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -16,20 +16,20 @@ import { Template, ModalTypes } from '../../models';
   encapsulation: ViewEncapsulation.None
 })
 export class TemplatesComponent implements OnInit {
-  templatesStore: Template[] = [];
-  allTemplates: Template[] = [];
-  selectedTemplate: Template;
+  public templatesStore: Template[] = [];
+  public allTemplates: Template[] = [];
+  public selectedTemplate: Template;
 
-  files: FileList;
+  public files: FileList;
 
-  action: string;
-  isShowModal: boolean;
-  rawData: string;
+  public action: string;
+  public isShowModal: boolean;
+  public rawData: string;
 
-  dgDataLoading = false;
-  dgPlaceholder = 'No template found!';
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No template found!';
 
-  modalTypes: ModalTypes;
+  public modalTypes: ModalTypes;
 
   public scopeComparator = new AlphabeticalComparator<Template>('scope');
   public nameComparator = new AlphabeticalComparator<Template>('name');
@@ -39,90 +39,90 @@ export class TemplatesComponent implements OnInit {
 
   constructor(private templateService: TemplateService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.modalTypes = new ModalTypes();
     this.getAll();
   }
 
-  getAll(): void {
+  public getAll(): void {
     this.templateService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.templatesStore = data;
         this.allTemplates = data;
         this.dgDataLoading = false;
       });
   }
 
-  getMetaData(identifier: string) {
+  public getMetaData(identifier: string) {
     this.templateService.getMetaByIdentifier(identifier)
-    .subscribe(data => {
+    .subscribe((data) => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  getRawData(identifier: string) {
+  public getRawData(identifier: string) {
     this.templateService.getByIdentifier(identifier, 'text')
-    .subscribe(data => {
+    .subscribe((data) => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  onFilter(filtered: Template[]){
+  public onFilter(filtered: Template[]) {
     this.templatesStore = filtered;
   }
 
-  refresh() {
+  public refresh() {
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Create':
         this.create();
         break;
-    };
+    }
   }
 
-  create(){
-    this.action = "Upload";
+  public create() {
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
-  onUpdate(template: Template){
+  public onUpdate(template: Template) {
     this.selectedTemplate = template;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
-  onGetDetails(template: Template) {
+  public onGetDetails(template: Template) {
     this.selectedTemplate = template;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(template.name);
-  };
+  }
 
-  onGetRawData(template: Template) {
+  public onGetRawData(template: Template) {
     this.selectedTemplate = template;
-    this.action = "Raw"
+    this.action = 'Raw';
     this.getRawData(template.name);
-  };
+  }
 
-  onChange(event){
+  public onChange(event) {
     this.files =  event.target.files;
   }
 
-  onCreateSubmit(){
-    //existingFilename is used to store filename when updating file
-    let existingFilename = this.selectedTemplate && this.selectedTemplate.name;
-    let file = this.files[0];
-    //TODO: Add more details on progress
-    //TODO: And use sync mode instead of async mode
-    //TODO: Add support on multiple files upload support
+  public onCreateSubmit() {
+    // existingFilename is used to store filename when updating file
+    const existingFilename = this.selectedTemplate && this.selectedTemplate.name;
+    const file = this.files[0];
+    // TODO: Add more details on progress
+    // TODO: And use sync mode instead of async mode
+    // TODO: Add support on multiple files upload support
     this.isShowModal = false;
     this.templateService.upload(file, existingFilename || file.name)
     .subscribe(() => {

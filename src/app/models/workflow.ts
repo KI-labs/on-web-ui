@@ -4,23 +4,23 @@
 import { Task } from './task';
 
 export class Workflow {
-    node: string;
-    status: string;
-    context: {};
-    definition: string;
-    domain: string;
-    id: string;
-    injectableName: string;
-    instanceId: string;
-    logContext: {};
-    name: string;
-    serviceGraph: string;
-    tasks: Array<Task>;
+    public node: string;
+    public status: string;
+    public context: {};
+    public definition: string;
+    public domain: string;
+    public id: string;
+    public injectableName: string;
+    public instanceId: string;
+    public logContext: {};
+    public name: string;
+    public serviceGraph: string;
+    public tasks: Task[];
 }
 
 export const WORKFLOW_URL = {
-  getAllUrl: "/workflows",
-  getByIdentifierUrl: "/workflows/",
-}
+  getAllUrl: '/workflows',
+  getByIdentifierUrl: '/workflows/',
+};
 
-export const HISTORY_WORKFLOW_STATUS = ["succeeded", "failed", "cancelled"];
+export const HISTORY_WORKFLOW_STATUS = ['succeeded', 'failed', 'cancelled'];

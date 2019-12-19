@@ -19,5 +19,4 @@ describe('FilesComponent', () => {
     fixture.detectChanges();
   });
 
-  
 });

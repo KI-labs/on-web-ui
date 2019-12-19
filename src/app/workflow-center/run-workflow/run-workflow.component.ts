@@ -24,28 +24,28 @@ import * as _ from 'lodash';
   styleUrls: ['./run-workflow.component.scss']
 })
 export class RunWorkflowComponent implements OnInit, AfterViewInit {
-  @ViewChild('jsoneditor') jsoneditor: ElementRef;
-  editor: any;
-  modalInformation = {
-    title: "",
-    note: "",
+  @ViewChild('jsoneditor') public jsoneditor: ElementRef;
+  public editor: any;
+  public modalInformation = {
+    title: '',
+    note: '',
     type: 1
   };
-  showModal: boolean;
+  public showModal: boolean;
 
-  graphId: string;
-  graphStore: any[] = [];
-  allGraphs: any[] = [];
-  selectedGraph: any;
+  public graphId: string;
+  public graphStore: any[] = [];
+  public allGraphs: any[] = [];
+  public selectedGraph: any;
 
-  allNodes: Array<any> = [];
-  nodeStore: Array<any> = [];
-  selNodeStore: any [] = [];
-  selectedNode: any;
+  public allNodes: any[] = [];
+  public nodeStore: any[] = [];
+  public selNodeStore: any [] = [];
+  public selectedNode: any;
 
-  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
-  filterColumns = [4, 4, 4, 4, 4, 4];
+  public filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
+  public filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
+  public filterColumns = [4, 4, 4, 4, 4, 4];
 
   constructor(
     public nodeService: NodeService,
@@ -59,92 +59,93 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(queryParams => {
+  public ngOnInit() {
+    this.activatedRoute.queryParams.subscribe((queryParams) => {
       this.graphId = queryParams.injectableName;
     });
     this.showModal = false;
-    let container = this.jsoneditor.nativeElement;
-    let options = {mode: 'code'};
+    const container = this.jsoneditor.nativeElement;
+    const options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.getAllWorkflows();
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
     }
     this.getAllNodes();
   }
 
-  resetModalInfo() {
+  public resetModalInfo() {
     this.modalInformation = {
-      title: "",
-      note: "",
+      title: '',
+      note: '',
       type: 1
     };
   }
 
-  selWorkflowById(id) {
+  public selWorkflowById(id) {
     this.graphService.getByIdentifier(id)
-    .subscribe(data => {
+    .subscribe((data) => {
       this.selectedGraph = (data instanceof Array) ? data[0] : data;
       this.graphStore = [this.selectedGraph];
       this.updateEditor(data.options);
     });
   }
 
-  getAllWorkflows() {
+  public getAllWorkflows() {
     this.graphService.getAll()
-    .subscribe(graphs => {
+    .subscribe((graphs) => {
       this.allGraphs = graphs;
       this.graphStore = _.cloneDeep(graphs);
     });
   }
 
-  updateEditor(options: any) {
-    if (options)
+  public updateEditor(options: any) {
+    if (options) {
       this.editor.set(options);
-    else
+    } else {
       this.editor.set({});
+    }
   }
 
-  getAllNodes() {
+  public getAllNodes() {
     this.nodeService.getAll()
-    .subscribe(data => {
+    .subscribe((data) => {
       this.renderNodeInfo(data);
     });
   }
 
-  getNodeSku(node): Observable<string> {
-    let hasSkuId = !!node.sku;
-    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+  public getNodeSku(node): Observable<string> {
+    const hasSkuId = !!node.sku;
+    const isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
-      return this.skuService.getByIdentifier(node.sku.split("/").pop())
-      .pipe(map(data => data.name));
+      return this.skuService.getByIdentifier(node.sku.split('/').pop())
+      .pipe(map((data) => data.name));
     } else if (isComputeWithoutSku) {
-      return this.catalogsService.getSource(node.id, "ohai")
-      .pipe(map(data => data.data.dmi.base_board.product_name));
+      return this.catalogsService.getSource(node.id, 'ohai')
+      .pipe(map((data) => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
     }
   }
 
-  getNodeObm(node): Observable<string> {
+  public getNodeObm(node): Observable<string> {
     if (!_.isEmpty(node.obms)) {
-      let obmId = node.obms[0].ref.split("/").pop();
+      const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
-      .pipe(map(data => data.config.host));
+      .pipe(map((data) => data.config.host));
     } else {
       return of(null);
     }
   }
 
-  getNodeTag(node): Observable<string> {
+  public getNodeTag(node): Observable<string> {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
       .pipe(
-        map(data => {
+        map((data) => {
           if (_.isEmpty(data)) { return null; }
           return data.attributes.name;
         })
@@ -154,17 +155,17 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     }
   }
 
-  renderNodeInfo(nodes) {
-    let list = _.map(nodes, node => {
+  public renderNodeInfo(nodes) {
+    const list = _.map(nodes, (node) => {
       return forkJoin(
         this.getNodeSku(node).pipe(catchError( () => of(null))),
         this.getNodeObm(node).pipe(catchError( () => of(null))),
         this.getNodeTag(node).pipe(catchError( () => of(null)))
       ).pipe(
-          map(results => {
-            node["sku"] = results[0];
-            node["obms"] = results[1];
-            node["tags"] = results[2];
+          map((results) => {
+            node['sku'] = results[0];
+            node['obms'] = results[1];
+            node['tags'] = results[2];
           })
       );
     });
@@ -177,41 +178,42 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
   }
 
-  goToRunWorkflow() {
+  public goToRunWorkflow() {
     this.showModal = true;
-    let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     let subNote;
-    if (selectedNodeId)
+    if (selectedNodeId) {
       subNote = `with ${selectedNodeId}`;
-    else
+    } else {
       subNote = `without node`;
+    }
     this.modalInformation = {
-      title: "Reminder",
+      title: 'Reminder',
       note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
       type: 1
     };
   }
 
-  postWorkflow() {
-    let payload = this.editor.get();
-    let selectedNodeId = this.selectedNode && this.selectedNode.id;
+  public postWorkflow() {
+    const payload = this.editor.get();
+    const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
     .subscribe(
-      data => {
+      (data) => {
         this.graphId = data.instanceId;
         this.modalInformation = {
-          title: "Post Workflow Successfully!",
-          note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+          title: 'Post Workflow Successfully!',
+          note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
           type: 2
         };
       },
-      err => { this.showModal = false; }
+      (err) => { this.showModal = false; }
     );
    }
 
-  goToViewer() {
+  public goToViewer() {
     this.resetModalInfo();
     this.showModal = false;
     this.router.navigate(['workflowCenter/workflowViewer'], {
@@ -219,39 +221,39 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onGraphSelect(graph){
+  public onGraphSelect(graph) {
     this.selectedGraph = graph;
     this.updateEditor(this.selectedGraph.options);
-  };
+  }
 
-  onGraphRefresh() {
+  public onGraphRefresh() {
     this.selectedGraph = null;
     this.graphStore = _.cloneDeep(this.allGraphs);
     this.updateEditor({});
     this.router.navigateByUrl('workflowCenter/runWorkflow');
   }
 
-  onFilterSelect(node){
+  public onFilterSelect(node) {
     this.selectedNode = node;
-    if (this.selNodeStore.length === 1 && _.isEqual(this.selNodeStore[0], node)) return;
+    if (this.selNodeStore.length === 1 && _.isEqual(this.selNodeStore[0], node)) { return; }
     setTimeout( () => this.selNodeStore = [node]);
-  };
+  }
 
-  onFilterRefresh(item: string) {
-    this.selNodeStore= [];
+  public onFilterRefresh(item: string) {
+    this.selNodeStore = [];
     setTimeout(() => {
       this.nodeStore = _.cloneDeep(this.allNodes);
       this.selNodeStore = _.cloneDeep(this.allNodes);
     });
   }
 
-  onNodeSelect(node){
+  public onNodeSelect(node) {
     this.selectedNode = node;
-    if (this.nodeStore.length === 1 && _.isEqual(this.nodeStore[0], node)) return;
+    if (this.nodeStore.length === 1 && _.isEqual(this.nodeStore[0], node)) { return; }
     setTimeout( () => this.nodeStore = [node]);
-  };
+  }
 
-  onReset(){
+  public onReset() {
     this.selNodeStore = [];
     this.nodeStore = [];
     setTimeout(() => {

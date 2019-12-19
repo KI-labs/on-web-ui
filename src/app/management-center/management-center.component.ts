@@ -9,7 +9,7 @@ export class ManagementCenterComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
 }

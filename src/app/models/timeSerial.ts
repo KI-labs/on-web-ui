@@ -3,18 +3,18 @@
 */
 import * as _ from 'lodash';
 
-export class TimeSerialData{
-    constructor(d:any){
-        _.assign(this,d);
+export class TimeSerialData {
+    public time: Date ;
+    public value: number;
+    constructor(d: any) {
+        _.assign(this, d);
     }
-    time: Date ;
-    value: number;
 }
 
-export class MetricData{
-    constructor(d:any){
-        _.assign(this,d);
+export class MetricData {
+    public name: string; // name of the metrics
+    public dataArray: TimeSerialData[];
+    constructor(d: any) {
+        _.assign(this, d);
     }
-    name: string; // name of the metrics
-    dataArray: TimeSerialData[];
 }

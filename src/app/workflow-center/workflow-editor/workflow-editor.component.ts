@@ -12,33 +12,33 @@ const global = (window as any);
   styleUrls: ['./workflow-editor.component.scss']
 })
 export class WorkflowEditorComponent implements OnInit {
-  onWorkflowInput = new EventEmitter();
-  selectWorkflow: any;
-  editor: any;
-  isShowModal: boolean;
-  saveGraphInfo: any = {};
-  isWorkflowValid: boolean;
+  public onWorkflowInput = new EventEmitter();
+  public selectWorkflow: any;
+  public editor: any;
+  public isShowModal: boolean;
+  public saveGraphInfo: any = {};
+  public isWorkflowValid: boolean;
 
-  workflowStore: any[] = [];
+  public workflowStore: any[] = [];
 
-  isWaitOnMismatch = false;
+  public isWaitOnMismatch = false;
 
-  columns = [12];
-  placeholders = ["Search workflow definitions"];
-  fields = ['injectableName'];
+  public columns = [12];
+  public placeholders = ['Search workflow definitions'];
+  public fields = ['injectableName'];
 
   constructor(
     public graphService: GraphService,
     private router: Router) {}
 
-  clearInput() {
+  public clearInput() {
     this.onWorkflowChanged(this.graphService.getInitGraph());
     this.pushDataToCanvas();
   }
 
-  putWorkflowIntoCanvas(injectableName: string) {
+  public putWorkflowIntoCanvas(injectableName: string) {
     let workflow = {};
-    for (let item of this.workflowStore) {
+    for (const item of this.workflowStore) {
       if (item.injectableName.replace(/\s/ig, '') === injectableName.replace(/\s/ig, '')) {
         workflow = item;
         break;
@@ -50,39 +50,39 @@ export class WorkflowEditorComponent implements OnInit {
     }
   }
 
-  onSelected(selWorkflow: any) {
+  public onSelected(selWorkflow: any) {
     this.selectWorkflow = selWorkflow;
     this.putWorkflowIntoCanvas(selWorkflow.injectableName);
   }
 
-  onRefresh() {
+  public onRefresh() {
     this.clearInput();
     this.getworkflowStore();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.isShowModal = false;
     this.selectWorkflow = this.graphService.getInitGraph();
-    let container = document.getElementById('jsoneditor');
-    let options = {mode: 'code'};
+    const container = document.getElementById('jsoneditor');
+    const options = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
     this.getworkflowStore();
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.pushDataToCanvas();
   }
 
-  getworkflowStore() {
+  public getworkflowStore() {
     this.graphService.getAll()
-      .subscribe(graphs => {
+      .subscribe((graphs) => {
         this.workflowStore = graphs;
       });
   }
 
-  applyWorkflowJson() {
-    let tmpWorkflow = this.editor.get();
+  public applyWorkflowJson() {
+    const tmpWorkflow = this.editor.get();
     this.isWaitOnMismatch = this.isTaskWaitOnLegal(tmpWorkflow) ? false : true;
     if (!this.isWaitOnMismatch) {
       this.selectWorkflow = tmpWorkflow;
@@ -90,12 +90,12 @@ export class WorkflowEditorComponent implements OnInit {
     }
   }
 
-  isTaskWaitOnLegal(obj: any): boolean {
+  public isTaskWaitOnLegal(obj: any): boolean {
     let isLegal = true;
     if (obj && obj.tasks) {
-      let taskLables = _.map(obj.tasks, 'label');
-      let waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
-      for (let label of waitOnLables) {
+      const taskLables = _.map(obj.tasks, 'label');
+      const waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
+      for (const label of waitOnLables) {
         isLegal = _.includes(taskLables, label);
         if (isLegal === false) {
           break;
@@ -105,9 +105,9 @@ export class WorkflowEditorComponent implements OnInit {
     return isLegal;
   }
 
-  refreshWorkflow() {
-    let injectableNameTmp = this.selectWorkflow['injectableName'];
-    for (let workflow of this.workflowStore) {
+  public refreshWorkflow() {
+    const injectableNameTmp = this.selectWorkflow['injectableName'];
+    for (const workflow of this.workflowStore) {
       if (workflow['injectableName'] === injectableNameTmp) {
         this.selectWorkflow = workflow;
         this.updateEditor(this.selectWorkflow);
@@ -117,19 +117,19 @@ export class WorkflowEditorComponent implements OnInit {
     }
   }
 
-  saveConfirm() {
+  public saveConfirm() {
     this.isWorkflowValid = this.selectWorkflow && this.selectWorkflow.injectableName
-      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, "Graph.")
+      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, 'Graph.')
       && this.selectWorkflow.tasks && (this.selectWorkflow.tasks.length > 0);
     if (this.isWorkflowValid) {
       this.saveGraphInfo = {
-        status: "Are you sure to save " + this.selectWorkflow.injectableName,
+        status: 'Are you sure to save ' + this.selectWorkflow.injectableName,
         notes: '',
         type: 0
-      }
+      };
     } else {
       this.saveGraphInfo = {
-        status: "Invalid workflow payload!",
+        status: 'Invalid workflow payload!',
         notes: "Please make sure 'injectableName', 'friendlyName' and 'tasks' are not empty! Make sure 'injectableName' starts with 'Graph.'",
         type: 0
       };
@@ -137,37 +137,37 @@ export class WorkflowEditorComponent implements OnInit {
     this.isShowModal = true;
   }
 
-  saveWorkflow() {
+  public saveWorkflow() {
     this.selectWorkflow = this.editor.get();
     this.graphService.createGraph(this.selectWorkflow)
       .subscribe(
-        res => {
+        (res) => {
           this.saveGraphInfo = {
-            status: "Saved Successfully!",
+            status: 'Saved Successfully!',
             notes: 'Workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
             type: 1
           };
         },
-        err => {
+        (err) => {
           this.isShowModal = false;
         }
       );
   }
 
-  updateEditor(workflow: any) {
+  public updateEditor(workflow: any) {
     this.editor.set(workflow);
   }
 
-  pushDataToCanvas() {
+  public pushDataToCanvas() {
     this.onWorkflowInput.emit(_.cloneDeep(this.selectWorkflow));
   }
 
-  onWorkflowChanged(workflow: any) {
+  public onWorkflowChanged(workflow: any) {
     this.selectWorkflow = workflow;
     this.updateEditor(workflow);
   }
 
-  jumpRunWorkflow() {
+  public jumpRunWorkflow() {
     this.isShowModal = false;
     this.router.navigate(['workflowCenter/runWorkflow'], {
       queryParams: {

@@ -15,7 +15,7 @@ import {
 export class GraphTaskService extends RackhdHttpService {
   constructor(
     public http: HttpClient
-  ){
+  ) {
     super(http, GRAPHTASK_URL);
   }
 }

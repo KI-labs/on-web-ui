@@ -2,12 +2,12 @@
  This defines the data model of Node's SKU.
 */
 export class SKU {
-    id: string;
-    name: string;
-    discoveryGraphName: string;
-    discoveryGraphOptions: {};
-    rules: any;
-    skuConfig: any;
+    public id: string;
+    public name: string;
+    public discoveryGraphName: string;
+    public discoveryGraphOptions: {};
+    public rules: any;
+    public skuConfig: any;
 }
 
 export const SKU_URL = {
@@ -15,4 +15,4 @@ export const SKU_URL = {
     getByIdentifierUrl: '/skus/',
     uploadUrl: '/skus/pack',
     uploadSuffix: '/pack',
-}
+};

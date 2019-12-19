@@ -13,21 +13,17 @@ import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/u
   styleUrls: ['./catalogs.component.scss']
 })
 export class CatalogsComponent implements OnInit {
-  allCatalogs: Catalog[];
-  catalogsStore: Catalog[];
+  public allCatalogs: Catalog[];
+  public catalogsStore: Catalog[];
 
-  selectedCatalog: Catalog;
-  specCatalog: Catalog;
-  isShowDetail: boolean;
-  isShowData: boolean;
+  public selectedCatalog: Catalog;
+  public specCatalog: Catalog;
+  public isShowDetail: boolean;
+  public isShowData: boolean;
 
   // data grid helper
-  dgDataLoading = false;
-  dgPlaceholder = 'No catalog found!'
-
-  constructor(public catalogsService: CatalogsService) {
-    this.specCatalog = new Catalog();
-  }
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No catalog found!';
 
   public idComparator = new AlphabeticalComparator('id');
   public nodeComparator = new AlphabeticalComparator('node');
@@ -39,38 +35,42 @@ export class CatalogsComponent implements OnInit {
   public nodeFilter = new ObjectFilterByKey('node');
   public sourceFilter = new ObjectFilterByKey('source');
 
-  ngOnInit() {
+  constructor(public catalogsService: CatalogsService) {
+    this.specCatalog = new Catalog();
+  }
+
+  public ngOnInit() {
     this.getAllCatalogs();
   }
 
-  getAllCatalogs(): void {
+  public getAllCatalogs(): void {
     this.catalogsService.getAll()
-      .subscribe( data => {
+      .subscribe( (data) => {
         this.allCatalogs = data;
         this.catalogsStore = data;
         this.dgDataLoading = false;
       });
   }
 
-  refresh() {
+  public refresh() {
     this.dgDataLoading = true;
     this.getAllCatalogs();
   }
 
-  goToDetail(catalog: Catalog) {
+  public goToDetail(catalog: Catalog) {
     this.selectedCatalog = catalog;
     this.isShowDetail = true;
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
-    };
+    }
   }
 
-  onFilter(filtered){
+  public onFilter(filtered) {
     this.catalogsStore = filtered;
   }
 }

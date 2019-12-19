@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
@@ -16,21 +16,21 @@ import { Profile, ModalTypes } from 'app/models';
   encapsulation: ViewEncapsulation.None
 })
 export class ProfilesComponent implements OnInit {
-  profilesStore: Profile[] = [];
-  allProfiles: Profile[] = [];
-  selectedProfile: Profile;
+  public profilesStore: Profile[] = [];
+  public allProfiles: Profile[] = [];
+  public selectedProfile: Profile;
 
-  files: FileList;
+  public files: FileList;
 
-  action: string;
-  isShowModal: boolean;
-  rawData: string;
+  public action: string;
+  public isShowModal: boolean;
+  public rawData: string;
 
-  modalTypes: ModalTypes;
+  public modalTypes: ModalTypes;
 
   // data grid helper
-  dgDataLoading = false;
-  dgPlaceholder = 'No profile found!'
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No profile found!';
 
   public scopeComparator = new AlphabeticalComparator<Profile>('scope');
   public nameComparator = new AlphabeticalComparator<Profile>('name');
@@ -40,96 +40,96 @@ export class ProfilesComponent implements OnInit {
 
   constructor(private profileService: ProfileService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.getAll();
     this.modalTypes = new ModalTypes();
   }
 
-  getAll(): void {
+  public getAll(): void {
     this.profileService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.profilesStore = data;
         this.allProfiles = data;
         this.dgDataLoading = false;
       });
   }
 
-  getMetaData(identifier: string) {
+  public getMetaData(identifier: string) {
     this.profileService.getMetaByIdentifier(identifier)
-    .subscribe(data => {
+    .subscribe((data) => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  getRawData(identifier: string) {
+  public getRawData(identifier: string) {
     this.profileService.getByIdentifier(identifier, 'text')
-    .subscribe(data => {
+    .subscribe((data) => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  onFilter(filtered){
+  public onFilter(filtered) {
     this.profilesStore = filtered;
   }
 
-  refresh() {
+  public refresh() {
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  create(){
-    this.action = "Upload";
+  public create() {
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Create':
         this.create();
         break;
-    };
+    }
   }
 
-  onUpdate(profile: Profile){
+  public onUpdate(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
-  onGetDetails(profile: Profile) {
+  public onGetDetails(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(profile.name);
-  };
+  }
 
-  onGetRawData(profile: Profile) {
+  public onGetRawData(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Raw"
+    this.action = 'Raw';
     this.getRawData(profile.name);
-  };
+  }
 
-  onChange(event){
+  public onChange(event) {
     this.files =  event.target.files;
   }
 
-  onCreateSubmit(){
-    //existingFilename is used to store filename when updating file
-    let existingFilename = this.selectedProfile && this.selectedProfile.name;
-    let file = this.files[0];
-    //TODO: Add more details on progress
-    //TODO: And use sync mode instead of async mode
-    //TODO: Add support on multiple files upload support
+  public onCreateSubmit() {
+    // existingFilename is used to store filename when updating file
+    const existingFilename = this.selectedProfile && this.selectedProfile.name;
+    const file = this.files[0];
+    // TODO: Add more details on progress
+    // TODO: And use sync mode instead of async mode
+    // TODO: Add support on multiple files upload support
     this.isShowModal = false;
     this.profileService.upload(file, existingFilename || file.name)
     .subscribe(() => {
       this.selectedProfile = null;
       this.refresh();
-    })
+    });
   }
 
 }

@@ -29,40 +29,40 @@ import * as _ from 'lodash';
 })
 
 export class SettingComponent implements OnInit, AfterViewInit {
-  @Output() onSave: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public onSave: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  defaultDirty: boolean;
-  tokenDirty: boolean;
-  checkboxesDirty: boolean;
+  public defaultDirty: boolean;
+  public tokenDirty: boolean;
+  public checkboxesDirty: boolean;
 
-  tokenErrorMsg: string = '';
-  apiErrorMsg: string = '';
+  public tokenErrorMsg: string = '';
+  public apiErrorMsg: string = '';
 
-  settingFormGroup: FormGroup;
-  initialConfigs: any;
+  public settingFormGroup: FormGroup;
+  public initialConfigs: any;
 
-  constructor (
+  constructor(
     public settingService: SettingService,
     public rackhdService: NodeService
-  ) {};
+  ) {}
 
-  ngOnInit(){
+  public ngOnInit() {
     this.settingService.loadInitialConfig();
     this.initialConfigs = {
       northboundApi: this.settingService.northboundApi,
       websocketUrl: this.settingService.websocketUrl,
       authEnabled: this.settingService.authEnabled,
       connSecured: this.settingService.connSecured,
-      authToken:this.settingService.authToken
+      authToken: this.settingService.authToken
     };
     this.createForm();
   }
 
-  ngAfterViewInit(){
+  public ngAfterViewInit() {
     this.accessRackhdApi();
   }
 
-  createForm() {
+  public createForm() {
     this.settingFormGroup = new FormGroup({
       rackhdNorthboundApi: new FormControl(
         this.settingService.northboundApi,
@@ -74,11 +74,11 @@ export class SettingComponent implements OnInit, AfterViewInit {
       ),
       rackhdAuth: new FormGroup({
         rackhdPassword: new FormControl(
-          {value:'', disabled: !this.settingService.authEnabled},
+          {value: '', disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
         ),
         rackhdUsername: new FormControl(
-          {value:'', disabled: !this.settingService.authEnabled},
+          {value: '', disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
         ),
         rackhdAuthToken: new FormControl(
@@ -89,15 +89,15 @@ export class SettingComponent implements OnInit, AfterViewInit {
     });
   }
 
-  resetSettings() {
-    let defaultConfig = this.settingService.loadDefaultConfig();
+  public resetSettings() {
+    const defaultConfig = this.settingService.loadDefaultConfig();
     this.settingFormGroup.reset({
       rackhdNorthboundApi: defaultConfig.northboundApi,
       rackhdWebsocketUrl: defaultConfig.websocketUrl,
       rackhdAuth: {
-        rackhdPassword: {value:'', disabled: !defaultConfig.authEnabled},
-        rackhdUsername: {value:'', disabled: !defaultConfig.authEnabled},
-        rackhdAuthToken: {value:'', disabled: !defaultConfig.authEnabled},
+        rackhdPassword: {value: '', disabled: !defaultConfig.authEnabled},
+        rackhdUsername: {value: '', disabled: !defaultConfig.authEnabled},
+        rackhdAuthToken: {value: '', disabled: !defaultConfig.authEnabled},
       }
     });
     this.settingService.authEnabled = defaultConfig.authEnabled;
@@ -105,95 +105,97 @@ export class SettingComponent implements OnInit, AfterViewInit {
     this.defaultDirty = true;
   }
 
-  formClassInvalid(value: string): boolean {
+  public formClassInvalid(value: string): boolean {
     return this.settingFormGroup.get(value).invalid;
   }
 
-  generateTokenDisabled(): boolean {
+  public generateTokenDisabled(): boolean {
     return this.formClassInvalid('rackhdAuth.rackhdUsername')
       || this.formClassInvalid('rackhdAuth.rackhdPassword')
       || !this.settingService.authEnabled;
   }
 
-  saveButtonDisabled(): boolean {
-    let urlDirty = this.settingFormGroup.dirty && !this.settingFormGroup.get('rackhdAuth').dirty;
-    let tokenDirty =  this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').dirty
+  public saveButtonDisabled(): boolean {
+    const urlDirty = this.settingFormGroup.dirty && !this.settingFormGroup.get('rackhdAuth').dirty;
+    const tokenDirty =  this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').dirty
       || this.tokenDirty; // token updated won't update form .dirty attribute
-    let settingDirty = urlDirty || this.checkboxesDirty || tokenDirty;
-    let settingInvalid = this.settingFormGroup.invalid;
+    const settingDirty = urlDirty || this.checkboxesDirty || tokenDirty;
+    const settingInvalid = this.settingFormGroup.invalid;
     return (settingInvalid || !settingDirty ) && !this.defaultDirty;
   }
 
-  handleAuthChanged(value: boolean) {
-    let authItems = ["rackhdPassword", "rackhdUsername", "rackhdAuthToken"];
+  public handleAuthChanged(value: boolean) {
+    const authItems = ['rackhdPassword', 'rackhdUsername', 'rackhdAuthToken'];
     _.forEach(authItems, (item) => {
-      let formItem = this.settingFormGroup.get('rackhdAuth.' + item);
+      const formItem = this.settingFormGroup.get('rackhdAuth.' + item);
       value ? formItem.enable() : formItem.disable();
-    })
+    });
     if (!value) {
-      this.settingService.authToken = "";
+      this.settingService.authToken = '';
       this.settingFormGroup.patchValue({
-        rackhdAuth: {rackhdAuthToken: ""}
+        rackhdAuth: {rackhdAuthToken: ''}
       });
     }
     this.checkboxChanged();
   }
 
-  checkboxChanged() {
+  public checkboxChanged() {
     this.accessRackhdApi();
     this.checkboxesDirty = true;
   }
 
-  accessRackhdApi(){
-    if (!this.formClassInvalid('rackhdNorthboundApi')){
+  public accessRackhdApi() {
+    if (!this.formClassInvalid('rackhdNorthboundApi')) {
       this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
       return this.rackhdService.apiPing()
       .subscribe(
-        data => {
-          this.apiErrorMsg = "";
+        (data) => {
+          this.apiErrorMsg = '';
         },
-        err => {
-          this.apiErrorMsg = "RackHD northbound API is inaccessible";
+        (err) => {
+          this.apiErrorMsg = 'RackHD northbound API is inaccessible';
         }
-      )
+      );
     }
   }
 
-  generateToken(){
+  public generateToken() {
     this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
     this.settingService.generateToken(
       this.settingFormGroup.get('rackhdAuth.rackhdUsername').value,
       this.settingFormGroup.get('rackhdAuth.rackhdPassword').value
     ).subscribe(
-      data => {
-        this.settingService.authToken = data["token"];
+      (data) => {
+        this.settingService.authToken = data['token'];
         this.settingFormGroup.patchValue({
           rackhdAuth: {
-            rackhdAuthToken: data["token"] || ''
+            rackhdAuthToken: data['token'] || ''
           }
         });
         this.tokenDirty = true;
-        this.tokenErrorMsg = "";
+        this.tokenErrorMsg = '';
         this.accessRackhdApi();
       },
-      err => {
+      (err) => {
         if (err.status === 404) {
-          this.tokenErrorMsg = "Get token failed, please check if authenticate is enabled in RackHD."
+          this.tokenErrorMsg =
+            'Get token failed, please check if authenticate is enabled in RackHD.';
         } else {
-          this.tokenErrorMsg = "Get token failed, please check if RackHD Northbound API is correct."
+          this.tokenErrorMsg =
+            'Get token failed, please check if RackHD Northbound API is correct.';
         }
         // this.accessRackhdApi();
       }
     );
   }
 
-  submitFormValues(){
+  public submitFormValues() {
     this.settingService.websocketUrl = this.settingFormGroup.get('rackhdWebsocketUrl').value;
     this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
     this.settingService.authToken = this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').value;
   }
 
-  onCancel() {
+  public onCancel() {
     this.settingFormGroup.patchValue({
       rackhdNorthboundApi: this.initialConfigs.northboundApi,
       rackhdWebsocketUrl: this.initialConfigs.websocketUrl,
@@ -205,7 +207,7 @@ export class SettingComponent implements OnInit, AfterViewInit {
     this.accessRackhdApi();
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.submitFormValues();
     this.onSave.emit(true);
     window.location.reload();

@@ -23,37 +23,37 @@ import {
   encapsulation: ViewEncapsulation.None
 })
 export class NodesComponent implements OnInit {
-  nodeStore: Node[] = [];
-  allNodes: Node[] = [];
+  public nodeStore: Node[] = [];
+  public allNodes: Node[] = [];
 
-  nodeTypes: NodeType[];
-  nodesTypeCountMatrix = {};
+  public nodeTypes: NodeType[];
+  public nodesTypeCountMatrix = {};
 
-  selectedType: string;
-  selectedSku: string;
-  selectedNode: Node;
-  selectedNodes: Node[];
-  isShowDetail: boolean;
+  public selectedType: string;
+  public selectedSku: string;
+  public selectedNode: Node;
+  public selectedNodes: Node[];
+  public isShowDetail: boolean;
 
-  isShowObmDetail: boolean;
-  selectedObms: OBM[];
+  public isShowObmDetail: boolean;
+  public selectedObms: OBM[];
 
-  isShowIbmDetail: boolean;
-  selectedIbms: OBM[];
+  public isShowIbmDetail: boolean;
+  public selectedIbms: OBM[];
 
-  isShowSkuDetail: boolean;
-  skuDetail: any;
+  public isShowSkuDetail: boolean;
+  public skuDetail: any;
 
-  isCreateNode: boolean;
-  isDelete: boolean;
-  nodeForm: FormGroup;
+  public isCreateNode: boolean;
+  public isDelete: boolean;
+  public nodeForm: FormGroup;
 
-  selectableNodeTypes: string[];
+  public selectableNodeTypes: string[];
 
-  dgDataLoading = false;
-  dgPlaceholder = 'No node found!'
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No node found!';
 
-  jsonValid = true;
+  public jsonValid = true;
 
   public nameComparator = new AlphabeticalComparator('name');
   public idComparator = new AlphabeticalComparator('id');
@@ -64,13 +64,13 @@ export class NodesComponent implements OnInit {
   public discoveredTimeComparator = new DateComparator('discoveredTime');
   public typeFilter = new ObjectFilterByKey('type');
   public skuFilter = new ObjectFilterByKey('sku');
-  typeFilterValue: string = this.selectedType;
+  public typeFilterValue: string = this.selectedType;
 
-  shapeMap = {
-    'compute': 'computer',
-    'storage': 'data-cluster',
-    'network': 'network-switch'
-  }
+  public shapeMap = {
+    compute: 'computer',
+    storage: 'data-cluster',
+    network: 'network-switch'
+  };
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -79,17 +79,17 @@ export class NodesComponent implements OnInit {
     public obmService: ObmService,
     public ibmService: IbmService,
     public skuService: SkusService,
-    private fb: FormBuilder) {}
+    private fb: FormBuilder) { }
 
-  ngOnInit() {
-    let self = this;
+  public ngOnInit() {
+    const self = this;
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
-      data => {
+      (data) => {
         this.nodeTypes = _.transform(
           data,
-          function (result, item) {
-            let dt = new NodeType();
+          function(result, item) {
+            const dt = new NodeType();
             if (_.has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;
               dt.displayName = NODE_TYPE_MAP[item];
@@ -103,7 +103,7 @@ export class NodesComponent implements OnInit {
     this.createForm();
   }
 
-  afterGetNodes() {
+  public afterGetNodes() {
     this.nodesTypeCountMatrix = _.transform(this.nodeStore, (result, item) => {
       let type = item.type;
       if (!_.has(NODE_TYPE_MAP, type)) {
@@ -113,9 +113,9 @@ export class NodesComponent implements OnInit {
     }, []);
   }
 
-  getAllNodes(): void {
+  public getAllNodes(): void {
     this.nodeService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.nodeStore = data;
         this.allNodes = data;
         this.dgDataLoading = false;
@@ -123,27 +123,27 @@ export class NodesComponent implements OnInit {
       });
   }
 
-  create(): void {
+  public create(): void {
     this.isCreateNode = true;
   }
 
-  batchDelete(node?: Node): void {
+  public batchDelete(node?: Node): void {
     if (!_.isEmpty(this.selectedNodes)) {
       this.isDelete = true;
     }
   }
 
-  willDelete(node: Node): void {
+  public willDelete(node: Node): void {
     this.selectedNodes = [node];
     this.isDelete = true;
   }
 
-  refresh() {
+  public refresh() {
     this.dgDataLoading = true;
     this.getAllNodes();
   }
 
-  createForm() {
+  public createForm() {
     this.nodeForm = this.fb.group({
       name: '',
       type: '',
@@ -152,11 +152,11 @@ export class NodesComponent implements OnInit {
     });
   }
 
-  createNode(): void {
-    let value = this.nodeForm.value;
+  public createNode(): void {
+    const value = this.nodeForm.value;
     this.jsonValid = isJsonTextValid(value['otherConfig']);
     if (this.jsonValid) {
-      let jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
+      const jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
 
       // data transform
       jsonData['name'] = value['name'];
@@ -165,24 +165,24 @@ export class NodesComponent implements OnInit {
       this.isCreateNode = false;
 
       this.nodeService.post(jsonData)
-        .subscribe(data => {
+        .subscribe((data) => {
           this.refresh();
         });
     }
   }
 
-  deleteSel(): void {
-    let list = _.map(this.selectedNodes, node => {
+  public deleteSel(): void {
+    const list = _.map(this.selectedNodes, (node) => {
       return node.id;
     });
 
     this.nodeService.deleteByIdentifiers(list)
-      .subscribe(results => {
+      .subscribe((results) => {
         this.refresh();
       });
   }
 
-  onConfirm(value) {
+  public onConfirm(value) {
     switch (value) {
       case 'reject':
         this.isDelete = false;
@@ -193,7 +193,7 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  onAction(action) {
+  public onAction(action) {
     switch (action) {
       case 'Refresh':
         this.refresh();
@@ -204,15 +204,15 @@ export class NodesComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
-  onFilter(filtered) {
+  public onFilter(filtered) {
     this.nodeStore = filtered;
     this.afterGetNodes();
   }
 
-  selectType(type: NodeType) {
+  public selectType(type: NodeType) {
     if (this.selectedType === type.displayName) {
       this.selectedType = '';
     } else {
@@ -221,17 +221,17 @@ export class NodesComponent implements OnInit {
     this.typeFilterValue = this.selectedType;
   }
 
-  goToDetail(node: Node) {
+  public goToDetail(node: Node) {
     this.selectedNode = node;
     this.isShowDetail = true;
   }
 
-  goToShowObmDetail(node: Node) {
+  public goToShowObmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
     if (node.obms.length > 0) {
-      for (let entry of node.obms) {
-        let obmId = entry['ref'].split('/').pop();
+      for (const entry of node.obms) {
+        const obmId = entry['ref'].split('/').pop();
         this.getObmById(obmId);
       }
       this.isShowObmDetail = true;
@@ -239,24 +239,24 @@ export class NodesComponent implements OnInit {
 
   }
 
-  goToShowIbmDetail(node: Node) {
+  public goToShowIbmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
     if (node.ibms.length > 0) {
-      for (let entry of node.ibms) {
-        let ibmId = entry['ref'].split('/').pop();
+      for (const entry of node.ibms) {
+        const ibmId = entry['ref'].split('/').pop();
         this.getIbmById(ibmId);
       }
       this.isShowIbmDetail = true;
     }
   }
 
-  goToShowSkuDetail(node: Node) {
+  public goToShowSkuDetail(node: Node) {
     this.selectedNode = node;
-    let skuId = node.sku ? node.sku.split('/')[4] : '';
+    const skuId = node.sku ? node.sku.split('/')[4] : '';
     if (skuId) {
       this.skuService.getByIdentifier(skuId)
-        .subscribe(data => {
+        .subscribe((data) => {
           this.skuDetail = data;
           this.isShowSkuDetail = true;
         });
@@ -265,16 +265,16 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  getObmById(identifier: string): void {
+  public getObmById(identifier: string): void {
     this.obmService.getByIdentifier(identifier)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.selectedObms.push(data);
       });
   }
 
-  getIbmById(identifier: string): void {
+  public getIbmById(identifier: string): void {
     this.ibmService.getByIdentifier(identifier)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.selectedIbms.push(data);
       });
   }

@@ -21,7 +21,7 @@ export class TagService extends RackhdHttpService {
   }
 
   public getTagByNodeId(nodeId: string): Observable<any> {
-    let param = TAG_URL.getAllUrl;
+    const param = TAG_URL.getAllUrl;
     return this.nodeService.getByIdentifier(nodeId, 'json', param);
   }
 

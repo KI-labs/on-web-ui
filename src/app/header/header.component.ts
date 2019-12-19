@@ -11,19 +11,19 @@ import { EnvironmentService } from '../services/environment.service';
 })
 
 export class HeaderComponent implements OnInit {
-  showSettingModal = false;
-  openSetting =  false;
-
-  ngOnInit() {
-  }
+  public showSettingModal = false;
+  public openSetting =  false;
 
   constructor() {}
 
-  popSettings(){
+  public ngOnInit() {
+  }
+
+  public popSettings() {
     this.openSetting = true;
   }
 
-  onSettingSave(){
+  public onSettingSave() {
     this.openSetting = false;
   }
 }

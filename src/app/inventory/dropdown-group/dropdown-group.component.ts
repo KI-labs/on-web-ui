@@ -25,62 +25,62 @@ import * as _ from 'lodash';
 })
 
 export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
-  @Input() fields: string[] = []; // search field
-  @Input() labels: string[]; // label for inputs
-  @Input() widths: number[]; // input widths
-  @Input() columns: number []; // dropdown grid size, follow bootstrap grid configures
-  @Input() offsets: number [];
-  @Input() size: number = 10; // dropdown size
-  @Input() placeholders: string[]; // label for inputs
-  @Input() disable: boolean [];
-  @Input() isDefaultForm: boolean = false; // bootstrap/clarity default form format
-  @Input() marginTop: string = '0px'; // margin top
-  @Input() labelBold: boolean = true; // label bold
-  @Input() fieldsRequired: boolean []; // label bold
+  @Input() public fields: string[] = []; // search field
+  @Input() public labels: string[]; // label for inputs
+  @Input() public widths: number[]; // input widths
+  @Input() public columns: number []; // dropdown grid size, follow bootstrap grid configures
+  @Input() public offsets: number [];
+  @Input() public size: number = 10; // dropdown size
+  @Input() public placeholders: string[]; // label for inputs
+  @Input() public disable: boolean [];
+  @Input() public isDefaultForm: boolean = false; // bootstrap/clarity default form format
+  @Input() public marginTop: string = '0px'; // margin top
+  @Input() public labelBold: boolean = true; // label bold
+  @Input() public fieldsRequired: boolean []; // label bold
 
-  @Input() needSearchIcon: boolean = false; // search icon
-  @Input() needReset: boolean = false; //reset button
+  @Input() public needSearchIcon: boolean = false; // search icon
+  @Input() public needReset: boolean = false; // reset button
 
-  @Input() data: any[] = []; // all data for search
+  @Input() public data: any[] = []; // all data for search
 
-  @Output() selected = new EventEmitter(); // Single item is selected
-  @Output() cleared: EventEmitter<string> = new EventEmitter(); // Ask for data reload
+  @Output() public selected = new EventEmitter(); // Single item is selected
+  @Output() public cleared: EventEmitter<string> = new EventEmitter(); // Ask for data reload
 
-  searchTerms = new Subject<any>();
-  searchSubscribe: any;
-  allData: any [];
+  public searchTerms = new Subject<any>();
+  public searchSubscribe: any;
+  public allData: any [];
 
-  dropdownLists: any = {};
-  filterForm: FormGroup;
+  public dropdownLists: any = {};
+  public filterForm: FormGroup;
 
-  classList: string [] = [];
-  resetClass: string;
+  public classList: string [] = [];
+  public resetClass: string;
 
-  isSelected: boolean = false;
+  public isSelected: boolean = false;
 
-  ngOnChanges() {
-    switch(this.data.length) {
+  public ngOnChanges() {
+    switch (this.data.length) {
       case 0:
         if (this.filterForm) { this.reset(); }
         break;
       case 1:
-        let formValues = _.pick(this.data[0], this.fields);
+        const formValues = _.pick(this.data[0], this.fields);
         this.filterForm.patchValue(formValues);
         this.selected.emit(this.data[0]);
         break;
       default:
         this.allData = _.map(this.data, (value, key) => {
-          let _value = _.pick(value, this.fields);
-          _value["index"] = key;
+          const _value = _.pick(value, this.fields);
+          _value['index'] = key;
           return _value;
         });
-        let filtered = this.filterByFormGroup(this.allData);
+        const filtered = this.filterByFormGroup(this.allData);
         this.getDropdownLists(filtered);
     }
   }
 
-  ngOnInit() {
-    let searchTrigger = this.searchTerms.pipe(
+  public ngOnInit() {
+    const searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
@@ -93,24 +93,24 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     this.createFormGroup();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.searchSubscribe.unsubscribe();
   }
 
-  setDefaultParams() {
-    let inputCount = this.fields.length;
+  public setDefaultParams() {
+    const inputCount = this.fields.length;
 
-    let columnSize = _.floor(12 / inputCount, 1);
-    if(_.isEmpty(this.columns)) {
+    const columnSize = _.floor(12 / inputCount, 1);
+    if (_.isEmpty(this.columns)) {
       this.columns = _.fill(Array(inputCount), columnSize);
     }
-    if(_.isEmpty(this.offsets)) {
+    if (_.isEmpty(this.offsets)) {
       this.offsets = _.fill(Array(inputCount), 0);
     }
-    if(_.isEmpty(this.disable)) {
+    if (_.isEmpty(this.disable)) {
       this.disable = _.fill(Array(inputCount), false);
     }
-    if(_.isEmpty(this.fieldsRequired)) {
+    if (_.isEmpty(this.fieldsRequired)) {
       this.fieldsRequired = _.fill(Array(inputCount), false);
     }
     this.classList = _.map(this.offsets, (offset, key) => {
@@ -122,48 +122,48 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     this.resetClass = `col-lg-${buttonColumn}`;
   }
 
-  createFormGroup(): void {
+  public createFormGroup(): void {
     this.filterForm = new FormGroup({});
     _.forEach(this.fields, (field, index) => {
-      this.filterForm.addControl(field, new FormControl({value: '', disabled: this.disable[index]}))
-    })
+      this.filterForm.addControl(field, new FormControl({value: '', disabled: this.disable[index]}));
+    });
   }
 
-  getDropdownLists(data): void {
-    _.forEach(this.fields, field => {
+  public getDropdownLists(data): void {
+    _.forEach(this.fields, (field) => {
       let list = _.map(data, field);
       list = _.uniq(list.sort());
       this.dropdownLists[field] = list.length > this.size ? _.slice(list, 0, this.size) : list;
     });
   }
 
-  filterOnlySelected(term: string, field: string, dataStore: any): any[] {
+  public filterOnlySelected(term: string, field: string, dataStore: any): any[] {
     // Filter only selected item
     // StringOperator does match not exactly compare
-    let matched = [];
-    _.forEach(dataStore, data => {
-      if(data[field] === term) {
+    const matched = [];
+    _.forEach(dataStore, (data) => {
+      if (data[field] === term) {
         matched.push(data);
       }
     });
     return matched;
   }
 
-  filterByFormGroup(allData) {
-    if (!this.filterForm) return allData;
-    let formValues = this.filterForm.value;
+  public filterByFormGroup(allData) {
+    if (!this.filterForm) { return allData; }
+    const formValues = this.filterForm.value;
     let filtered = _.cloneDeep(allData);
     _.forEach(this.fields, (field) => {
-      let term = formValues[field];
+      const term = formValues[field];
       if (term) {
-        let excludeFields = _.remove(this.fields, field);
-        filtered = StringOperator.search(term, filtered, excludeFields)
+        const excludeFields = _.remove(this.fields, field);
+        filtered = StringOperator.search(term, filtered, excludeFields);
       }
     });
     return filtered;
   }
 
-  search(input?: any): void {
+  public search(input?: any): void {
     let filtered = this.filterByFormGroup(this.allData);
     if (this.isSelected && input.value) {
       filtered = this.filterOnlySelected(input.value, input.field, filtered);
@@ -175,38 +175,38 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     }
   }
 
-  reset() {
+  public reset() {
     this.filterForm.reset();
     this.dropdownLists = [];
   }
 
-  onSelected(sel: any){
+  public onSelected(sel: any) {
     this.filterForm.patchValue(sel);
     this.selected.emit(this.data[sel.index]);
   }
 
-  onSearch(term: string, field: string): void {
+  public onSearch(term: string, field: string): void {
     this.searchTerms.next({
-      field: field,
+      field,
       value: term
     });
   }
 
-  onChanged(): void {
+  public onChanged(): void {
     this.isSelected = true;
   }
 
-  onClear(field: string) {
-    this.filterForm.patchValue({[field]: ""});
+  public onClear(field: string) {
+    this.filterForm.patchValue({[field]: ''});
     this.searchTerms.next({
-      field: field,
-      value: ""
+      field,
+      value: ''
     });
     this.cleared.emit(field);
   }
 
-  onReset(field: string) {
+  public onReset(field: string) {
     this.reset();
-    this.cleared.emit("all");
+    this.cleared.emit('all');
   }
 }

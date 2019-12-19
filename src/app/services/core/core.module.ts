@@ -8,11 +8,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-route/app-routing.module';
 import { IconService } from './icon.service';
-import {ErrorHandlerService} from "./error-handler.service";
-import {GlobalAlertService} from "./global-alert.service";
-
-
-
+import { ErrorHandlerService } from './error-handler.service';
+import { GlobalAlertService } from './global-alert.service';
 
 /**
  * App wide providers, inject all global services.
@@ -34,14 +31,14 @@ const APP_PROVIDERS = [
   /**
    * Expose our Services and Providers into Angular's dependency injection.
    */
-  providers:[
+  providers: [
     ...APP_PROVIDERS
   ]
 })
 
 export class AppCoreModule {
   // prevent to import this module twice.
-  constructor (@Optional() @SkipSelf() parentModule: AppCoreModule) {
+  constructor(@Optional() @SkipSelf() parentModule: AppCoreModule) {
     if (parentModule) {
       throw new Error(
         'CoreModule is already loaded. Import it in the AppModule only');

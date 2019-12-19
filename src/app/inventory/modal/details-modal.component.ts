@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl }   from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 
@@ -19,22 +19,22 @@ import * as _ from 'lodash';
 })
 
 export class GridDetailsModalComponent {
-  isPopValue: boolean = false;
-  @Input() isJson: boolean = true;
-  @Input() size: string = 'lg';
-  @Input() title: string;
-  @Input() data: any;
-  @Input() dataType: string = "Details";
+  public isPopValue: boolean = false;
+  @Input() public isJson: boolean = true;
+  @Input() public size: string = 'lg';
+  @Input() public title: string;
+  @Input() public data: any;
+  @Input() public dataType: string = 'Details';
   @Input() get isPop() {
     return this.isPopValue;
   }
-  @Output() isPopChange = new EventEmitter();
+  @Output() public isPopChange = new EventEmitter();
 
   set isPop(value) {
     this.isPopValue = value;
-    this.isPopChange.emit(value)
+    this.isPopChange.emit(value);
   }
 
-  constructor(){}
+  constructor() {}
 
 }

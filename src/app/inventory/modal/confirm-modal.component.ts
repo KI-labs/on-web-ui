@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl }   from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 
@@ -19,30 +19,30 @@ import * as _ from 'lodash';
 })
 
 export class GridConfirmModalComponent {
-  isPopValue: boolean = false;
-  @Input() size: string = 'lg'; // Modal size
-  @Input() title: string; // Modal key title
-  @Input() data: any; // Data to be shown
-  @Input() displayAttr: string = "id"; // Attribute of data to be shown
-  @Input() action: string = "delete"; // Modal action 
+  public isPopValue: boolean = false;
+  @Input() public size: string = 'lg'; // Modal size
+  @Input() public title: string; // Modal key title
+  @Input() public data: any; // Data to be shown
+  @Input() public displayAttr: string = 'id'; // Attribute of data to be shown
+  @Input() public action: string = 'delete'; // Modal action
   @Input() get isPop() { // Modal popup flag input
     return this.isPopValue;
   }
-  @Output() isPopChange = new EventEmitter(); // Modal popup flag output
-  @Output() confirm = new EventEmitter(); // Actions output
+  @Output() public isPopChange = new EventEmitter(); // Modal popup flag output
+  @Output() public confirm = new EventEmitter(); // Actions output
 
   set isPop(value) {
     this.isPopValue = value;
-    this.isPopChange.emit(value)
+    this.isPopChange.emit(value);
   }
 
-  constructor(){}
+  constructor() {}
 
-  onReject(){
-    this.confirm.emit("reject");
+  public onReject() {
+    this.confirm.emit('reject');
   }
 
-  onAccept(){
-    this.confirm.emit("accept");
+  public onAccept() {
+    this.confirm.emit('accept');
   }
 }

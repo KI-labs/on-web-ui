@@ -1,20 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import {forkJoin} from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import {
-  AlphabeticalComparator,
-  StringOperator,
-  ObjectFilterByKey,
   createFilters,
   createComparator
 } from 'app/utils/inventory-operator';
 
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
@@ -29,31 +21,31 @@ import { Workflow, ModalTypes } from 'app/models';
 })
 
 export class ActiveWorkflowComponent implements OnInit {
-  workflowsStore: Workflow[] = [];
-  allWorkflows: Workflow[] = [];
-  selectedWorkflows: Workflow[] = [];
-  selectedWorkflow: Workflow;
+  public workflowsStore: Workflow[] = [];
+  public allWorkflows: Workflow[] = [];
+  public selectedWorkflows: Workflow[] = [];
+  public selectedWorkflow: Workflow;
 
-  action: string;
-  isShowModal: boolean;
-  rawData: string;
+  public action: string;
+  public isShowModal: boolean;
+  public rawData: string;
 
   // data grid helper
-  dgDataLoading = false;
-  dgPlaceholder = 'No active workflow found!';
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No active workflow found!';
 
-  modalTypes: ModalTypes;
+  public modalTypes: ModalTypes;
 
-  gridFilter: any = {};
-  gridComparator: any = {};
+  public gridFilter: any = {};
+  public gridComparator: any = {};
 
   constructor(
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router
-  ){}
+  ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     createFilters(
       this.gridFilter,
       [
@@ -62,35 +54,39 @@ export class ActiveWorkflowComponent implements OnInit {
       ],
       new Workflow()
     );
-    createComparator(this.gridComparator, ["node", "name", "injectableName", "domain"], new Workflow());
+    createComparator(
+      this.gridComparator,
+      ['node', 'name', 'injectableName', 'domain'],
+      new Workflow()
+    );
     this.modalTypes = new ModalTypes(
-      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
+      ['Detail', 'Tasks', 'Options', 'Instance Id', 'Context', 'Definition']
     );
     this.isShowModal = false;
     this.getAll();
   }
 
-  getAll(): void {
+  public getAll(): void {
     this.workflowService.getAllActive()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.workflowsStore = data;
         this.allWorkflows = data;
         this.dgDataLoading = false;
       });
   }
 
-  getMetaData(identifier: string): void {
+  public getMetaData(identifier: string): void {
     this.workflowService.getByIdentifier(identifier)
-    .subscribe(data => {
-      this.rawData = data;
-      this.isShowModal = true;
-    })
+      .subscribe((data) => {
+        this.rawData = data;
+        this.isShowModal = true;
+      });
   }
 
-  deleteSel(){
-    let list = [];
-    _.forEach(this.selectedWorkflows, workflow => {
-      if(!workflow.serviceGraph || workflow.serviceGraph === "false"){
+  public deleteSel() {
+    const list = [];
+    _.forEach(this.selectedWorkflows, (workflow) => {
+      if (!workflow.serviceGraph || workflow.serviceGraph === 'false') {
         list.push(this.workflowService.cancelActiveWorkflow(workflow.node));
       }
     });
@@ -101,47 +97,48 @@ export class ActiveWorkflowComponent implements OnInit {
 
     this.isShowModal = false;
     return forkJoin(list)
-    .subscribe((result) => {
-      this.refresh();
-    });
+      .subscribe(() => {
+        this.refresh();
+      });
   }
 
-  getChild(objKey: string, workflow: Workflow){
+  public getChild(objKey: string, workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.action = _.startCase(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData))
+    if (!_.isEmpty(this.rawData)) {
       this.isShowModal = true;
+    }
   }
 
-  getDefinition(workflow: Workflow){
+  public getDefinition(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    let graphName = workflow.definition.split('/').pop();
+    const graphName = workflow.definition.split('/').pop();
     this.graphService.getByIdentifier(graphName)
-    .subscribe(
-      data => {
-        this.rawData = data;
-        this.action = "Definition"
-        this.isShowModal = true;
-      }
-    )
+      .subscribe(
+        (data) => {
+          this.rawData = data;
+          this.action = 'Definition';
+          this.isShowModal = true;
+        }
+      );
   }
 
-  refresh() {
+  public refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  batchCancel() {
-    if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Cancel";
+  public batchCancel() {
+    if (!_.isEmpty(this.selectedWorkflows)) {
+      this.action = 'Cancel';
       this.isShowModal = true;
     }
-  };
+  }
 
-  onConfirm(value) {
-    switch(value) {
+  public onConfirm(value) {
+    switch (value) {
       case 'reject':
         this.isShowModal = false;
         break;
@@ -151,36 +148,36 @@ export class ActiveWorkflowComponent implements OnInit {
     }
   }
 
-  onFilter(filtered: Workflow[]){
+  public onFilter(filtered: Workflow[]) {
     this.workflowsStore = filtered;
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Cancel':
         this.batchCancel();
         break;
-    };
+    }
   }
 
-  onCancel(workflow: Workflow) {
+  public onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Cancel";
+    this.action = 'Cancel';
     this.isShowModal = true;
-  };
+  }
 
-  onGetDetails(workflow: Workflow) {
+  public onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.instanceId);
-  };
+  }
 
-  gotoCanvas(workflow){
-    let graphId = workflow.instanceId;
-    let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
+  public gotoCanvas(workflow) {
+    const graphId = workflow.instanceId;
+    const url = '/workflowCenter/workflowViewer?graphId=' + graphId;
     this.router.navigateByUrl(url);
   }
 }

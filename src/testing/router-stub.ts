@@ -8,10 +8,10 @@ import { NavigationExtras } from '@angular/router';
   }
 })
 export class RouterLinkStubDirective {
-  @Input('routerLink') linkParams: any;
-  navigatedTo: any = null;
+  @Input('routerLink') public linkParams: any;
+  public navigatedTo: any = null;
 
-  onClick() {
+  public onClick() {
     this.navigatedTo = this.linkParams;
   }
 }
@@ -21,14 +21,12 @@ export class RouterOutletStubComponent { }
 
 @Injectable()
 export class RouterStub {
-  navigate(commands: any[], extras?: NavigationExtras) { }
+  public navigate(commands: any[], extras?: NavigationExtras) { }
 }
-
 
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { convertToParamMap, ParamMap } from '@angular/router';
-
 
 /*
  *  Stub Test Class for ActivatedRoute
@@ -36,23 +34,17 @@ import { convertToParamMap, ParamMap } from '@angular/router';
  *  Usage:
  *  1. define var:
  *     let x : ActivatedRouteStub;
- *  2. useValue in providers: 
+ *  2. useValue in providers:
  *    { provide: ActivatedRoute, useValue: x }
  *  3. Before component created. by TestBed.createComponent(),
  *     initialize the var x:
  *    x = new ActivatedRouteStub();
  *    x.testParams = { id: '123' };
- * 
+ *
  */
 
 @Injectable()
 export class ActivatedRouteStub {
-    // ActivatedRoute.params is Observable
-    private subject = new BehaviorSubject(this.testParams);
-    params = this.subject.asObservable();
-
-    // Test parameters
-    private _testParams: {};
     get testParams() { return this._testParams; }
     set testParams(params: {}) {
         this._testParams = params;
@@ -63,5 +55,11 @@ export class ActivatedRouteStub {
     get snapshot() {
         return { params: this.testParams };
     }
+    public params = this.subject.asObservable();
+    // ActivatedRoute.params is Observable
+    private subject = new BehaviorSubject(this.testParams);
+
+    // Test parameters
+    private _testParams: {};
 
 }

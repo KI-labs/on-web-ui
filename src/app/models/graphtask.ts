@@ -2,15 +2,15 @@
  This defines the data model of  Graph Tasks
 */
 export class GraphTask {
-    friendlyName: string;
-    injectableName: string;
-    options: any;
-    implementsTask: string;
-    optionsSchema?: string;
-    properties?: any;
+    public friendlyName: string;
+    public injectableName: string;
+    public options: any;
+    public implementsTask: string;
+    public optionsSchema?: string;
+    public properties?: any;
 }
 
 export const GRAPHTASK_URL = {
     getAllUrl: '/workflows/tasks',
     getByIdentifierUrl: '/workflows/tasks/',
-}
+};

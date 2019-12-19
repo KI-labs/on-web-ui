@@ -1,35 +1,35 @@
-import { Comparator, StringFilter } from "@clr/angular";
+import { Comparator, StringFilter } from '@clr/angular';
 import * as _ from 'lodash';
 
 export class AlphabeticalComparator<T> implements Comparator<T> {
-    sortBy: string;
-    constructor(sortBy: string) {
-        this.sortBy = sortBy;
-    }
-    compare(a: T, b: T) {
-        let sortedArray = _.sortBy([a, b], [o =>
-            (JSON.stringify(o[this.sortBy]))]);
-        return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
-    }
+  public sortBy: string;
+  constructor(sortBy: string) {
+    this.sortBy = sortBy;
+  }
+  public compare(a: T, b: T) {
+    const sortedArray = _.sortBy([a, b], [(o) =>
+      (JSON.stringify(o[this.sortBy]))]);
+    return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
+  }
 }
 
 export class DateComparator implements Comparator<Node> {
-    sortBy: string;
+  public sortBy: string;
 
-    constructor(sortBy: string) {
-      this.sortBy = sortBy;
-    }
+  constructor(sortBy: string) {
+    this.sortBy = sortBy;
+  }
 
-    parseTime(time){
-      if(typeof time === "number") {
-        return time;
-      }
-      return Date.parse(time);
+  public parseTime(time) {
+    if (typeof time === 'number') {
+      return time;
     }
+    return Date.parse(time);
+  }
 
-    compare(a: Node, b: Node) {
-      return this.parseTime(a[this.sortBy]) - this.parseTime(b[this.sortBy]);
-    }
+  public compare(a: Node, b: Node) {
+    return this.parseTime(a[this.sortBy]) - this.parseTime(b[this.sortBy]);
+  }
 }
 
 export class ObjectFilterByKey<T> implements StringFilter<T> {
@@ -39,19 +39,21 @@ export class ObjectFilterByKey<T> implements StringFilter<T> {
     this._field = field;
   }
 
-  accepts(obj: T, searchKey: string): boolean {
-    let stringValue : string;
-    let originValue: any = obj && _.get(obj, this._field);
+  public accepts(obj: T, searchKey: string): boolean {
+    let stringValue: string;
+    const originValue: any = obj && _.get(obj, this._field);
     if (typeof originValue === 'undefined') {
       return false;
     }
-    stringValue = (typeof originValue === "object") ? JSON.stringify(originValue) : originValue.toString();
+    stringValue = (typeof originValue === 'object')
+      ? JSON.stringify(originValue)
+      : originValue.toString();
     return stringValue.toLowerCase().indexOf(searchKey) >= 0;
   }
 }
 
 export class StringOperator {
-  static contain(src: string, term: string): boolean {
+  public static contain(src: string, term: string): boolean {
     if (!src) {
       return false;
     }
@@ -61,38 +63,40 @@ export class StringOperator {
     return src.toLowerCase().includes(term.toLowerCase());
   }
 
-  static search<T>(term: string, tableData: Array<T>, skipDomain: string[] = []): Array<T> {
-    let searchDomain: string[] = _.without(_.keys(tableData[0]), ...skipDomain);
-    return _.filter(tableData, data => {
+  public static search<T>(term: string, tableData: T[], skipDomain: string[] = []): T[] {
+    const searchDomain: string[] = _.without(_.keys(tableData[0]), ...skipDomain);
+    return _.filter(tableData, (data) => {
       let flag = false;
-      _.forEach(searchDomain, item => {
-        let originValue: any = data && _.get(data, item);
+      _.forEach(searchDomain, (item) => {
+        const originValue: any = data && _.get(data, item);
         if (typeof originValue === 'undefined') {
           return true;
         }
-        let stringValue = (typeof data[item] === "object") ? JSON.stringify(originValue) : originValue.toString();
-        if(this.contain(stringValue, term)){
+        const stringValue = (typeof data[item] === 'object')
+          ? JSON.stringify(originValue)
+          : originValue.toString();
+        if (this.contain(stringValue, term)) {
           flag = true;
           return false;
         }
-      })
+      });
       return flag;
     });
   }
 }
 
-export function createFilters<T> (obj: any, filterKeys: string[], model: T): void {
-  _.map(filterKeys, key => {
-    let _key = key + "Filter";
+export function createFilters<T>(obj: any, filterKeys: string[], model: T): void {
+  _.map(filterKeys, (key) => {
+    const _key = key + 'Filter';
     obj[_key] = new ObjectFilterByKey<T>(key);
-  })
+  });
 }
 
-export function createComparator<T> (obj: any, comparatorKeys: string[], model: T): void {
-  _.map(comparatorKeys, key => {
-    let _key = key + "Comparator";
+export function createComparator<T>(obj: any, comparatorKeys: string[], model: T): void {
+  _.map(comparatorKeys, (key) => {
+    const _key = key + 'Comparator';
     obj[_key] = new AlphabeticalComparator<T>(key);
-  })
+  });
 }
 
 export function isJsonTextValid(input): boolean {

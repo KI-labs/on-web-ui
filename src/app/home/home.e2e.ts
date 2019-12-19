@@ -11,8 +11,8 @@ describe('Home', () => {
   });
 
   it('should have a title', async () => {
-    let subject = await browser.getTitle();
-    let result  = 'RackHD Web UI 2.0';
+    const subject = await browser.getTitle();
+    const result  = 'RackHD Web UI 2.0';
     expect(subject).toEqual(result);
   });
 });

@@ -18,36 +18,30 @@ import * as _ from 'lodash';
 })
 
 export class ObmComponent implements OnInit {
-  obmStore: OBM[];
-  allObms: OBM[] = [];
-  selectedObm: OBM;
-  selectedObms: OBM[];
-  obmTypes: string[] = [];
-  selObmService: any;
-
-  action: string;
-  rawData: string;
-  isShowModal: boolean;
-
-  dgDataLoading = false;
-  dgPlaceholder = 'No OBM found!';
-
-  allNodes: Node[] = [];
-  selNodeId: string;
-
-  obmForm: FormGroup;
-
-  configFields: string[];
 
   get obmMetaList() {
     return OBM_TYPES;
   }
+  public obmStore: OBM[];
+  public allObms: OBM[] = [];
+  public selectedObm: OBM;
+  public selectedObms: OBM[];
+  public obmTypes: string[] = [];
+  public selObmService: any;
 
-  constructor(
-    public obmsService: ObmService,
-    public nodeService: NodeService,
-    private fb: FormBuilder
-  ) { }
+  public action: string;
+  public rawData: string;
+  public isShowModal: boolean;
+
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No OBM found!';
+
+  public allNodes: Node[] = [];
+  public selNodeId: string;
+
+  public obmForm: FormGroup;
+
+  public configFields: string[];
 
   public idComparator = new AlphabeticalComparator('id');
   public nodeComparator = new AlphabeticalComparator('node');
@@ -57,7 +51,13 @@ export class ObmComponent implements OnInit {
   public nodeFilter = new ObjectFilterByKey('node');
   public serviceFilter = new ObjectFilterByKey('service');
 
-  ngOnInit() {
+  constructor(
+    public obmsService: ObmService,
+    public nodeService: NodeService,
+    private fb: FormBuilder
+  ) { }
+
+  public ngOnInit() {
     this.getAllObms();
     this.getAllNodes();
     this.obmTypes = _.sortBy(_.keys(this.obmMetaList));
@@ -65,12 +65,12 @@ export class ObmComponent implements OnInit {
     this.selectedObms = [];
   }
 
-  onFilter(filtered): void {
+  public onFilter(filtered): void {
     this.obmStore = filtered;
   }
 
-  onConfirm(value) {
-    switch(value) {
+  public onConfirm(value) {
+    switch (value) {
       case 'reject':
         this.isShowModal = false;
         break;
@@ -80,8 +80,8 @@ export class ObmComponent implements OnInit {
     }
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -92,105 +92,104 @@ export class ObmComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
-  getAllObms(): void {
+  public getAllObms(): void {
     this.obmsService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.obmStore = data;
         this.allObms = data;
         this.dgDataLoading = false;
       });
   }
 
-  getAllNodes(): void {
+  public getAllNodes(): void {
     this.nodeService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.allNodes = data;
       });
   }
 
-  goToDetail(obm: OBM) {
+  public goToDetail(obm: OBM) {
     this.selectedObm = obm;
-    this.action = "detail";
+    this.action = 'detail';
     this.isShowModal = true;
   }
 
-  getChild(objKey: string, obm: OBM){
+  public getChild(objKey: string, obm: OBM) {
     this.selectedObm = obm;
     this.action = _.capitalize(objKey);
     this.rawData = obm && obm[objKey];
-    this.action = "Config";
+    this.action = 'Config';
     this.isShowModal = true;
   }
 
-  batchDelete(obm?: OBM): void {
+  public batchDelete(obm?: OBM): void {
     if (obm) {
       this.selectedObms = [obm];
     }
-    this.action = "delete";
+    this.action = 'delete';
     this.isShowModal = true;
   }
 
-
-  refresh() {
+  public refresh() {
     this.dgDataLoading = true;
     this.getAllObms();
   }
 
-  createForm(){
+  public createForm() {
     this.obmForm = this.fb.group({
       service: {value: '', validators: [Validators.required, Validators.minLength(1)]},
       nodeId: {value: '', validators: [Validators.required, Validators.minLength(25), Validators.maxLength(25)]}
     });
   }
 
-  updateFormInputs(service: string) {
+  public updateFormInputs(service: string) {
     this.selObmService = this.obmMetaList[service];
-    let config = this.selObmService.config
+    const config = this.selObmService.config;
     this.configFields = _.keys(config);
-    _.forEach(this.configFields, field => {
+    _.forEach(this.configFields, (field) => {
       this.obmForm.addControl(field, new FormControl('', Validators.required));
     });
   }
 
-  onServiceSelected(){
-    let service = this.obmForm.value.service;
-    if(service) {
+  public onServiceSelected() {
+    const service = this.obmForm.value.service;
+    if (service) {
       this.updateFormInputs(service);
     }
   }
 
-  onNodeSelected(node){
+  public onNodeSelected(node) {
     this.selNodeId = node.id;
   }
 
-  onNodeClear(){
+  public onNodeClear() {
     this.selNodeId = null;
   }
 
-  onUpsert(): void {
-    let values = this.obmForm.value;
-    let payload =  {
+  public onUpsert(): void {
+    const values = this.obmForm.value;
+    const payload =  {
       nodeId: this.selNodeId,
       service: values.service,
       config: {}
-    }
+    };
     delete values.service;
     delete values.nodeId;
-    if (values.port) values.port = parseInt(values.port);
+    if (values.port) { values.port = parseInt(values.port, 10); }
     _.merge(payload.config, values);
     this.obmsService.creatObm(payload)
-    .subscribe(data => {
+    .subscribe((data) => {
       this.refresh();
       this.selNodeId = null;
     });
   }
 
-  closeUpsertModal() {
-    _.forEach(_.keys(this.obmForm.value), field => {
-      if (field === 'nodeId' || field === 'service') return true;
+  public closeUpsertModal() {
+    _.forEach(_.keys(this.obmForm.value), (field) => {
+      if (field === 'nodeId' || field === 'service') { return true; }
       this.obmForm.removeControl(field);
     });
     this.configFields = [];
@@ -199,33 +198,33 @@ export class ObmComponent implements OnInit {
     this.isShowModal = false;
   }
 
-  onUpdate(obm: OBM) {
+  public onUpdate(obm: OBM) {
     this.updateFormInputs(obm.service);
-    this.selNodeId = obm.node.split("/").pop();
-    let formValues = {
+    this.selNodeId = obm.node.split('/').pop();
+    const formValues = {
       service: obm.service,
       nodeId: this.selNodeId
-    }
+    };
     _.merge(formValues, obm.config);
     this.obmForm.patchValue(formValues);
-    this.isShowModal = true
-    this.action = "update";
+    this.isShowModal = true;
+    this.action = 'update';
   }
 
-  willDelete(obm){
+  public willDelete(obm) {
     this.selectedObms = [obm];
-    this.action = "delete";
+    this.action = 'delete';
     this.isShowModal = true;
   }
 
-  deleteSel(): void {
-    let list = [];
-    _.forEach(this.selectedObms, obm => {
+  public deleteSel(): void {
+    const list = [];
+    _.forEach(this.selectedObms, (obm) => {
       list.push(obm.id);
     });
 
     this.obmsService.deleteByIdentifiers(list)
-    .subscribe(results =>{
+    .subscribe((results) => {
       this.refresh();
     });
   }

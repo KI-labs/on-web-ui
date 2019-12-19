@@ -11,7 +11,6 @@ import { ActivityService } from './activity.service';
 
 import { RackhdCommonServicesModule } from './rackhd/rackhd.module';
 
-
 @NgModule({
   exports: [
     AppCoreModule,

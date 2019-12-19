@@ -20,7 +20,7 @@ export class CatalogsService extends RackhdHttpService {
   }
 
   public getSource(nodeId: string, source: string): Observable<any> {
-    let param = CATALOG_URL.getByIdentifierUrl + source;
+    const param = CATALOG_URL.getByIdentifierUrl + source;
     return this.nodeService.getByIdentifier(nodeId, 'json', param);
   }
 }

@@ -6,7 +6,7 @@ import {
 } from 'app/utils/inventory-operator';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs/observable/forkJoin'
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import * as _ from 'lodash';
 
@@ -21,23 +21,23 @@ import { Graph, ModalTypes } from 'app/models';
 })
 
 export class WorkflowsComponent implements OnInit {
-  workflowsStore: Graph[] = [];
-  allWorkflows: Graph[] = [];
-  selectedWorkflows: Graph[] = [];
-  selectedWorkflow: Graph;
+  public workflowsStore: Graph[] = [];
+  public allWorkflows: Graph[] = [];
+  public selectedWorkflows: Graph[] = [];
+  public selectedWorkflow: Graph;
 
-  action: string;
-  isShowModal: boolean;
-  rawData: string;
-  modalFormGroup: FormGroup;
+  public action: string;
+  public isShowModal: boolean;
+  public rawData: string;
+  public modalFormGroup: FormGroup;
   // data grid helper
-  dgDataLoading = false;
-  dgPlaceholder = 'No workflow found!';
+  public dgDataLoading = false;
+  public dgPlaceholder = 'No workflow found!';
 
-  optionsJsonValid = true;
-  tasksJsonValid = true;
+  public optionsJsonValid = true;
+  public tasksJsonValid = true;
 
-  modalTypes: ModalTypes;
+  public modalTypes: ModalTypes;
 
   public friendlyNameComparator = new AlphabeticalComparator<Graph>('friendlyName');
   public injectableNameComparator = new AlphabeticalComparator<Graph>('injectableName');
@@ -51,44 +51,45 @@ export class WorkflowsComponent implements OnInit {
     private workflowService: GraphService,
     private router: Router) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.isShowModal = false;
     this.getAll();
-    this.modalTypes = new ModalTypes(["Tasks", "Detail", "Options"]);
+    this.modalTypes = new ModalTypes(['Tasks', 'Detail', 'Options']);
   }
 
-  getAll(): void {
+  public getAll(): void {
     this.workflowService.getAll()
-      .subscribe(data => {
+      .subscribe((data) => {
         this.workflowsStore = data;
         this.allWorkflows = data;
         this.dgDataLoading = false;
       });
   }
 
-  getMetaData(identifier: string): void {
+  public getMetaData(identifier: string): void {
     this.workflowService.getByIdentifier(identifier)
-    .subscribe(data => {
+    .subscribe((data) => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  upsertGraph(payload: object): void {
+  public upsertGraph(payload: object): void {
     this.isShowModal = false;
     this.workflowService.put(payload, 'text')
-    .subscribe()
+    .subscribe();
   }
 
-  getChild(objKey: string, workflow: Graph){
+  public getChild(objKey: string, workflow: Graph) {
     this.selectedWorkflow = workflow;
     this.action = _.capitalize(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData))
+    if (!_.isEmpty(this.rawData)) {
       this.isShowModal = true;
+    }
   }
 
-  createFormGroup(workflow?: Graph){
+  public createFormGroup(workflow?: Graph) {
     this.modalFormGroup = new FormGroup({
       injectableName: new FormControl(''),
       friendlyName: new FormControl(''),
@@ -96,40 +97,40 @@ export class WorkflowsComponent implements OnInit {
       tasks: new FormControl('')
     });
     if (!_.isEmpty(workflow)) {
-      let _workflow = _.cloneDeep(workflow);
+      const _workflow = _.cloneDeep(workflow);
       _workflow.options = JSON.stringify(_workflow.options);
       _workflow.tasks = JSON.stringify(_workflow.tasks);
       this.modalFormGroup.patchValue(_workflow);
     }
   }
 
-  refresh() {
+  public refresh() {
     this.isShowModal = false;
     this.dgDataLoading = true;
     this.getAll();
   }
 
-  batchDelete() {
-    if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Delete";
+  public batchDelete() {
+    if (!_.isEmpty(this.selectedWorkflows)) {
+      this.action = 'Delete';
       this.isShowModal = true;
     }
-  };
+  }
 
-  create(){
-    if(!this.modalFormGroup){
+  public create() {
+    if (!this.modalFormGroup) {
       this.createFormGroup();
     }
-    this.action = "Create";
+    this.action = 'Create';
     this.isShowModal = true;
   }
 
-  onFilter(filtered: Graph[]){
+  public onFilter(filtered: Graph[]) {
     this.workflowsStore = filtered;
   }
 
-  onAction(action){
-    switch(action) {
+  public onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -139,34 +140,33 @@ export class WorkflowsComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
-
-  onUpdate(workflow: Graph){
+  public onUpdate(workflow: Graph) {
     this.selectedWorkflow = workflow;
     this.createFormGroup(this.selectedWorkflow);
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
-  onDelete(workflow: Graph) {
+  public onDelete(workflow: Graph) {
     this.selectedWorkflows = [workflow];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
-  };
+  }
 
-  onGetDetails(workflow: Graph) {
+  public onGetDetails(workflow: Graph) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.injectableName);
-  };
+  }
 
   // onGetRawData() {};
 
   // onChange(){}
 
-  onCancel(){
+  public onCancel() {
     this.action = '';
     this.selectedWorkflow = null;
     this.selectedWorkflows = [];
@@ -175,25 +175,25 @@ export class WorkflowsComponent implements OnInit {
     this.tasksJsonValid = true;
   }
 
-  onDeleteSubmit(){
-    let list = _.map(this.selectedWorkflows, workflow =>{
+  public onDeleteSubmit() {
+    const list = _.map(this.selectedWorkflows, (workflow) => {
       return this.workflowService.delete(workflow.injectableName);
     });
     this.isShowModal = false;
     return forkJoin(list)
     .subscribe(
-      data => { this.refresh(); }
-    )
+      (data) => { this.refresh(); }
+    );
   }
 
-  gotoCanvas(workflow){
-    let graphName = workflow.injectableName;
-    let url = "/workflowCenter/workflowViewer?graphName=" + graphName;
+  public gotoCanvas(workflow) {
+    const graphName = workflow.injectableName;
+    const url = '/workflowCenter/workflowViewer?graphName=' + graphName;
     this.router.navigateByUrl(url);
   }
 
-  onSubmit(){
-    let payload = this.modalFormGroup.value;
+  public onSubmit() {
+    const payload = this.modalFormGroup.value;
     this.optionsJsonValid = isJsonTextValid(payload.options);
     this.tasksJsonValid = isJsonTextValid(payload.tasks);
     if (this.optionsJsonValid && this.tasksJsonValid) {

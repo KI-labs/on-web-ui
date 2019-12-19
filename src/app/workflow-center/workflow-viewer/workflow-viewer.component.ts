@@ -20,47 +20,47 @@ import * as _ from 'lodash';
 })
 
 export class WorkflowViewerComponent implements OnInit, AfterViewInit {
-  @ViewChild("viewCanvas") viewCanvas: any;
-  onWorkflowInput = new EventEmitter();
-  graphId: string;
-  isDefinition: boolean = false; // true: graph definition; false: graph object
+  @ViewChild('viewCanvas') public viewCanvas: any;
+  public onWorkflowInput = new EventEmitter();
+  public graphId: string;
+  public isDefinition: boolean = false; // true: graph definition; false: graph object
 
-  selectedWorkflow: any;
-  allWorkflows: any[] = [];
+  public selectedWorkflow: any;
+  public allWorkflows: any[] = [];
 
-  fieldList: string[] = [];
-  labelList: string[] = [];
-  offsetList: number[] = [];
-  columnList : number[] = [];
-  widthList : number[] = [];
+  public fieldList: string[] = [];
+  public labelList: string[] = [];
+  public offsetList: number[] = [];
+  public columnList: number[] = [];
+  public widthList: number[] = [];
 
-  service: any;
+  public service: any;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private workflowService: WorkflowService,
     private graphService: GraphService,
-  ){}
+  ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.route.queryParams
-    .subscribe(params => {
+    .subscribe((params) => {
       this.isDefinition = this.isDefinition || !!params.graphName;
       this.graphId = params && (params.graphId || params.graphName);
     });
     this.service = this.isDefinition ? this.graphService : this.workflowService;
-    this.fieldList = this.isDefinition ? ["injectableName", "friendlyName"] : ["instanceId", "name", "node"];
-    this.labelList = this.isDefinition ? ["InjectableName", "FriendlyName"] : ["GraphId", "Name", "Node"];
+    this.fieldList = this.isDefinition ? ['injectableName', 'friendlyName'] : ['instanceId', 'name', 'node'];
+    this.labelList = this.isDefinition ? ['InjectableName', 'FriendlyName'] : ['GraphId', 'Name', 'Node'];
     this.offsetList = this.isDefinition ? [0, 0] : [0, 0, 0];
     this.columnList = this.isDefinition ? [5, 5] : [4, 4, 3];
     this.widthList = this.isDefinition ? [47, 47] : [42, 47, 28];
   }
 
-  ngAfterViewInit() {
-    if(this.graphId) {
+  public ngAfterViewInit() {
+    if (this.graphId) {
       this.service.getByIdentifier(this.graphId)
-      .subscribe(workflowData => {
+      .subscribe((workflowData) => {
         this.selectedWorkflow = (workflowData instanceof Array) ? workflowData[0] : workflowData;
         this.allWorkflows = [this.selectedWorkflow];
         this.onWorkflowInput.emit(this.selectedWorkflow);
@@ -70,30 +70,30 @@ export class WorkflowViewerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getAllWorkflows() {
+  public getAllWorkflows() {
     this.service.getAll()
-    .subscribe(workflows=> {
+    .subscribe((workflows) => {
       this.allWorkflows = workflows;
     });
   }
 
-  updateCanvas(url: string): void {
+  public updateCanvas(url: string): void {
     this.onWorkflowInput.emit(this.selectedWorkflow);
     if (url) {
       // This router doesn't trigger page reload in Angular5;
       // This is only to change the navigator history
       this.router.navigateByUrl(url);
-    };
+    }
   }
 
-  onSelected(workflow: Workflow) {
+  public onSelected(workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.graphId = this.selectedWorkflow.instanceId || this.selectedWorkflow.injectableName;
-    let url = `/workflowCenter/workflowViewer?${this.isDefinition ? 'graphName': 'graphId'}=${this.graphId}`;
+    const url = `/workflowCenter/workflowViewer?${this.isDefinition ? 'graphName' : 'graphId'}=${this.graphId}`;
     this.updateCanvas(url);
   }
 
-  onRefresh(item: string) {
+  public onRefresh(item: string) {
     this.selectedWorkflow = {};
     this.updateCanvas('/workflowCenter/workflowViewer');
     this.getAllWorkflows();

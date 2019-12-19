@@ -4,14 +4,14 @@
 import * as _ from 'lodash';
 
 export class RackhdSetting {
-    constructor(payload:any){
-        _.assign(this,payload);
+    public northboundApi: string;
+    public websocketUrl: string;
+    public authEnabled: boolean;
+    public connSecured: boolean;
+    public authToken?: string;
+    constructor(payload: any) {
+        _.assign(this, payload);
     }
-    northboundApi: string;
-    websocketUrl:  string;
-    authEnabled: boolean;
-    connSecured: boolean;
-    authToken?: string;
 }
 
 export const RACKHD_CONFIG = new RackhdSetting({

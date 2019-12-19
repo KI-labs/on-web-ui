@@ -2,16 +2,16 @@
  This defines the data model of Node's OBM.
  */
 export class OBM {
-  id: string;
-  node: string;
-  service: string;
-  config: {};
+  public id: string;
+  public node: string;
+  public service: string;
+  public config: {};
 }
 
 export const OBM_URL = {
   getAllUrl: '/obms',
   getByIdentifierUrl: '/obms/',
-}
+};
 
 // https://github.com/RackHD/on-http/blob/master/lib/services/obm-api-service.js
 export const OBM_TYPES = {
@@ -219,4 +219,4 @@ export const OBM_TYPES = {
       }
     }
   }
-}
+};

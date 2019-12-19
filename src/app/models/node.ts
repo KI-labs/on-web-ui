@@ -3,36 +3,36 @@ import * as _ from 'lodash';
  This defines the data model of Node.
 */
 export class Node {
+    public autoDiscover: boolean;
+    public catalogs: string;
+    public id: string;
+    public identifiers: string[];
+    public name: string;
+    public obms: string[];
+    public tags: string;
+    public pollers: string;
+    public relations: string[];
+    public sku?: string;
+    public type: string;
+    public workflows: string;
+    public ibms: string[];
+
+    public discoveredTime: string;
+    public manufacturer?: string;
+    public model: string;
     constructor(data: any) {
         _.assign(this, data);
     }
-    autoDiscover: boolean;
-    catalogs: string;
-    id: string;
-    identifiers: Array<string>;
-    name: string;
-    obms: string[];
-    tags: string;
-    pollers: string;
-    relations: string[];
-    sku?: string;
-    type: string;
-    workflows: string;
-    ibms: string[];
-
-    discoveredTime: string;
-    manufacturer?: string;
-    model: string;
 }
 
 export class NodeType {
-    identifier: string;
-    displayName: string;
+    public identifier: string;
+    public displayName: string;
 }
 
 export class NodeStatus {
-    identifier: string;
-    displayName: string;
+    public identifier: string;
+    public displayName: string;
 }
 
 export const NODE_TYPES = [
@@ -47,7 +47,7 @@ export const NODE_TYPES = [
 export const NODE_URL = {
     getAllUrl: '/nodes',
     getByIdentifierUrl: '/nodes/',
-}
+};
 
 export const NODE_TYPE_MAP = {
   compute: 'Compute',
@@ -56,4 +56,4 @@ export const NODE_TYPE_MAP = {
   pdu: 'PDU',
   mgmt: 'MGMT',
   others: 'Others',
-}
+};
