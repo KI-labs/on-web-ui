@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { JSONEditor } from '../../utils/json-editor';
+import { JSONEditorOptions } from 'jsoneditor';
 
 const global = (window as any);
 
@@ -24,7 +25,7 @@ export class WorkflowEditorComponent implements OnInit {
   isWaitOnMismatch = false;
 
   columns = [12];
-  placeholders = ["Search workflow definitions"];
+  placeholders = ['Search workflow definitions'];
   fields = ['injectableName'];
 
   constructor(
@@ -38,7 +39,7 @@ export class WorkflowEditorComponent implements OnInit {
 
   putWorkflowIntoCanvas(injectableName: string) {
     let workflow = {};
-    for (let item of this.workflowStore) {
+    for (const item of this.workflowStore) {
       if (item.injectableName.replace(/\s/ig, '') === injectableName.replace(/\s/ig, '')) {
         workflow = item;
         break;
@@ -63,8 +64,8 @@ export class WorkflowEditorComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.selectWorkflow = this.graphService.getInitGraph();
-    let container = document.getElementById('jsoneditor');
-    let options = {mode: 'code'};
+    const container = document.getElementById('jsoneditor');
+    const options: JSONEditorOptions = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
     this.getworkflowStore();
@@ -82,7 +83,7 @@ export class WorkflowEditorComponent implements OnInit {
   }
 
   applyWorkflowJson() {
-    let tmpWorkflow = this.editor.get();
+    const tmpWorkflow = this.editor.get();
     this.isWaitOnMismatch = this.isTaskWaitOnLegal(tmpWorkflow) ? false : true;
     if (!this.isWaitOnMismatch) {
       this.selectWorkflow = tmpWorkflow;
@@ -93,9 +94,9 @@ export class WorkflowEditorComponent implements OnInit {
   isTaskWaitOnLegal(obj: any): boolean {
     let isLegal = true;
     if (obj && obj.tasks) {
-      let taskLables = _.map(obj.tasks, 'label');
-      let waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
-      for (let label of waitOnLables) {
+      const taskLables = _.map(obj.tasks, 'label');
+      const waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
+      for (const label of waitOnLables) {
         isLegal = _.includes(taskLables, label);
         if (isLegal === false) {
           break;
@@ -106,9 +107,9 @@ export class WorkflowEditorComponent implements OnInit {
   }
 
   refreshWorkflow() {
-    let injectableNameTmp = this.selectWorkflow['injectableName'];
-    for (let workflow of this.workflowStore) {
-      if (workflow['injectableName'] === injectableNameTmp) {
+    const injectableNameTmp = this.selectWorkflow.injectableName;
+    for (const workflow of this.workflowStore) {
+      if (workflow.injectableName === injectableNameTmp) {
         this.selectWorkflow = workflow;
         this.updateEditor(this.selectWorkflow);
         this.applyWorkflowJson();
@@ -119,18 +120,18 @@ export class WorkflowEditorComponent implements OnInit {
 
   saveConfirm() {
     this.isWorkflowValid = this.selectWorkflow && this.selectWorkflow.injectableName
-      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, "Graph.")
+      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, 'Graph.')
       && this.selectWorkflow.tasks && (this.selectWorkflow.tasks.length > 0);
     if (this.isWorkflowValid) {
       this.saveGraphInfo = {
-        status: "Are you sure to save " + this.selectWorkflow.injectableName,
+        status: 'Are you sure to save ' + this.selectWorkflow.injectableName,
         notes: '',
         type: 0
-      }
+      };
     } else {
       this.saveGraphInfo = {
-        status: "Invalid workflow payload!",
-        notes: "Please make sure 'injectableName', 'friendlyName' and 'tasks' are not empty! Make sure 'injectableName' starts with 'Graph.'",
+        status: 'Invalid workflow payload!',
+        notes: 'Please make sure \'injectableName\', \'friendlyName\' and \'tasks\' are not empty! Make sure \'injectableName\' starts with \'Graph.\'',
         type: 0
       };
     }
@@ -143,7 +144,7 @@ export class WorkflowEditorComponent implements OnInit {
       .subscribe(
         res => {
           this.saveGraphInfo = {
-            status: "Saved Successfully!",
+            status: 'Saved Successfully!',
             notes: 'Workflow ' + this.selectWorkflow.injectableName + ' has been saved successfully. Do you want to run it now?',
             type: 1
           };

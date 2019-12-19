@@ -5,29 +5,136 @@ const global = (window as any);
 
 export class DrawUtils {
 
-    private idKey: string;
-    private waitOnKey: string;
-    private tasks: any [];
-
     constructor(idKey: string, waitOnKey: string, tasks: any[]) {
       this.idKey = idKey;
       this.waitOnKey = waitOnKey;
       this.tasks = tasks;
     }
 
+    private idKey: string;
+    private waitOnKey: string;
+    private tasks: any [];
+
+  /*
+   * drawBackCanvas is used to override default method to delete the border of canvas
+   */
+  public static drawBackCanvas() {
+    return function() {
+      const canvas = this.bgcanvas;
+      if (canvas.width != this.canvas.width ||
+        canvas.height != this.canvas.height) {
+        canvas.width = this.canvas.width;
+        canvas.height = this.canvas.height;
+      }
+      if (!this.bgctx) {
+        this.bgctx = this.bgcanvas.getContext('2d');
+      }
+      const ctx = this.bgctx;
+      if (ctx.start) {
+        ctx.start();
+      }
+
+      // clear
+      if (this.clear_background) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // reset in case of error
+      ctx.restore();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      if (this.graph) {
+        // apply transformations
+        ctx.save();
+        ctx.scale(this.scale, this.scale);
+        ctx.translate(this.offset[0], this.offset[1]);
+
+        // render BG
+        if (this.background_image && this.scale > 0.5) {
+          ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
+          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
+          if (!this._bg_img || this._bg_img.name != this.background_image) {
+            this._bg_img = new Image();
+            this._bg_img.name = this.background_image;
+            this._bg_img.src = this.background_image;
+            const that = this;
+            this._bg_img.onload = function() {
+              that.draw(true, true);
+            };
+          }
+
+          let pattern = null;
+          if (this._pattern == null && this._bg_img.width > 0) {
+            pattern = ctx.createPattern(this._bg_img, 'repeat');
+            this._pattern_img = this._bg_img;
+            this._pattern = pattern;
+          } else {
+            pattern = this._pattern;
+          }
+          if (pattern) {
+            ctx.fillStyle = pattern;
+            ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
+            ctx.fillStyle = 'transparent';
+          }
+
+          ctx.globalAlpha = 1.0;
+          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
+        }
+
+        if (this.onBackgroundRender) {
+          this.onBackgroundRender(canvas, ctx);
+        }
+
+        // DEBUG: show clipping area
+        // ctx.fillStyle = "red";
+        // ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
+
+        // bg
+        ctx.strokeStyle = 'transparent'; // change border to white
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+        if (this.render_connections_shadows) {
+          ctx.shadowColor = '#000';
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.shadowBlur = 6;
+        } else {
+          ctx.shadowColor = 'rgba(0,0,0,0)';
+        }
+
+        // draw connections
+        if (!this.live_mode) {
+          this.drawConnections(ctx);
+        }
+
+        ctx.shadowColor = 'rgba(0,0,0,0)';
+
+        // restore state
+        ctx.restore();
+      }
+
+      if (ctx.finish) {
+        ctx.finish();
+      }
+
+      this.dirty_bgcanvas = false;
+      this.dirty_canvas = true; // to force to repaint the front canvas with the bgcanvas
+    };
+  }
+
     /*
      * Put positioned taskIds into an array in flipped "N" position sequence
      * (Top-down in each column then left-right for all columns)
      */
     public sortTaskIdsByPos(colMatrix: any, rowMatrix: any, skipLastCol: boolean): string[] {
-      let locatedTaskIds: string[][] = [];
+      const locatedTaskIds: string[][] = [];
       _.forEach(colMatrix, (col, taskId) => {
-        let row = rowMatrix[taskId];
+        const row = rowMatrix[taskId];
         locatedTaskIds[col] = locatedTaskIds[col] || [];
         locatedTaskIds[col][row] = taskId;
       });
 
-      if (skipLastCol) locatedTaskIds.pop();
+      if (skipLastCol) { locatedTaskIds.pop(); }
 
       return _.compact(_.flatten(locatedTaskIds));
     }
@@ -37,7 +144,7 @@ export class DrawUtils {
      * WaitedBy is the reversed description for waitedOn
      */
     public getWaitedBysMatrix(tasks: any[]): any {
-      let waitedBys = {};
+      const waitedBys = {};
       _.forEach(tasks, task => {
         _.forEach(task[this.waitOnKey], (states, key) => {
           let state: string;
@@ -48,7 +155,7 @@ export class DrawUtils {
             state = states;
           }
           waitedBys[key][task[this.idKey]] = state;
-        })
+        });
       });
       return waitedBys;
     }
@@ -57,26 +164,26 @@ export class DrawUtils {
      * Create canvas node object for task
      */
     public createTaskNode(task: any, position): any {
-      let waitOnLength = _.keys(task[this.waitOnKey]).length;
-      let taskNodeName = 'rackhd/task_' + waitOnLength;
-      let taskNode = global.LiteGraph.createNode(taskNodeName);
+      const waitOnLength = _.keys(task[this.waitOnKey]).length;
+      const taskNodeName = 'rackhd/task_' + waitOnLength;
+      const taskNode = global.LiteGraph.createNode(taskNodeName);
       taskNode.title = task.label;
       taskNode.properties.task = task;
       taskNode.state = task.state;
       taskNode.pos = [position[0], position[1]];
 
       if (task.state) {
-        let colors = CONSTS.colors;
-        let state = task.state;
-        let fgColor = colors[state].color;
-        let bgColor = colors[state].bgColor;
-        if (fgColor) taskNode.color = fgColor;
-        if (bgColor) taskNode.bgcolor = bgColor;
+        const colors = CONSTS.colors;
+        const state = task.state;
+        const fgColor = colors[state].color;
+        const bgColor = colors[state].bgColor;
+        if (fgColor) { taskNode.color = fgColor; }
+        if (bgColor) { taskNode.bgcolor = bgColor; }
       }
 
       // get error log of invalid tasks
       if (task.state === 'failed' || task.state === 'error' ||
-        task.state === "cancelled" || task.state === "timeout") {
+        task.state === 'cancelled' || task.state === 'timeout') {
         taskNode.properties.log = task.error;
       }
       return taskNode;
@@ -86,121 +193,20 @@ export class DrawUtils {
      * Connect task nodes by column
      */
     public connectNodes(allTaskIds, taskNodeMatrix, inputSlotIndexes) {
-      let waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
+      const waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
       _.forEach(allTaskIds, (taskId) => {
-        let curNode = taskNodeMatrix[taskId];
-        let task = curNode.properties.task;
-        let waitedByTasks = waitedBysMatrix[taskId];
+        const curNode = taskNodeMatrix[taskId];
+        const task = curNode.properties.task;
+        const waitedByTasks = waitedBysMatrix[taskId];
         _.forEach(waitedByTasks, (state, taskId) => {
-          let curNodeOutputSlot = CONSTS.outputSlots[state];
-          let nextNodeInputSlot = inputSlotIndexes[taskId];
-          let nextNode = taskNodeMatrix[taskId];
+          const curNodeOutputSlot = CONSTS.outputSlots[state];
+          const nextNodeInputSlot = inputSlotIndexes[taskId];
+          const nextNode = taskNodeMatrix[taskId];
           curNode.connect(curNodeOutputSlot, nextNode, nextNodeInputSlot);
           inputSlotIndexes[taskId] += 1;
-        })
+        });
       });
     }
-
-  /*
-   * drawBackCanvas is used to override default method to delete the border of canvas
-   */
-  public static drawBackCanvas() {
-    return function(){
-      var canvas = this.bgcanvas;
-      if (canvas.width != this.canvas.width ||
-        canvas.height != this.canvas.height) {
-        canvas.width = this.canvas.width;
-        canvas.height = this.canvas.height;
-      }
-      if (!this.bgctx)
-        this.bgctx = this.bgcanvas.getContext("2d");
-      var ctx = this.bgctx;
-      if (ctx.start)
-        ctx.start();
-
-      //clear
-      if (this.clear_background)
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      //reset in case of error
-      ctx.restore();
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-      if (this.graph) {
-        //apply transformations
-        ctx.save();
-        ctx.scale(this.scale, this.scale);
-        ctx.translate(this.offset[0], this.offset[1]);
-
-        //render BG
-        if (this.background_image && this.scale > 0.5) {
-          ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
-          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
-          if (!this._bg_img || this._bg_img.name != this.background_image) {
-            this._bg_img = new Image();
-            this._bg_img.name = this.background_image;
-            this._bg_img.src = this.background_image;
-            var that = this;
-            this._bg_img.onload = function () {
-              that.draw(true, true);
-            }
-          }
-
-          var pattern = null;
-          if (this._pattern == null && this._bg_img.width > 0) {
-            pattern = ctx.createPattern(this._bg_img, 'repeat');
-            this._pattern_img = this._bg_img;
-            this._pattern = pattern;
-          }
-          else
-            pattern = this._pattern;
-          if (pattern) {
-            ctx.fillStyle = pattern;
-            ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
-            ctx.fillStyle = "transparent";
-          }
-
-          ctx.globalAlpha = 1.0;
-          ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = true;
-        }
-
-        if (this.onBackgroundRender)
-          this.onBackgroundRender(canvas, ctx);
-
-        //DEBUG: show clipping area
-        //ctx.fillStyle = "red";
-        //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
-
-        //bg
-        ctx.strokeStyle = "transparent"; //change border to white
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-        if (this.render_connections_shadows) {
-          ctx.shadowColor = "#000";
-          ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 0;
-          ctx.shadowBlur = 6;
-        }
-        else
-          ctx.shadowColor = "rgba(0,0,0,0)";
-
-        //draw connections
-        if (!this.live_mode)
-          this.drawConnections(ctx);
-
-        ctx.shadowColor = "rgba(0,0,0,0)";
-
-        //restore state
-        ctx.restore();
-      }
-
-      if (ctx.finish)
-        ctx.finish();
-
-      this.dirty_bgcanvas = false;
-      this.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
-    }
-  }
 
 }
 
@@ -221,7 +227,7 @@ export class PositionUtils {
      */
     public getWaitOnsMatrix(): any {
       return _.transform(this.tasks, (result, value, key) => {
-        let _value: any = value as any;
+        const _value: any = value as any;
         result[_value[this.idKey]] = _value[this.waitOnKey];
       }, {});
     }
@@ -234,7 +240,7 @@ export class PositionUtils {
      *  if task waits on tasks, its depth is max depth it waits on plus 1
      */
     public generateColPos(waitOnsList: any): {[propName: string]: number} {
-      let colPosMatrix = {};
+      const colPosMatrix = {};
       _.forEach(waitOnsList, (waitOns, taskId) => {
         this.generateColPosForTask(taskId, colPosMatrix, waitOnsList);
       });
@@ -245,17 +251,17 @@ export class PositionUtils {
      * Get task column position by taskId
      */
     private generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
-      let waitOns = waitOnsList[taskId];
+      const waitOns = waitOnsList[taskId];
       let colPos: number;
       let waitOnsColPosList: any[];
       if (_.isEmpty(waitOns)) {
         colPos = 0;
       } else {
-        //Each task will be placed after all tasks it waits on.
+        // Each task will be placed after all tasks it waits on.
         colPos = _.max(this.getWaitOnsColPositions(waitOns, colPosMatrix, waitOnsList)) + 1;
       }
 
-      //Task column position is assigned once identified to save iterations/recursions
+      // Task column position is assigned once identified to save iterations/recursions
       colPosMatrix[taskId] = colPos;
 
       return colPos;
@@ -265,7 +271,7 @@ export class PositionUtils {
      * Get all waitOn tasks's column positions
      */
     private getWaitOnsColPositions(waitOns: any, colPosMatrix: any, waitOnsList): number[] {
-      let colIndexes = [];
+      const colIndexes = [];
       _.forEach(waitOns, (waitOn, waitOnTask) => {
         if (!_.isUndefined(colPosMatrix[waitOnTask])) {
           colIndexes.push(colPosMatrix[waitOnTask]);
@@ -280,7 +286,7 @@ export class PositionUtils {
      * Retrieve tasksId-waitedBys from workflow task list
      */
     public getWaitedBysMatrix(tasks: any[]): any {
-      let waitedBys = {};
+      const waitedBys = {};
       _.forEach(tasks, task => {
         _.forEach(task[this.waitOnKey], (states, key) => {
           let state: string;
@@ -291,7 +297,7 @@ export class PositionUtils {
             state = states;
           }
           waitedBys[key][task[this.idKey]] = state;
-        })
+        });
       });
       return waitedBys;
     }
@@ -313,13 +319,13 @@ export class PositionUtils {
      *
      */
     public generateRowPos(colPosMatrix: any, waitOnsList: any): {[propName: string]: number} {
-      let rowPosMatrix = {};
-      let tasksSortedByCol = this.sortTaskByCol(colPosMatrix);
-      let waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
+      const rowPosMatrix = {};
+      const tasksSortedByCol = this.sortTaskByCol(colPosMatrix);
+      const waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
 
-      //First column task's row position is decided by its appearing sequence
+      // First column task's row position is decided by its appearing sequence
       let rowIndex = 0;
-      let firstColumnTasks = tasksSortedByCol[0];
+      const firstColumnTasks = tasksSortedByCol[0];
       _.forEach(firstColumnTasks, task => {
         rowPosMatrix[task] = rowIndex;
         rowIndex += 1;
@@ -327,23 +333,23 @@ export class PositionUtils {
 
       let curColTasks = firstColumnTasks;
       let curColumn = 0;
-      while(!_.isEmpty(curColTasks)){
-        if (curColumn === tasksSortedByCol.length -1) break; // Skip last column
+      while (!_.isEmpty(curColTasks)) {
+        if (curColumn === tasksSortedByCol.length - 1) { break; } // Skip last column
 
         let startRowPos = 0;
-        let nextColTasks = tasksSortedByCol[curColumn + 1];
+        const nextColTasks = tasksSortedByCol[curColumn + 1];
         // Generate row position for next column tasks via waited-by relations
         let nextSortedColTasks = [];
         _.forEach(curColTasks, curTaskId => {
-          let waitedByTasks = waitedBysMatrix[curTaskId];
-          if (_.isEmpty(waitedByTasks)){ return true; } // Skip task is not waited by any task
+          const waitedByTasks = waitedBysMatrix[curTaskId];
+          if (_.isEmpty(waitedByTasks)) { return true; } // Skip task is not waited by any task
           let curRowPos = startRowPos;
-          let tasksSortedByOut = this.sortTaskByWaitOnState(waitedByTasks, nextColTasks);
+          const tasksSortedByOut = this.sortTaskByWaitOnState(waitedByTasks, nextColTasks);
 
           _.forEach(tasksSortedByOut, taskId => {
             rowPosMatrix[taskId] = curRowPos;
             // Row number will be no small than task row number it waits on
-            if (rowPosMatrix[taskId] < rowPosMatrix[curTaskId]){
+            if (rowPosMatrix[taskId] < rowPosMatrix[curTaskId]) {
               rowPosMatrix[taskId] = rowPosMatrix[curTaskId];
             }
             curRowPos = rowPosMatrix[taskId] + 1;
@@ -361,13 +367,13 @@ export class PositionUtils {
     /*
      * Sort tasks in a task's waitOn list by waitOn status
      */
-    private sortTaskByWaitOnState(waitedByTasks, nextColTasks){
-      let failedWaitedBys = [];
-      let succeededWaitedBys = [];
-      let finishedWaitedBys = [];
+    private sortTaskByWaitOnState(waitedByTasks, nextColTasks) {
+      const failedWaitedBys = [];
+      const succeededWaitedBys = [];
+      const finishedWaitedBys = [];
       _.forEach(waitedByTasks, (state, taskId) => {
-        if(!_.includes(nextColTasks, taskId)){ return true; } // Prevent jumping columns
-        switch(state) {
+        if (!_.includes(nextColTasks, taskId)) { return true; } // Prevent jumping columns
+        switch (state) {
           case CONSTS.waitOn.failed:
             failedWaitedBys.push(taskId);
             break;
@@ -386,7 +392,7 @@ export class PositionUtils {
      * Sort tasks by column index
      */
     private sortTaskByCol(colPosMatrix: any): any[] {
-      let taskMatrix = [];
+      const taskMatrix = [];
       _.forEach(colPosMatrix, (colIndex, taskId) => {
         if (taskMatrix[colIndex]) {
           taskMatrix[colIndex].push(taskId);
@@ -395,5 +401,5 @@ export class PositionUtils {
         }
       });
       return taskMatrix;
-    };
+    }
 }

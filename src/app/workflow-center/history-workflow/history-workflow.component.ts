@@ -1,22 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 
 import {
-  AlphabeticalComparator,
-  StringOperator,
-  ObjectFilterByKey,
   createFilters,
   createComparator
 } from '../../utils/inventory-operator';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
-import { WorkflowService } from 'app/services/rackhd/workflow.service';
-import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
+import { WorkflowService } from '../../services/rackhd/workflow.service';
+import { GraphService } from '../../services/rackhd/graph.service';
+import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from '../../models';
 
 @Component({
   selector: 'app-history-workflow',
@@ -53,7 +45,7 @@ export class HistoryWorkflowComponent implements OnInit {
     private graphService: GraphService,
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef
-  ){}
+  ) {}
 
   ngOnInit() {
     createFilters(
@@ -66,11 +58,11 @@ export class HistoryWorkflowComponent implements OnInit {
     );
     createComparator(
       this.gridComparators,
-      ["node", "name", "injectableName", "domain", 'status'],
+      ['node', 'name', 'injectableName', 'domain', 'status'],
       new Workflow()
     );
     this.modalTypes = new ModalTypes(
-      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
+      ['Detail', 'Tasks', 'Options', 'Instance Id', 'Context', 'Definition']
     );
     this.isShowModal = false;
     this.getAll();
@@ -86,19 +78,19 @@ export class HistoryWorkflowComponent implements OnInit {
       });
   }
 
-  get statusTypes(){
+  get statusTypes() {
     return HISTORY_WORKFLOW_STATUS;
   }
 
-  selectStatus(status: string){
+  selectStatus(status: string) {
     this.selectedStatus = this.selectedStatus === status ? '' : status;
     this.statusFilterValue = this.selectedStatus;
     this.changeDetectorRef.detectChanges();
-  };
+  }
 
   collectStatusType() {
     this.statusCountMatrix = _.transform(this.allWorkflows, (result, item) => {
-      let type = item.status;
+      const type = item.status;
       result[type] ? result[type] += 1 : result[type] = 1;
     }, []);
   }
@@ -108,11 +100,11 @@ export class HistoryWorkflowComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  deleteSel(){
-    let list = _.map(this.selectedWorkflows, workflow => {
+  deleteSel() {
+    const list = _.map(this.selectedWorkflows, workflow => {
       return workflow.instanceId;
     });
     this.isShowModal = false;
@@ -122,29 +114,29 @@ export class HistoryWorkflowComponent implements OnInit {
     });
   }
 
-  //getRawData(identifier: string): void {}
+  // getRawData(identifier: string): void {}
 
-  getHttpMethod(){
+  getHttpMethod() {
   }
 
-  getChild(objKey: string, workflow: Workflow){
+  getChild(objKey: string, workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.action = _.startCase(objKey);
     this.rawData = workflow && workflow[objKey];
     this.isShowModal = true;
   }
 
-  getDefinition(workflow: Workflow){
+  getDefinition(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    let graphName = workflow.definition.split('/').pop();
+    const graphName = workflow.definition.split('/').pop();
     this.graphService.getByIdentifier(graphName)
     .subscribe(
       data => {
         this.rawData = data;
-        this.action = "Definition"
+        this.action = 'Definition';
         this.isShowModal = true;
       }
-    )
+    );
   }
 
   refresh() {
@@ -154,14 +146,14 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Delete";
+    if (!_.isEmpty(this.selectedWorkflows)) {
+      this.action = 'Delete';
       this.isShowModal = true;
     }
-  };
+  }
 
   onConfirm(value) {
-    switch(value) {
+    switch (value) {
       case 'reject':
         this.isShowModal = false;
         break;
@@ -171,39 +163,39 @@ export class HistoryWorkflowComponent implements OnInit {
     }
   }
 
-  onFilter(filtered: Workflow[]){
+  onFilter(filtered: Workflow[]) {
     this.workflowsStore = filtered;
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
   onDelete(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
-  };
+  }
 
   onBatchCancel() {
-    if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Cancel";
+    if (!_.isEmpty(this.selectedWorkflows)) {
+      this.action = 'Cancel';
       this.isShowModal = true;
     }
-  };
+  }
 
   onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Cancel";
+    this.action = 'Cancel';
     this.isShowModal = true;
-  };
+  }
 
   // onCreate(){}
 
@@ -211,9 +203,9 @@ export class HistoryWorkflowComponent implements OnInit {
 
   onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.instanceId);
-  };
+  }
 
   // onGetRawData() {};
 
@@ -221,9 +213,9 @@ export class HistoryWorkflowComponent implements OnInit {
 
   // onCancel(){}
 
-  gotoCanvas(workflow){
-    let graphId = workflow.instanceId;
-    let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
+  gotoCanvas(workflow) {
+    const graphId = workflow.instanceId;
+    const url = '/workflowCenter/workflowViewer?graphId=' + graphId;
     this.router.navigateByUrl(url);
   }
 

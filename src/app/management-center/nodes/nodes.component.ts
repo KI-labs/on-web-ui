@@ -2,19 +2,19 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 
-import { NodeService } from 'app/services/rackhd/node.service';
-import { Node, NODE_TYPE_MAP, NodeType, OBM } from 'app/models';
+import { NodeService } from '../../services/rackhd/node.service';
+import { Node, NODE_TYPE_MAP, NodeType, OBM } from '../../models';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ObmService } from 'app/services/rackhd/obm.service';
-import { SkusService } from 'app/services/rackhd/sku.service';
+import { ObmService } from '../../services/rackhd/obm.service';
+import { SkusService } from '../../services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
 import {
   AlphabeticalComparator,
   DateComparator,
   isJsonTextValid,
   ObjectFilterByKey
-} from 'app/utils/inventory-operator';
+} from '../../utils/inventory-operator';
 
 @Component({
   selector: 'app-nodes',
@@ -51,7 +51,7 @@ export class NodesComponent implements OnInit {
   selectableNodeTypes: string[];
 
   dgDataLoading = false;
-  dgPlaceholder = 'No node found!'
+  dgPlaceholder = 'No node found!';
 
   jsonValid = true;
 
@@ -67,10 +67,10 @@ export class NodesComponent implements OnInit {
   typeFilterValue: string = this.selectedType;
 
   shapeMap = {
-    'compute': 'computer',
-    'storage': 'data-cluster',
-    'network': 'network-switch'
-  }
+    compute: 'computer',
+    storage: 'data-cluster',
+    network: 'network-switch'
+  };
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -82,14 +82,14 @@ export class NodesComponent implements OnInit {
     private fb: FormBuilder) {}
 
   ngOnInit() {
-    let self = this;
+    const self = this;
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
         this.nodeTypes = _.transform(
           data,
-          function (result, item) {
-            let dt = new NodeType();
+          function(result, item) {
+            const dt = new NodeType();
             if (_.has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;
               dt.displayName = NODE_TYPE_MAP[item];
@@ -153,15 +153,15 @@ export class NodesComponent implements OnInit {
   }
 
   createNode(): void {
-    let value = this.nodeForm.value;
-    this.jsonValid = isJsonTextValid(value['otherConfig']);
+    const value = this.nodeForm.value;
+    this.jsonValid = isJsonTextValid(value.otherConfig);
     if (this.jsonValid) {
-      let jsonData = value['otherConfig'] ? JSON.parse(value['otherConfig']) : {};
+      const jsonData = value.otherConfig ? JSON.parse(value.otherConfig) : {};
 
       // data transform
-      jsonData['name'] = value['name'];
-      jsonData['type'] = value['type'];
-      jsonData['autoDiscover'] = value['autoDiscover'] === 'true' ? true : false;
+      jsonData.name = value.name;
+      jsonData.type = value.type;
+      jsonData.autoDiscover = value.autoDiscover === 'true' ? true : false;
       this.isCreateNode = false;
 
       this.nodeService.post(jsonData)
@@ -172,7 +172,7 @@ export class NodesComponent implements OnInit {
   }
 
   deleteSel(): void {
-    let list = _.map(this.selectedNodes, node => {
+    const list = _.map(this.selectedNodes, node => {
       return node.id;
     });
 
@@ -204,7 +204,7 @@ export class NodesComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
   onFilter(filtered) {
@@ -230,8 +230,9 @@ export class NodesComponent implements OnInit {
     this.selectedNode = node;
     this.selectedObms = [];
     if (node.obms.length > 0) {
-      for (let entry of node.obms) {
-        let obmId = entry['ref'].split('/').pop();
+      for (const entry of node.obms) {
+        // TODO: old line const obmId = entry.ref.split('/').pop(); obms are supusedly a array of strings not object need to be checked afterwards
+        const obmId = entry.split('/').pop();
         this.getObmById(obmId);
       }
       this.isShowObmDetail = true;
@@ -243,8 +244,9 @@ export class NodesComponent implements OnInit {
     this.selectedNode = node;
     this.selectedObms = [];
     if (node.ibms.length > 0) {
-      for (let entry of node.ibms) {
-        let ibmId = entry['ref'].split('/').pop();
+      for (const entry of node.ibms) {
+        // TODO: const ibmId = entry.ref.split('/').pop();
+        const ibmId = entry.split('/').pop();
         this.getIbmById(ibmId);
       }
       this.isShowIbmDetail = true;
@@ -253,7 +255,7 @@ export class NodesComponent implements OnInit {
 
   goToShowSkuDetail(node: Node) {
     this.selectedNode = node;
-    let skuId = node.sku ? node.sku.split('/')[4] : '';
+    const skuId = node.sku ? node.sku.split('/')[4] : '';
     if (skuId) {
       this.skuService.getByIdentifier(skuId)
         .subscribe(data => {

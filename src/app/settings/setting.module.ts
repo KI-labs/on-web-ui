@@ -10,7 +10,7 @@ import { SettingService } from './setting.service';
 @NgModule({
   imports: [
     CommonModule,
-    ClarityModule.forChild(),
+    ClarityModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

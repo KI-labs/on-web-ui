@@ -2,24 +2,19 @@ import {
   Component,
   OnInit,
   AfterViewInit,
-  ChangeDetectorRef,
   Output,
   EventEmitter,
 } from '@angular/core';
 
 import {
-  FormsModule,
-  ReactiveFormsModule ,
-  FormBuilder,
   FormGroup,
   FormControl,
   Validators
 } from '@angular/forms';
 
-import { API_PATTERN, ADDR_PATTERN } from 'app/models/index';
+import { API_PATTERN, ADDR_PATTERN } from '../models/index';
 import { SettingService } from './setting.service';
-import { ClarityModule } from '@clr/angular';
-import { NodeService } from 'app/services/rackhd/node.service';
+import { NodeService } from '../services/rackhd/node.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -35,30 +30,30 @@ export class SettingComponent implements OnInit, AfterViewInit {
   tokenDirty: boolean;
   checkboxesDirty: boolean;
 
-  tokenErrorMsg: string = '';
-  apiErrorMsg: string = '';
+  tokenErrorMsg = '';
+  apiErrorMsg = '';
 
   settingFormGroup: FormGroup;
   initialConfigs: any;
 
-  constructor (
+  constructor(
     public settingService: SettingService,
     public rackhdService: NodeService
-  ) {};
+  ) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.settingService.loadInitialConfig();
     this.initialConfigs = {
       northboundApi: this.settingService.northboundApi,
       websocketUrl: this.settingService.websocketUrl,
       authEnabled: this.settingService.authEnabled,
       connSecured: this.settingService.connSecured,
-      authToken:this.settingService.authToken
+      authToken: this.settingService.authToken
     };
     this.createForm();
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.accessRackhdApi();
   }
 
@@ -74,11 +69,11 @@ export class SettingComponent implements OnInit, AfterViewInit {
       ),
       rackhdAuth: new FormGroup({
         rackhdPassword: new FormControl(
-          {value:'', disabled: !this.settingService.authEnabled},
+          {value: '', disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
         ),
         rackhdUsername: new FormControl(
-          {value:'', disabled: !this.settingService.authEnabled},
+          {value: '', disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
         ),
         rackhdAuthToken: new FormControl(
@@ -90,14 +85,14 @@ export class SettingComponent implements OnInit, AfterViewInit {
   }
 
   resetSettings() {
-    let defaultConfig = this.settingService.loadDefaultConfig();
+    const defaultConfig = this.settingService.loadDefaultConfig();
     this.settingFormGroup.reset({
       rackhdNorthboundApi: defaultConfig.northboundApi,
       rackhdWebsocketUrl: defaultConfig.websocketUrl,
       rackhdAuth: {
-        rackhdPassword: {value:'', disabled: !defaultConfig.authEnabled},
-        rackhdUsername: {value:'', disabled: !defaultConfig.authEnabled},
-        rackhdAuthToken: {value:'', disabled: !defaultConfig.authEnabled},
+        rackhdPassword: {value: '', disabled: !defaultConfig.authEnabled},
+        rackhdUsername: {value: '', disabled: !defaultConfig.authEnabled},
+        rackhdAuthToken: {value: '', disabled: !defaultConfig.authEnabled},
       }
     });
     this.settingService.authEnabled = defaultConfig.authEnabled;
@@ -116,24 +111,24 @@ export class SettingComponent implements OnInit, AfterViewInit {
   }
 
   saveButtonDisabled(): boolean {
-    let urlDirty = this.settingFormGroup.dirty && !this.settingFormGroup.get('rackhdAuth').dirty;
-    let tokenDirty =  this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').dirty
+    const urlDirty = this.settingFormGroup.dirty && !this.settingFormGroup.get('rackhdAuth').dirty;
+    const tokenDirty =  this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').dirty
       || this.tokenDirty; // token updated won't update form .dirty attribute
-    let settingDirty = urlDirty || this.checkboxesDirty || tokenDirty;
-    let settingInvalid = this.settingFormGroup.invalid;
+    const settingDirty = urlDirty || this.checkboxesDirty || tokenDirty;
+    const settingInvalid = this.settingFormGroup.invalid;
     return (settingInvalid || !settingDirty ) && !this.defaultDirty;
   }
 
   handleAuthChanged(value: boolean) {
-    let authItems = ["rackhdPassword", "rackhdUsername", "rackhdAuthToken"];
+    const authItems = ['rackhdPassword', 'rackhdUsername', 'rackhdAuthToken'];
     _.forEach(authItems, (item) => {
-      let formItem = this.settingFormGroup.get('rackhdAuth.' + item);
+      const formItem = this.settingFormGroup.get('rackhdAuth.' + item);
       value ? formItem.enable() : formItem.disable();
-    })
+    });
     if (!value) {
-      this.settingService.authToken = "";
+      this.settingService.authToken = '';
       this.settingFormGroup.patchValue({
-        rackhdAuth: {rackhdAuthToken: ""}
+        rackhdAuth: {rackhdAuthToken: ''}
       });
     }
     this.checkboxChanged();
@@ -144,50 +139,50 @@ export class SettingComponent implements OnInit, AfterViewInit {
     this.checkboxesDirty = true;
   }
 
-  accessRackhdApi(){
-    if (!this.formClassInvalid('rackhdNorthboundApi')){
+  accessRackhdApi() {
+    if (!this.formClassInvalid('rackhdNorthboundApi')) {
       this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
       return this.rackhdService.apiPing()
       .subscribe(
         data => {
-          this.apiErrorMsg = "";
+          this.apiErrorMsg = '';
         },
         err => {
-          this.apiErrorMsg = "RackHD northbound API is inaccessible";
+          this.apiErrorMsg = 'RackHD northbound API is inaccessible';
         }
-      )
+      );
     }
   }
 
-  generateToken(){
+  generateToken() {
     this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
     this.settingService.generateToken(
       this.settingFormGroup.get('rackhdAuth.rackhdUsername').value,
       this.settingFormGroup.get('rackhdAuth.rackhdPassword').value
     ).subscribe(
       data => {
-        this.settingService.authToken = data["token"];
+        this.settingService.authToken = data.token;
         this.settingFormGroup.patchValue({
           rackhdAuth: {
-            rackhdAuthToken: data["token"] || ''
+            rackhdAuthToken: data.token || ''
           }
         });
         this.tokenDirty = true;
-        this.tokenErrorMsg = "";
+        this.tokenErrorMsg = '';
         this.accessRackhdApi();
       },
       err => {
         if (err.status === 404) {
-          this.tokenErrorMsg = "Get token failed, please check if authenticate is enabled in RackHD."
+          this.tokenErrorMsg = 'Get token failed, please check if authenticate is enabled in RackHD.';
         } else {
-          this.tokenErrorMsg = "Get token failed, please check if RackHD Northbound API is correct."
+          this.tokenErrorMsg = 'Get token failed, please check if RackHD Northbound API is correct.';
         }
         // this.accessRackhdApi();
       }
     );
   }
 
-  submitFormValues(){
+  submitFormValues() {
     this.settingService.websocketUrl = this.settingFormGroup.get('rackhdWebsocketUrl').value;
     this.settingService.northboundApi = this.settingFormGroup.get('rackhdNorthboundApi').value;
     this.settingService.authToken = this.settingFormGroup.get('rackhdAuth.rackhdAuthToken').value;

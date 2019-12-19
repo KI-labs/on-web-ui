@@ -16,9 +16,8 @@ import * as uuid from 'uuid/v4';
 
 import { NodeExtensionService } from './node-extension.service';
 import { CONSTS } from '../../config/consts';
-import { Task } from '../models';
-import { WorkflowService } from 'app/services/rackhd/workflow.service';
-import { GraphTaskService } from 'app/services/rackhd/task.service';
+import { WorkflowService } from '../services/rackhd/workflow.service';
+import { GraphTaskService } from '../services/rackhd/task.service';
 
 const global = (window as any);
 
@@ -29,7 +28,7 @@ const global = (window as any);
 })
 
 export class CanvasGraphComponent implements OnInit {
-  @ViewChild('mycanvas') editorCanvas: any;
+  @ViewChild('mycanvas', { static: false }) editorCanvas: any;
   @Input() onWorkflowInput: any;
   @Input() editable = true;
   @Output() onWorkflowChanged = new EventEmitter();
@@ -57,7 +56,7 @@ export class CanvasGraphComponent implements OnInit {
     if (this.editable) {
       this.graphTaskService.getAll()
       .subscribe(allTasks => {
-        this.taskInjectableNames = allTasks.map(function (item) {
+        this.taskInjectableNames = allTasks.map(function(item) {
           return item.injectableName;
         });
       });
@@ -94,12 +93,12 @@ export class CanvasGraphComponent implements OnInit {
     // this.canvas.render_curved_connections = false; //Use straight line
     // this.canvas.render_connection_arrows = false; //No arrows for line
     this.canvas.always_render_background = false;
-    this.canvas.background_image = ''; //Don't use background
-    this.canvas.title_text_font = "bold 12px Arial";
-    this.canvas.inner_text_font = "normal 10px Arial";
-    this.canvas.render_shadows = false; //Node shadow
+    this.canvas.background_image = ''; // Don't use background
+    this.canvas.title_text_font = 'bold 12px Arial';
+    this.canvas.inner_text_font = 'normal 10px Arial';
+    this.canvas.render_shadows = false; // Node shadow
     this.canvas.render_connections_border = false;
-    this.canvas.show_info = false; //Hide info on left-top corner
+    this.canvas.show_info = false; // Hide info on left-top corner
 
     this.initSize = {
       height: this.element.nativeElement.parentNode.offsetHeight,
@@ -142,15 +141,16 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   afterClick(e, node) {
-    if (!node || !node.properties)
+    if (!node || !node.properties) {
       return;
+    }
 
-    let self = this;
-    let canvas = global.LGraphCanvas.active_canvas;
-    let ref_window = canvas.getCanvasWindow();
+    const self = this;
+    const canvas = global.LGraphCanvas.active_canvas;
+    const ref_window = canvas.getCanvasWindow();
 
-    let entries = [];
-    let value = node.properties.log;
+    const entries = [];
+    const value = node.properties.log;
     // if value could contain invalid html characters, clean that
     // value = global.LGraphCanvas.decodeHTML(value);
     // for better view, please
@@ -158,21 +158,22 @@ export class CanvasGraphComponent implements OnInit {
 
     entries.push({
       content: '<span id="errorLogText">' + value + '</span><h4>click to clipboard</h4>',
-      value: value
+      value
     });
-    if (!entries.length)
+    if (!entries.length) {
       return;
+    }
 
-    let menu = new global.LiteGraph.ContextMenu(entries, {
+    const menu = new global.LiteGraph.ContextMenu(entries, {
       event: e,
       callback: copyToClipboard,
       parentMenu: null,
       allow_html: true,
-      node: node
+      node
     }, ref_window);
 
     function copyToClipboard() {
-      let inp = document.createElement('input');
+      const inp = document.createElement('input');
       document.body.appendChild(inp);
       // for better view, if you replace \n with <br>, please recover them here
       inp.value = document.getElementById('errorLogText').textContent;
@@ -184,19 +185,19 @@ export class CanvasGraphComponent implements OnInit {
     return false;
   }
 
-  //helpers
+  // helpers
   changeTaskWaitOn(taskToBeChanged, preTask?, waitOnText?) {
     if (!preTask && !waitOnText) {
       _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
-          delete task['waitOn'][preTask];
+          delete task.waitOn[preTask];
         }
       });
     } else {
-      //this.workflow may be undefined.
+      // this.workflow may be undefined.
       _.forEach(this.workflow && this.workflow.tasks, (task) => {
         if (_.isEqual(task, taskToBeChanged)) {
-          task['waitOn'] = _.assign(task["waitOn"] || {}, {[preTask.label]: waitOnText});
+          task.waitOn = _.assign(task.waitOn || {}, {[preTask.label]: waitOnText});
         }
       });
     }
@@ -205,10 +206,10 @@ export class CanvasGraphComponent implements OnInit {
 
   /* rewrite lib class prototype functions */
   getCanvasMenuOptions() {
-    let self = this;
-    return function () {
-      if (!self.editable) return [];
-      let options = [
+    const self = this;
+    return function() {
+      if (!self.editable) { return []; }
+      const options = [
         {content: 'Add Task', has_submenu: true, callback: self.addNode()}
       ];
       return options;
@@ -217,21 +218,21 @@ export class CanvasGraphComponent implements OnInit {
 
   addNode() {
     // mothod 1 for keep current context
-    let self = this;
+    const self = this;
 
     // this function is referenced from lightgraph src.
-    return function (node, options, e, preMenu) {
-      let preE = e;
-      let canvas = global.LGraphCanvas.active_canvas;
-      let ref_window = canvas.getCanvasWindow();
-      let filterInputHtml = '<input id=\'graphNodeTypeFilter\' placeholder=\'filter\'>';
+    return function(node, options, e, preMenu) {
+      const preE = e;
+      const canvas = global.LGraphCanvas.active_canvas;
+      const ref_window = canvas.getCanvasWindow();
+      const filterInputHtml = '<input id=\'graphNodeTypeFilter\' placeholder=\'filter\'>';
 
-      let taskNames = self.taskInjectableNames.slice(0, 9);
-      let values = [];
+      const taskNames = self.taskInjectableNames.slice(0, 9);
+      const values = [];
       values.push({content: filterInputHtml});
       _.forEach(taskNames, name => {
         values.push({content: name});
-      })
+      });
 
       let taskMenu = new global.LiteGraph.ContextMenu(values, {
         event: e,
@@ -240,14 +241,14 @@ export class CanvasGraphComponent implements OnInit {
         allow_html: true
       }, ref_window);
 
-      let taskFilter = new Subject();
+      const taskFilter = new Subject();
 
       function inputTerm(term: string) {
         taskFilter.next(term);
       }
 
       bindInput();
-      let filterTrigger = taskFilter.pipe(
+      const filterTrigger = taskFilter.pipe(
         debounceTime(1000),
         distinctUntilChanged(),
         switchMap((term: string) => {
@@ -257,16 +258,16 @@ export class CanvasGraphComponent implements OnInit {
       );
       filterTrigger.subscribe();
 
-      //helpers
+      // helpers
       function reGenerateMenu(term: string) {
         // close old task list menu and add a new one;
         taskMenu.close(undefined, true);
-        let values = [];
+        const values = [];
         values.push({content: filterInputHtml});
-        let filteredTaskNames = _.filter(self.taskInjectableNames, (type) => {
+        const filteredTaskNames = _.filter(self.taskInjectableNames, (type) => {
           return _.toLower(type).includes(_.toLower(term));
         });
-        for (let injectableName of filteredTaskNames.slice(0, 9)) {
+        for (const injectableName of filteredTaskNames.slice(0, 9)) {
           values.push({content: injectableName});
         }
         taskMenu = new global.LiteGraph.ContextMenu(values, {
@@ -281,9 +282,10 @@ export class CanvasGraphComponent implements OnInit {
       }
 
       function bindInput(initValue = '') {
-        let input = document.getElementById('graphNodeTypeFilter');
-        if (initValue)
+        const input = document.getElementById('graphNodeTypeFilter');
+        if (initValue) {
           (input as HTMLInputElement).value = initValue;
+        }
         input.addEventListener('input', () => inputTerm((input as HTMLInputElement).value));
       }
 
@@ -294,19 +296,19 @@ export class CanvasGraphComponent implements OnInit {
           return true;
         }
 
-        let firstEvent = preMenu.getFirstEvent();
-        let node = global.LiteGraph.createNode('rackhd/task_1');
+        const firstEvent = preMenu.getFirstEvent();
+        const node = global.LiteGraph.createNode('rackhd/task_1');
         if (node) {
           // update node position
           node.pos = canvas.convertEventToCanvas(firstEvent);
           // update node data
-          let injectName = v.content;
+          const injectName = v.content;
           self.graphTaskService.getByIdentifier(injectName)
           .subscribe(task => {
-            let data = {};
-            let label = "new-task-" + uuid().substr(0, 10);
-            _.assign(data, {'label': label});
-            _.assign(data, {'taskDefinition': task});
+            const data = {};
+            const label = 'new-task-' + uuid().substr(0, 10);
+            _.assign(data, {label});
+            _.assign(data, {taskDefinition: task});
             node.properties.task = data;
             node.title = node.properties.task.label;
             canvas.graph.add(node);
@@ -320,18 +322,20 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   getNodeMenuOptions() {
-    let self = this;
-    return function (node) {
-      let options = [];
-      if (!self.editable) return options;
-      if (node.removable !== false)
+    const self = this;
+    return function(node) {
+      const options = [];
+      if (!self.editable) { return options; }
+      if (node.removable !== false) {
         options.push(
           null,
           {content: 'Remove', callback: self.removeNode.bind(self)},
           {content: 'AddInput', callback: self.addInput.bind(self)}
         );
-      if (node.graph && node.graph.onGetNodeMenuOptions)
+      }
+      if (node.graph && node.graph.onGetNodeMenuOptions) {
         node.graph.onGetNodeMenuOptions(options, node);
+      }
       return options;
     };
   }
@@ -341,13 +345,13 @@ export class CanvasGraphComponent implements OnInit {
     global.LGraphCanvas.onMenuNodeRemove(value, options, e, menu, node);
   }
 
-  addInput(value, options, e, menu, node){
-    node.addInput("waitOn", global.LiteGraph.EVENT);
+  addInput(value, options, e, menu, node) {
+    node.addInput('waitOn', global.LiteGraph.EVENT);
     // this.afterWorkflowUpdate();
   }
 
   drawNodes() {
-    if (!this.workflow) return;
+    if (!this.workflow) { return; }
 
     this.graph.clear();
 
@@ -362,19 +366,19 @@ export class CanvasGraphComponent implements OnInit {
     }
 
     let positionMatrix: any;
-    let colMatrix: {[propName:string]: number};
-    let rowMatrix: {[propName:string]: number};
+    let colMatrix: {[propName: string]: number};
+    let rowMatrix: {[propName: string]: number};
     [positionMatrix, colMatrix, rowMatrix] = this.distributePosition(taskWaitOnKey, taskIdentifierKey);
 
-    let taskNodeMatrix = {};
-    let nodeInputSlotIndexes = {};
-    let drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
+    const taskNodeMatrix = {};
+    const nodeInputSlotIndexes = {};
+    const drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
     _.forEach(this.workflow.tasks, (task) => {
-      if ( task.taskStartTime && task.state === "pending"){
-        task.state = "running";
+      if ( task.taskStartTime && task.state === 'pending') {
+        task.state = 'running';
       }
-      let position = positionMatrix[task[taskIdentifierKey]];
-      let node = drawUtils.createTaskNode(task, position);
+      const position = positionMatrix[task[taskIdentifierKey]];
+      const node = drawUtils.createTaskNode(task, position);
       this.graph.add(node);
       taskNodeMatrix[task[taskIdentifierKey]] = node;
       nodeInputSlotIndexes[task[taskIdentifierKey]] = 0;
@@ -382,7 +386,7 @@ export class CanvasGraphComponent implements OnInit {
 
     // Remove taskIds in last column
     // Last column connection is covered by its previous columns
-    let sortedTaskIds = drawUtils.sortTaskIdsByPos(colMatrix, rowMatrix, true);
+    const sortedTaskIds = drawUtils.sortTaskIdsByPos(colMatrix, rowMatrix, true);
     drawUtils.connectNodes(sortedTaskIds, taskNodeMatrix, nodeInputSlotIndexes);
   }
 
@@ -392,33 +396,33 @@ export class CanvasGraphComponent implements OnInit {
    *
    */
   distributePosition(taskWaitOnKey: string, taskIdKeyName: string) {
-    let xOffset = 30;
-    let yOffset = 60;
-    let xGridSizeMin = 200; // Avoid overlap between adjacent task blocks
-    let yGridSizeMin = 100;
-    let positionMatrix = {};
-    let utils = new PositionUtils(this.workflow.tasks, taskIdKeyName, taskWaitOnKey);
+    const xOffset = 30;
+    const yOffset = 60;
+    const xGridSizeMin = 200; // Avoid overlap between adjacent task blocks
+    const yGridSizeMin = 100;
+    const positionMatrix = {};
+    const utils = new PositionUtils(this.workflow.tasks, taskIdKeyName, taskWaitOnKey);
 
-    let canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
-    let canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
+    const canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
+    const canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
 
-    let waitOnsMatrix = utils.getWaitOnsMatrix();
-    let colPosMatrix = utils.generateColPos(waitOnsMatrix);
-    let rowPosMatrix = utils.generateRowPos(colPosMatrix, waitOnsMatrix);
+    const waitOnsMatrix = utils.getWaitOnsMatrix();
+    const colPosMatrix = utils.generateColPos(waitOnsMatrix);
+    const rowPosMatrix = utils.generateRowPos(colPosMatrix, waitOnsMatrix);
 
-    let colCount = _.max(_.values(colPosMatrix)) + 1;
-    let rowCount = _.max(_.values(rowPosMatrix)) + 1;
-    let xGridSize = _.max([canvasWidth / colCount, xGridSizeMin]);
-    let yGridSize = _.max([canvasHeight / rowCount, yGridSizeMin]);
+    const colCount = _.max(_.values(colPosMatrix)) + 1;
+    const rowCount = _.max(_.values(rowPosMatrix)) + 1;
+    const xGridSize = _.max([canvasWidth / colCount, xGridSizeMin]);
+    const yGridSize = _.max([canvasHeight / rowCount, yGridSizeMin]);
 
     _.forEach(this.workflow.tasks, task => {
-      let taskId = task[taskIdKeyName];
+      const taskId = task[taskIdKeyName];
       let x = colPosMatrix[taskId];
       let y = rowPosMatrix[taskId];
       x = xGridSize * x + xOffset;
       y = yGridSize * y + yOffset;
       positionMatrix[taskId] = [Math.floor(x), Math.floor(y)];
-    })
+    });
     return [positionMatrix, colPosMatrix, rowPosMatrix];
   }
 }

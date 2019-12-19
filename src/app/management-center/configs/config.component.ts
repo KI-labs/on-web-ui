@@ -1,10 +1,6 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey} from '../../utils/inventory-operator';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AlphabeticalComparator, ObjectFilterByKey} from '../../utils/inventory-operator';
+import { FormGroup, FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
 import { ConfigService } from '../services/config.service';
@@ -29,7 +25,7 @@ export class ConfigComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No configuration found!'
+  dgPlaceholder = 'No configuration found!';
 
   public keyComparator = new AlphabeticalComparator<Config>('key');
   public keyFilter = new ObjectFilterByKey<Config>('key');
@@ -48,13 +44,13 @@ export class ConfigComponent implements OnInit {
   getAllConfig(): void {
     this.configService.getAll()
       .subscribe(data => {
-        let _data = [];
+        const _data = [];
         _.forEach(_.keys(data), (key) => {
-          //Remove unnecessary enviroment configures
-          if (key.match("^[a-z].*")) {
-            _data.push({key: key, value: data[key]})
+          // Remove unnecessary enviroment configures
+          if (key.match('^[a-z].*')) {
+            _data.push({key, value: data[key]});
           }
-        })
+        });
         this.configStore = _data;
         this.allConfigs = _data;
         this.dgDataLoading = false;
@@ -65,27 +61,27 @@ export class ConfigComponent implements OnInit {
     this.isShowUpdateStatus = true;
     this.selectedConfig = {key: null, value: null};
     this.modalFormGroup.setValue({key: null, value: null});
-    this.modalAction = "Create";
+    this.modalAction = 'Create';
     this.isShowModal = true;
-  };
+  }
 
   refresh() {
     this.dgDataLoading = true;
     this.getAllConfig();
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Create':
         this.create();
         break;
-    };
+    }
   }
 
-  onFilter(filtered){
+  onFilter(filtered) {
     this.configStore = filtered;
   }
 
@@ -93,14 +89,14 @@ export class ConfigComponent implements OnInit {
     this.isShowUpdateStatus = true;
     this.selectedConfig = item;
     this.configureType = typeof item.value;
-    //Configure values can be string, number or object;
-    let value = (this.configureType === "object")
+    // Configure values can be string, number or object;
+    const value = (this.configureType === 'object')
       ? JSON.stringify(this.selectedConfig.value)
       : this.selectedConfig.value;
-    this.modalFormGroup.setValue({key: item.key, value: value});
-    this.modalAction = "Update";
+    this.modalFormGroup.setValue({key: item.key, value});
+    this.modalAction = 'Update';
     this.isShowModal = true;
-  };
+  }
 
   // onDelete() {};
 
@@ -110,21 +106,21 @@ export class ConfigComponent implements OnInit {
 
   // onGetRawData() {};
 
-  getHttpMethod(){
-    if (this.modalAction === "Create") { return "put";}
-    if (this.modalAction === "Update") { return "patch";}
-  };
+  getHttpMethod() {
+    if (this.modalAction === 'Create') { return 'put'; }
+    if (this.modalAction === 'Update') { return 'patch'; }
+  }
 
-  onSubmit(){
-    let key: any = this.modalFormGroup.get("key").value;
-    let value: any = this.modalFormGroup.get("value").value;
-    let method: string = this.getHttpMethod();
-    if (this.configureType === "number") {
+  onSubmit() {
+    const key: any = this.modalFormGroup.get('key').value;
+    let value: any = this.modalFormGroup.get('value').value;
+    const method: string = this.getHttpMethod();
+    if (this.configureType === 'number') {
       value = parseInt(value);
-    } else if(this.configureType === "object"){
+    } else if (this.configureType === 'object') {
       value = JSON.parse(value);
     }
-    let payload = {};
+    const payload = {};
     payload[key] = value;
     this.isShowUpdateStatus = false;
     this.configService[method](payload)

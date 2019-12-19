@@ -5,9 +5,6 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ClarityModule } from '@clr/angular';
 
 import * as _ from 'lodash';
 
@@ -19,12 +16,12 @@ import * as _ from 'lodash';
 })
 
 export class GridConfirmModalComponent {
-  isPopValue: boolean = false;
-  @Input() size: string = 'lg'; // Modal size
+  isPopValue = false;
+  @Input() size = 'lg'; // Modal size
   @Input() title: string; // Modal key title
   @Input() data: any; // Data to be shown
-  @Input() displayAttr: string = "id"; // Attribute of data to be shown
-  @Input() action: string = "delete"; // Modal action 
+  @Input() displayAttr = 'id'; // Attribute of data to be shown
+  @Input() action = 'delete'; // Modal action
   @Input() get isPop() { // Modal popup flag input
     return this.isPopValue;
   }
@@ -33,16 +30,16 @@ export class GridConfirmModalComponent {
 
   set isPop(value) {
     this.isPopValue = value;
-    this.isPopChange.emit(value)
+    this.isPopChange.emit(value);
   }
 
-  constructor(){}
+  constructor() {}
 
-  onReject(){
-    this.confirm.emit("reject");
+  onReject() {
+    this.confirm.emit('reject');
   }
 
-  onAccept(){
-    this.confirm.emit("accept");
+  onAccept() {
+    this.confirm.emit('accept');
   }
 }

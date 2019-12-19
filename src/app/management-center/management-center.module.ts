@@ -17,15 +17,14 @@ import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './configs/config.component';
 import { ManagementCenterServicesModule } from './services/management-center-service.module';
-import { RackhdCommonServicesModule } from 'app/services/rackhd-common/rackhd-common.module';
-import { InventoryModule } from 'app/inventory/inventory.module';
+import { InventoryModule } from '../inventory/inventory.module';
 import { NgxSelectModule } from 'ngx-select-ex';
 
 // the dependent services of ManagementCenter
 
 @NgModule({
   imports: [
-    ClarityModule.forChild(),
+    ClarityModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

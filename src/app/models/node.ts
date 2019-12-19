@@ -47,7 +47,7 @@ export const NODE_TYPES = [
 export const NODE_URL = {
     getAllUrl: '/nodes',
     getByIdentifierUrl: '/nodes/',
-}
+};
 
 export const NODE_TYPE_MAP = {
   compute: 'Compute',
@@ -56,4 +56,4 @@ export const NODE_TYPE_MAP = {
   pdu: 'PDU',
   mgmt: 'MGMT',
   others: 'Others',
-}
+};

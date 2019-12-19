@@ -9,7 +9,7 @@ import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
   imports: [
-    ClarityModule.forChild(),
+    ClarityModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
