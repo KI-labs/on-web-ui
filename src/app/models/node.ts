@@ -25,12 +25,12 @@ export class Node {
     model: string;
 }
 
-class Obms {
+interface Obms {
     service: string;
     ref: string;
 }
 
-class Ibms {
+interface Ibms {
     ref: string;
 }
 
