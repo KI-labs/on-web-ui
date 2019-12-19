@@ -29,7 +29,7 @@ export class WorkflowEditorComponent implements OnInit {
 
   constructor(
     public graphService: GraphService,
-    private router: Router) {}
+    private router: Router) { }
 
   public clearInput() {
     this.onWorkflowChanged(this.graphService.getInitGraph());

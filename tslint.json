@@ -1,7 +1,4 @@
 {
-  "extends": [
-    "tslint:recommended"
-  ],
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
@@ -34,10 +31,6 @@
       "timeEnd",
       "trace"
     ],
-    "max-line-length": [
-      true,
-      100
-    ],
     "no-string-literal": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
@@ -46,12 +39,13 @@
       "single",
       "avoid-escape"
     ],
-    "variable-name": [
-      true,
-      "allow-leading-underscore",
-      "allow-pascal-case",
-      "ban-keywords",
-      "check-format"
-    ]
+    "variable-name": {
+      "options": [
+        "allow-leading-underscore",
+        "allow-pascal-case",
+        "ban-keywords",
+        "check-format"
+      ]
+    }
   }
 }

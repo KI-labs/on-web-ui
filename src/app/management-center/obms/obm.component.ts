@@ -140,8 +140,8 @@ export class ObmComponent implements OnInit {
 
   public createForm() {
     this.obmForm = this.fb.group({
-      service: {value: '', validators: [Validators.required, Validators.minLength(1)]},
-      nodeId: {value: '', validators: [Validators.required, Validators.minLength(25), Validators.maxLength(25)]}
+      service: { value: '', validators: [Validators.required, Validators.minLength(1)] },
+      nodeId: { value: '', validators: [Validators.required, Validators.minLength(25), Validators.maxLength(25)] }
     });
   }
 

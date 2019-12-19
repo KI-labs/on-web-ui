@@ -18,7 +18,7 @@ export class ErrorHandlerService {
       return new ErrorObservable('common error' + error.message);
     } else {
       // if the backend return the unsuccessful code
-      console.error( `Backend returned code ${error.status}, ` +
+      console.error(`Backend returned code ${error.status}, ` +
         `body was: ${error.status}`);
       if (+error.status === 0) {
         this.globalAlertService.putAlertMsg(

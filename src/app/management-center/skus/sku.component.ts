@@ -222,9 +222,9 @@ export class SkuComponent implements OnInit {
     const file = this.skuPackFiles[0];
     const identifier = this.selectedSkus.length && this.selectedSku['id'];
     this.skusService.uploadByPost(file, identifier)
-    .subscribe(() => {
-      this.refresh();
-    });
+      .subscribe(() => {
+        this.refresh();
+      });
   }
 
   public deleteSel(): void {

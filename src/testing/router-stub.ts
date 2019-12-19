@@ -26,7 +26,6 @@ export class RouterStub {
 
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { convertToParamMap, ParamMap } from '@angular/router';
 
 /*
  *  Stub Test Class for ActivatedRoute
@@ -55,9 +54,9 @@ export class ActivatedRouteStub {
     get snapshot() {
         return { params: this.testParams };
     }
-    public params = this.subject.asObservable();
     // ActivatedRoute.params is Observable
     private subject = new BehaviorSubject(this.testParams);
+    public params = this.subject.asObservable();
 
     // Test parameters
     private _testParams: {};
