@@ -177,7 +177,6 @@ export class ObmComponent implements OnInit {
     if (values.port) { values.port = parseInt(values.port, 10); }
     _.merge(payload.config, values);
 
-    //TODO: createObm(payload) use PUT. Implement in mirage
     this.obmsService.creatObm(payload)
     .subscribe(data => {
       this.refresh();
