@@ -164,14 +164,11 @@ export class NodesComponent implements OnInit {
       jsonData.autoDiscover = value.autoDiscover === 'true' ? true : false;
       this.isCreateNode = false;
 
-      console.log(jsonData)
-
       this.nodeService.post(jsonData)
         .subscribe(data => {
           this.refresh();
         });
     }
-    debugger;
   }
 
   deleteSel(): void {
