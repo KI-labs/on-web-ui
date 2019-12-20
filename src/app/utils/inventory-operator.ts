@@ -96,13 +96,14 @@ export function createComparator<T>(obj: any, comparatorKeys: string[], model: T
 }
 
 export function isJsonTextValid(input): boolean {
-  let valid = true;
   try {
     if (!_.isEmpty(input)) {
       JSON.parse(input);
+      return true;
+    } else {
+      return false;
     }
   } catch (e) {
-    valid = false;
+   return  false;
   }
-  return valid;
 }

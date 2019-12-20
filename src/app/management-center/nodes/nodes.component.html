@@ -89,51 +89,50 @@
   <clr-modal [(clrModalOpen)]="isCreateNode" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create Node</h3>
     <div class="modal-body">
-      <form [formGroup]="nodeForm" novalidate>
-        <section class="form-block">
-          <div class="form-group">
-            <label for="selects_1">Node Type</label>
-            <div class="select aligned-width">
-              <select id="selects_1" formControlName="type">
-                <option></option>
-                <option *ngFor="let type of selectableNodeTypes">
-                  {{type.toLowerCase()}}
-                </option>
-              </select>
-            </div>
-          </div>
+      <form clrForm [formGroup]="nodeForm">
 
-          <div class="form-group">
-            <label for="selects_3">Auto Discover</label>
-            <div class="select aligned-width">
-              <select id="selects_3" formControlName="autoDiscover">
-                <option>true</option>
-                <option>false</option>
-              </select>
-            </div>
-          </div>
+          <clr-select-container>
+            <label>Node Type</label>
+            <select clrSelect formControlName="type" class='clr-select'>
+              <option></option>
+              <option *ngFor="let type of selectableNodeTypes">
+                {{type.toLowerCase()}}
+              </option>
+            </select>
+          </clr-select-container>
 
-          <div class="form-group">
+          <clr-select-container>
+            <label>Auto Discover</label>
+            <select clrSelect formControlName="autoDiscover" class='clr-select'>
+              <option>true</option>
+              <option>false</option>
+            </select>
+          </clr-select-container>
+
+          <clr-input-container>
             <label for="formFileds_1">Node Name</label>
-            <input type="text" id="formFileds_1" formControlName="name">
+            <input clrInput type="text" id="formFileds_1" formControlName="name">
+          </clr-input-container>
+
+          <clr-textarea-container>
+            <label for="formFields">Other Configures</label>
+            <textarea 
+              clrTextarea
+              placeholder='{"ibms": [{"service": "snmp-ibm-service", "config": {"host": "10.1.1.1", "community": "public"}}]}'
+              formControlName="otherConfig"
+              class='clr-textarea'
+            ></textarea>
+          </clr-textarea-container>
+          
+          <div class="alertMessage" *ngIf="nodeForm.get('otherConfig').invalid">
+            Invalid JSON payload.
           </div>
 
-          <div class="form-group">
-            <label for="formFields">Other Configures</label>
-            <textarea id="formFields" rows="4"
-              placeholder='{"ibms": [{"service": "snmp-ibm-service", "config": {"host": "10.1.1.1", "community": "public"}}]}'
-              formControlName="otherConfig">
-            </textarea>
-            <div class="alertMessage" *ngIf="!jsonValid">
-              Invalid JSON payload.
-            </div>
-          </div>
-        </section>
       </form>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline" (click)="isCreateNode = false; jsonValid = true;">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="createNode()">OK</button>
+      <button type="button" [disabled]="nodeForm.invalid" class="btn btn-primary" (click)="createNode()">OK</button>
     </div>
   </clr-modal>
 

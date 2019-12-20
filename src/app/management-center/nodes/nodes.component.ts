@@ -5,16 +5,17 @@ import * as _ from 'lodash';
 import { NodeService } from '../../services/rackhd/node.service';
 import { Node, NODE_TYPE_MAP, NodeType, OBM } from '../../models';
 
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
 import {
   AlphabeticalComparator,
   DateComparator,
-  isJsonTextValid,
   ObjectFilterByKey
 } from '../../utils/inventory-operator';
+
+import { validateJSON } from '../shared/validation-rules'
 
 @Component({
   selector: 'app-nodes',
@@ -145,17 +146,16 @@ export class NodesComponent implements OnInit {
 
   createForm() {
     this.nodeForm = this.fb.group({
-      name: '',
-      type: '',
-      autoDiscover: '',
-      otherConfig: '',
+      name: ['', Validators.required],
+      type: ['', Validators.required],
+      autoDiscover: [''],
+      otherConfig: ['', validateJSON],
     });
   }
 
   createNode(): void {
     const value = this.nodeForm.value;
-    this.jsonValid = isJsonTextValid(value.otherConfig);
-    if (this.jsonValid) {
+    if (this.nodeForm.valid) {
       const jsonData = value.otherConfig ? JSON.parse(value.otherConfig) : {};
 
       // data transform
@@ -164,11 +164,14 @@ export class NodesComponent implements OnInit {
       jsonData.autoDiscover = value.autoDiscover === 'true' ? true : false;
       this.isCreateNode = false;
 
+      console.log(jsonData)
+
       this.nodeService.post(jsonData)
         .subscribe(data => {
           this.refresh();
         });
     }
+    debugger;
   }
 
   deleteSel(): void {

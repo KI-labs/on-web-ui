@@ -7,6 +7,8 @@ import { PollersService } from '../../services/rackhd/pollers.service';
 import { NodeService } from '../../services/rackhd/node.service';
 import * as _ from 'lodash';
 
+import { validateJSON } from '../shared/validation-rules'
+
 @Component({
   selector: 'app-pollers',
   templateUrl: './pollers.component.html',
@@ -31,7 +33,6 @@ export class PollersComponent implements OnInit {
 
   dgDataLoading = false;
   dgPlaceholder = 'No poller found!';
-  jsonValid = true;
 
   allNodes: Node[];
   pollerForm: FormGroup;
@@ -193,7 +194,7 @@ export class PollersComponent implements OnInit {
       type: ['', Validators.required],
       node: ['', Validators.required],
       pollInterval: 60000,
-      config: '',
+      config: ['', validateJSON],
     });
 
     this.updateForm = this.fb.group({
@@ -206,8 +207,7 @@ export class PollersComponent implements OnInit {
     const jsonData: any = {};
     const value = this.pollerForm.value;
 
-    this.jsonValid = isJsonTextValid(value.config);
-    if (this.jsonValid) {
+    if (this.pollerForm.valid) {
       // data transform
       jsonData.type = value.type;
       jsonData.node = value.node;
