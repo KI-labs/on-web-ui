@@ -58,8 +58,7 @@
     <div class="modal-body">
       <form clrForm [formGroup]="obmForm">
 
-        <!-- TODO: change dropdown-group for select -->
-          <div class="form-group node-dropdown">
+          <div class="form-group">
             <dropdown-group *ngIf="action==='create'" [data]="allNodes"
               [fields]="['id']" [labels]="['NodeId']" [columns]="[12]"
               [needReset]="false" [isDefaultForm]="true" [widths]="[28]"
