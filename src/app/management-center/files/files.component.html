@@ -75,8 +75,10 @@
     [clrModalSize]="'xl'">
     <h3 class="modal-title">{{action}} file to RackHD</h3>
     <div class="modal-body">
-      <label for="fileInput">Choose File</label>
-      <input type="file" (change)="onChange($event)" id="fileInput">
+      <clr-input-container>
+        <label for="fileInput">Choose File</label>
+        <input clrInput type="file" (change)="onChange($event)" id="fileInput">
+      </clr-input-container>
     </div>
     <div class="modal-footer">
       <button class="btn btn-primary" type="button" (click)="onCreateSubmit()">Upload</button>

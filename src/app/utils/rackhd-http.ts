@@ -8,7 +8,6 @@ import { _throw } from 'rxjs/observable/throw';
 import { timeout } from 'rxjs/operators/timeout';
 import { RackhdLocalStorage as RackHD } from './globals-util';
 import * as _ from 'lodash';
-import { ErrorHanlder } from '../services/core/error-handler.service';
 
 export class RackhdHttpService {
 
@@ -45,14 +44,12 @@ export class RackhdHttpService {
     );
   }
 
-  @ErrorHanlder()
   public getAll(query?: any, responseType?: string): Observable<any>  {
     const url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     const options = RackhdHttpService.createOptions(responseType, query);
     return this.http.get<any>(url, options);
   }
 
-  @ErrorHanlder()
   public getByIdentifier(identifier: string, responseType?: string, param?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() +
@@ -61,28 +58,24 @@ export class RackhdHttpService {
     return this.http.get<any>(url, options);
   }
 
-  @ErrorHanlder()
   public patch(body: object, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.patch<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public patchByIdentifier(identifier: string, body: any, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.patch<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public put(body: any, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.put<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public putByIdentifier(identifier: string, body: object, param?: any, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() +
@@ -91,14 +84,12 @@ export class RackhdHttpService {
     return this.http.put<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public post(body: object, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() + this.urlConfig.getAllUrl;
     return this.http.post<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public postByIdentifier(identifier: string, body: object, param?: any, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() +
@@ -107,14 +98,12 @@ export class RackhdHttpService {
     return this.http.post<any>(url, body, options);
   }
 
-  @ErrorHanlder()
   public delete(identifier: string, responseType?: string): Observable<any> {
     const options = RackhdHttpService.createOptions(responseType);
     const url = RackHD.getBaseUrl() + this.urlConfig.getByIdentifierUrl + identifier;
     return this.http.delete<any>(url, options);
   }
 
-  @ErrorHanlder()
   public deleteByIdentifiers(idList: string [], responseType?: string): Observable<any> {
     const list = [];
     _.forEach(idList, id => {
@@ -123,7 +112,6 @@ export class RackhdHttpService {
     return forkJoin(list);
   }
 
-  @ErrorHanlder()
   public upload(file: File, identifier?: string, method?: string): any {
     // Angular doesn't support upload formData with 'application/x-www-form-urlencoded'
     // RackHD files API only supports 'application/x-www-form-urlencoded' till now
@@ -171,7 +159,6 @@ export class RackhdHttpService {
     });
   }
 
-  @ErrorHanlder()
   public getMetaByIdentifier(identifier: string, responseType?: string): any  {
     const options = RackhdHttpService.createOptions(responseType);
     let url = RackHD.getBaseUrl() + this.urlConfig.getMetadataUrl + identifier;
