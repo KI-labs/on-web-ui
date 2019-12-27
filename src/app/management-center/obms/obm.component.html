@@ -56,9 +56,9 @@
     [(clrModalOpen)]="isShowModal" [clrModalSize]="'md'">
     <h3 class="modal-title">{{action | titlecase}} OBM</h3>
     <div class="modal-body">
-      <form [formGroup]="obmForm" novalidate>
-        <section class="form-block">
-          <div class="form-group node-dropdown">
+      <form clrForm [formGroup]="obmForm">
+
+          <div class="form-group">
             <dropdown-group *ngIf="action==='create'" [data]="allNodes"
               [fields]="['id']" [labels]="['NodeId']" [columns]="[12]"
               [needReset]="false" [isDefaultForm]="true" [widths]="[28]"
@@ -66,30 +66,27 @@
             </dropdown-group>
           </div>
 
-          <div *ngIf="action==='update'" class="form-group">
-            <label for="nodeId"><b>NodeId</b></label>
-            <input type="text" id="nodeId" formControlName="nodeId" class="align-width">
-          </div>
+          <clr-input-container *ngIf="action==='update'" class="form-group">
+            <label>NodeId</label>
+            <input clrInput type="text" formControlName="nodeId" class="align-width">
+          </clr-input-container>
 
-          <div class="form-group">
-            <label for="serviceField"><b>Service</b></label>
-            <div class="select align-width">
-              <select id="serviceField" formControlName="service" (change)="onServiceSelected()">
-                <option selected hidden></option>
-                <option *ngFor="let service of obmTypes;">{{ service }}</option>
-              </select>
-            </div>
-          </div>
+          <clr-select-container>
+            <label>Service</label>
+            <select clrSelect formControlName="service" (change)="onServiceSelected()">
+              <option selected hidden></option>
+              <option *ngFor="let service of obmTypes;">{{ service }}</option>
+            </select>
+          </clr-select-container>
 
           <div *ngIf="selObmService">
-            <div *ngFor="let field of configFields" class="form-group">
-              <label [for]="'id_' + field"><b>{{field | titlecase}}</b></label>
-              <input type="text" [id]="'id_' + field" [formControlName]="field" class="align-width"
+            <clr-input-container *ngFor="let field of configFields" class="form-group">
+              <label>{{field | titlecase}}</label>
+              <input clrInput type="text" [formControlName]="field" class="align-width"
                 [placeholder]="selObmService && selObmService.config[field].default || '[]'">
-            </div>
+            </clr-input-container>
           </div>
 
-        </section>
       </form>
     </div>
     <div class="modal-footer">

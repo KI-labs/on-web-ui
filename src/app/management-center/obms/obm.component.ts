@@ -168,16 +168,15 @@ export class ObmComponent implements OnInit {
   }
 
   onUpsert(): void {
-    const values = this.obmForm.value;
+    const {service, nodeId, ...values } = this.obmForm.value;
     const payload =  {
       nodeId: this.selNodeId,
-      service: values.service,
+      service,
       config: {}
     };
-    delete values.service;
-    delete values.nodeId;
-    if (values.port) { values.port = parseInt(values.port); }
+    if (values.port) { values.port = parseInt(values.port, 10); }
     _.merge(payload.config, values);
+
     this.obmsService.creatObm(payload)
     .subscribe(data => {
       this.refresh();

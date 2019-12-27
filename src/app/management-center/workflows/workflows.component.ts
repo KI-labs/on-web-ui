@@ -13,6 +13,8 @@ import * as _ from 'lodash';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Graph, ModalTypes } from '../../models';
 
+import { validateJSON } from '../shared/validation-rules'
+
 @Component({
   selector: 'app-workflows',
   templateUrl: './workflows.component.html',
@@ -33,9 +35,6 @@ export class WorkflowsComponent implements OnInit {
   // data grid helper
   dgDataLoading = false;
   dgPlaceholder = 'No workflow found!';
-
-  optionsJsonValid = true;
-  tasksJsonValid = true;
 
   modalTypes: ModalTypes;
 
@@ -172,8 +171,6 @@ export class WorkflowsComponent implements OnInit {
     this.selectedWorkflow = null;
     this.selectedWorkflows = [];
     this.isShowModal = false;
-    this.optionsJsonValid = true;
-    this.tasksJsonValid = true;
   }
 
   onDeleteSubmit() {
@@ -195,9 +192,7 @@ export class WorkflowsComponent implements OnInit {
 
   onSubmit() {
     const payload = this.modalFormGroup.value;
-    this.optionsJsonValid = isJsonTextValid(payload.options);
-    this.tasksJsonValid = isJsonTextValid(payload.tasks);
-    if (this.optionsJsonValid && this.tasksJsonValid) {
+    if (this.modalFormGroup.valid) {
       payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
       payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
       this.upsertGraph(payload);

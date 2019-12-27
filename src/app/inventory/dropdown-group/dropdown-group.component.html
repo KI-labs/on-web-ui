@@ -1,20 +1,25 @@
 <div class="row" [formGroup]="filterForm">
   <div *ngFor="let field of fields; let i=index;" [class]="classList[i]"
     [ngClass]="{'form-input': needReset, 'form-group': isDefaultForm}"
-    [ngStyle]="{'margin-top': marginTop}">
-    <label *ngIf="labels && labels[i] && labelBold" [for]="'input' + i"
-      [ngClass]="{'required': fieldsRequired[i]}"><b>{{labels[i]}}</b></label>
-    <label *ngIf="labels && labels[i] && !labelBold" [for]="'input' + i"
-      [ngClass]="{'required': fieldsRequired[i]}">{{labels[i]}}</label>
+    [ngStyle]="{'margin-top': marginTop, 'padding':'0'}">
+   
     <datalist [id]="field + fields.length">
-      <select name="item_select">
+      <select clrSelect name="item_select">
         <option [ngValue]="item" *ngFor="let item of (dropdownLists && dropdownLists[field])">
           {{item}}
         </option>
       </select>
     </datalist>
+
+    <clr-input-container>
+
+    <label *ngIf="labels && labels[i] && labelBold" [for]="'input' + i"
+      [ngClass]="{'required': fieldsRequired[i]}"><b>{{labels[i]}}</b></label>
+    <label *ngIf="labels && labels[i] && !labelBold" [for]="'input' + i"
+      [ngClass]="{'required': fieldsRequired[i]}">{{labels[i]}}</label>
+
     <clr-icon *ngIf="needSearchIcon" shape="search"></clr-icon>
-    <input #idSearcher [id]="'input' + i" type="text"
+    <input clrInput #idSearcher [id]="'input' + i" type="text"
       [ngClass]="{'form-control': true, 'input-width': !(widths && widths[i])}"
       [formControlName]="field"
       [attr.list]="field + fields.length"
@@ -23,6 +28,7 @@
       (keyup)="onSearch(idSearcher.value, field)"
       (change)="onChanged()" autocomplete="off">
     <clr-icon shape="times" *ngIf="idSearcher.value" (click)="onClear(field)" title="Clear input"></clr-icon>
+    </clr-input-container>
   </div>
   <div *ngIf="needReset" [class]="resetClass">
     <div class="button-align">
