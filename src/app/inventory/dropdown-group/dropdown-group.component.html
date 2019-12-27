@@ -1,4 +1,4 @@
-<div class="row" [formGroup]="filterForm">
+<div class="clr-row" [formGroup]="filterForm">
   <div *ngFor="let field of fields; let i=index;" [class]="classList[i]"
     [ngClass]="{'form-input': needReset, 'form-group': isDefaultForm}"
     [ngStyle]="{'margin-top': marginTop, 'padding':'0'}">
@@ -11,7 +11,7 @@
       </select>
     </datalist>
 
-    <clr-input-container>
+    <clr-input-container class='dropdown-input'>
 
     <label *ngIf="labels && labels[i] && labelBold" [for]="'input' + i"
       [ngClass]="{'required': fieldsRequired[i]}"><b>{{labels[i]}}</b></label>

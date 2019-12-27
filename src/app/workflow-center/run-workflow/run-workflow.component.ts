@@ -24,7 +24,7 @@ import { JSONEditorOptions } from 'jsoneditor';
   styleUrls: ['./run-workflow.component.scss']
 })
 export class RunWorkflowComponent implements OnInit, AfterViewInit {
-  @ViewChild('jsoneditor', { static: false }) jsoneditor: ElementRef;
+  @ViewChild('jsoneditor', {static: true}) jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
     title: '',
@@ -47,6 +47,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
   filterColumns = [4, 4, 4, 4, 4, 4];
 
+
   constructor(
     public nodeService: NodeService,
     public graphService: GraphService,
@@ -58,6 +59,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     public tagService: TagService,
     private router: Router
   ) {}
+
+  
 
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(queryParams => {
