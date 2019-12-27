@@ -38,23 +38,12 @@
       </div>
 
       <div class="check-box">
-        <!-- <clr-checkbox
-          name="checkSecureEnable"
-          id="secureConnEnable"
-          (change)="checkboxChanged()"
-          [(clrChecked)]="settingService.connSecured">
-          Enable Secure Connections
-          <i *ngIf='settingService.connSecured' class="text-indicator">
-            Note: manual certificate required for secure connection
-          </i>
-        </clr-checkbox> -->
 
         <clr-checkbox-wrapper>
           <input type="checkbox" clrCheckbox 
             name="checkSecureEnable" 
             id="secureConnEnable"
-            (change)="checkboxChanged()"
-            [(ngModel)]="settingService.connSecured"/>
+            formControlName="connSecured"/>
           <label> Enable Secure Connections</label>
           <i *ngIf='settingService.connSecured' class="text-indicator">
             Note: manual certificate required for secure connection
@@ -63,23 +52,12 @@
       </div>
 
       <div class="check-box">
-        <!-- <clr-checkbox
-          name="checkAuthEnable"
-          id="authEnable"
-          (change)="handleAuthChanged($event.target.checked)"
-          [(clrChecked)]="settingService.authEnabled">
-          Enable API Authentication
-          <i *ngIf='settingService.authEnabled' class="text-indicator">
-            Note: uncheck will clear existing token 
-          </i>
-        </clr-checkbox> -->
 
         <clr-checkbox-wrapper>
           <input type="checkbox" clrCheckbox 
           name="checkAuthEnable"
           id="authEnable"
-            ((change)="handleAuthChanged($event.target.checked)"
-            [(ngModel)]="settingService.authEnabled"/>
+          formControlName="authEnabled"/>
           <label> Enable API Authentication</label>
           <i *ngIf='settingService.authEnabled' class="text-indicator">
             Note: uncheck will clear existing token 

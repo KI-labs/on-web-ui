@@ -80,9 +80,17 @@ export class SettingComponent implements OnInit, AfterViewInit {
           {value: this.settingService.authToken, disabled: !this.settingService.authEnabled},
           {validators: [ Validators.required]}
         ),
-        
-      })
+      }),
+      connSecured: new FormControl(this.settingService.connSecured),
+      authEnabled: new FormControl(this.settingService.authEnabled),
     });
+
+    this.settingFormGroup.get('connSecured').valueChanges.subscribe((value) => {
+      this.settingService.connSecured = value;
+    })
+    this.settingFormGroup.get('authEnabled').valueChanges.subscribe((value) => {
+      this.settingService.authEnabled = value;
+    })
   }
 
   resetSettings() {
