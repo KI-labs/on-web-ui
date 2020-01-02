@@ -300,7 +300,7 @@ export class CanvasGraphComponent implements OnInit {
         const node = global.LiteGraph.createNode('rackhd/task_1');
         if (node) {
           // update node position
-          node.pos = canvas.convertEventToCanvas(firstEvent);
+          node.pos = canvas.convertEventToCanvasOffset(firstEvent);
           // update node data
           const injectName = v.content;
           self.graphTaskService.getByIdentifier(injectName)
