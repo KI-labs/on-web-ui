@@ -1,4 +1,4 @@
-<div class="clr-row" [formGroup]="filterForm">
+<div class="clr-row" [ngClass]="{'search-clr-row': needSearchIcon}" [formGroup]="filterForm">
   <div *ngFor="let field of fields; let i=index;" [class]="classList[i]"
     [ngClass]="{'form-input': needReset, 'form-group': isDefaultForm}"
     [ngStyle]="{'margin-top': marginTop, 'padding':'0'}">
@@ -11,24 +11,25 @@
       </select>
     </datalist>
 
-    <clr-input-container class='dropdown-input'>
-
-    <label *ngIf="labels && labels[i] && labelBold" [for]="'input' + i"
-      [ngClass]="{'required': fieldsRequired[i]}"><b>{{labels[i]}}</b></label>
-    <label *ngIf="labels && labels[i] && !labelBold" [for]="'input' + i"
-      [ngClass]="{'required': fieldsRequired[i]}">{{labels[i]}}</label>
-
     <clr-icon *ngIf="needSearchIcon" shape="search"></clr-icon>
-    <input clrInput #idSearcher [id]="'input' + i" type="text"
-      [ngClass]="{'form-control': true, 'input-width': !(widths && widths[i])}"
-      [formControlName]="field"
-      [attr.list]="field + fields.length"
-      [size]="widths && widths[i] || 32"
-      [placeholder]="placeholders && placeholders[i] || ''"
-      (keyup)="onSearch(idSearcher.value, field)"
-      (change)="onChanged()" autocomplete="off">
-    <clr-icon shape="times" *ngIf="idSearcher.value" (click)="onClear(field)" title="Clear input"></clr-icon>
+
+    <clr-input-container class='dropdown-input' [ngClass]="{'search-input-container': needSearchIcon}">
+      <label *ngIf="labels && labels[i] && labelBold" [for]="'input' + i"
+        [ngClass]="{'required': fieldsRequired[i]}"><b>{{labels[i]}}</b></label>
+      <label *ngIf="labels && labels[i] && !labelBold" [for]="'input' + i"
+        [ngClass]="{'required': fieldsRequired[i]}">{{labels[i]}}</label>
+      <input clrInput #idSearcher [id]="'input' + i" type="text"
+        [ngClass]="{'form-control': true, 'input-width': !(widths && widths[i])}"
+        [formControlName]="field"
+        [attr.list]="field + fields.length"
+        [size]="widths && widths[i] || 32"
+        [placeholder]="placeholders && placeholders[i] || ''"
+        (keyup)="onSearch(idSearcher.value, field)"
+        (change)="onChanged()" autocomplete="off">
     </clr-input-container>
+
+    <clr-icon shape="times" *ngIf="idSearcher.value" (click)="onClear(field)" title="Clear input"></clr-icon>
+  
   </div>
   <div *ngIf="needReset" [class]="resetClass">
     <div class="button-align">

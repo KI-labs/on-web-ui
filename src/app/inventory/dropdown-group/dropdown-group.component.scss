@@ -44,3 +44,12 @@ label.required:after {
   padding-right: 0.5rem;
   padding-left: 0.5rem;
 }
+
+.search {
+  &-input-container{
+    padding: 0
+  }
+  &-clr-row{
+    margin: 0;
+  }
+}

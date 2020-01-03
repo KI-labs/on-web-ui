@@ -47,8 +47,6 @@ export class DrawUtils {
         // apply transformations
         ctx.save();
         ctx.scale(this.scale, this.scale);
-        ctx.translate(this.offset[0], this.offset[1]);
-
         // render BG
         if (this.background_image && this.scale > 0.5) {
           ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
