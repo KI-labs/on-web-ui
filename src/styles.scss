@@ -13,11 +13,10 @@
 
 html, body, main{
   height: 100vh;
-}
-
-.content-container {
   overflow: auto;
-  height: calc(100vh - 60px);
+}
+.main-container .content-container {
+  min-height: calc(100vh - 60px);
 }
 
 .offset-header {
