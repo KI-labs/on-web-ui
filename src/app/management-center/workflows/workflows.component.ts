@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   AlphabeticalComparator,
-  isJsonTextValid,
   ObjectFilterByKey
 } from '../../utils/inventory-operator';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -13,7 +12,6 @@ import * as _ from 'lodash';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Graph, ModalTypes } from '../../models';
 
-import { validateJSON } from '../shared/validation-rules'
 
 @Component({
   selector: 'app-workflows',
@@ -96,10 +94,10 @@ export class WorkflowsComponent implements OnInit {
       tasks: new FormControl('')
     });
     if (!_.isEmpty(workflow)) {
-      const _workflow = _.cloneDeep(workflow);
-      _workflow.options = JSON.stringify(_workflow.options);
-      _workflow.tasks = JSON.stringify(_workflow.tasks);
-      this.modalFormGroup.patchValue(_workflow);
+      const workflowCloned = _.cloneDeep(workflow);
+      workflowCloned.options = JSON.stringify(workflowCloned.options);
+      workflowCloned.tasks = JSON.stringify(workflowCloned.tasks);
+      this.modalFormGroup.patchValue(workflowCloned);
     }
   }
 

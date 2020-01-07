@@ -31,7 +31,7 @@ export class CanvasGraphComponent implements OnInit {
   @ViewChild('mycanvas', { static: false }) editorCanvas: any;
   @Input() onWorkflowInput: any;
   @Input() editable = true;
-  @Output() onWorkflowChanged = new EventEmitter();
+  @Output() workflowChanged = new EventEmitter();
 
   workflow: any;
   canvas: any;
@@ -56,7 +56,7 @@ export class CanvasGraphComponent implements OnInit {
     if (this.editable) {
       this.graphTaskService.getAll()
       .subscribe(allTasks => {
-        this.taskInjectableNames = allTasks.map(function(item) {
+        this.taskInjectableNames = allTasks.map(item => {
           return item.injectableName;
         });
       });
@@ -108,7 +108,7 @@ export class CanvasGraphComponent implements OnInit {
 
   // refresh graph
   afterWorkflowUpdate(reRender = false) {
-    this.onWorkflowChanged.emit(_.cloneDeep(this.workflow));
+    this.workflowChanged.emit(_.cloneDeep(this.workflow));
     if (reRender) {
       this.drawNodes();
     }
@@ -145,10 +145,6 @@ export class CanvasGraphComponent implements OnInit {
       return;
     }
 
-    const self = this;
-    const canvas = global.LGraphCanvas.active_canvas;
-    const ref_window = canvas.getCanvasWindow();
-
     const entries = [];
     const value = node.properties.log;
     // if value could contain invalid html characters, clean that
@@ -160,26 +156,9 @@ export class CanvasGraphComponent implements OnInit {
       content: '<span id="errorLogText">' + value + '</span><h4>click to clipboard</h4>',
       value
     });
+
     if (!entries.length) {
       return;
-    }
-
-    const menu = new global.LiteGraph.ContextMenu(entries, {
-      event: e,
-      callback: copyToClipboard,
-      parentMenu: null,
-      allow_html: true,
-      node
-    }, ref_window);
-
-    function copyToClipboard() {
-      const inp = document.createElement('input');
-      document.body.appendChild(inp);
-      // for better view, if you replace \n with <br>, please recover them here
-      inp.value = document.getElementById('errorLogText').textContent;
-      inp.select();
-      document.execCommand('copy', false);
-      inp.remove();
     }
 
     return false;
@@ -207,7 +186,7 @@ export class CanvasGraphComponent implements OnInit {
   /* rewrite lib class prototype functions */
   getCanvasMenuOptions() {
     const self = this;
-    return function() {
+    return () => {
       if (!self.editable) { return []; }
       const options = [
         {content: 'Add Task', has_submenu: true, callback: self.addNode()}
@@ -221,10 +200,9 @@ export class CanvasGraphComponent implements OnInit {
     const self = this;
 
     // this function is referenced from lightgraph src.
-    return function(node, options, e, preMenu) {
-      const preE = e;
+    return (node, options, e, preMenu) => {
       const canvas = global.LGraphCanvas.active_canvas;
-      const ref_window = canvas.getCanvasWindow();
+      const refWindow = canvas.getCanvasWindow();
       const filterInputHtml = '<input id=\'graphNodeTypeFilter\' placeholder=\'filter\'>';
 
       const taskNames = self.taskInjectableNames.slice(0, 9);
@@ -239,7 +217,7 @@ export class CanvasGraphComponent implements OnInit {
         callback: innerCreate,
         parentMenu: preMenu,
         allow_html: true
-      }, ref_window);
+      }, refWindow);
 
       const taskFilter = new Subject();
 
@@ -262,20 +240,20 @@ export class CanvasGraphComponent implements OnInit {
       function reGenerateMenu(term: string) {
         // close old task list menu and add a new one;
         taskMenu.close(undefined, true);
-        const values = [];
-        values.push({content: filterInputHtml});
+        const newValues = [];
+        newValues.push({content: filterInputHtml});
         const filteredTaskNames = _.filter(self.taskInjectableNames, (type) => {
           return _.toLower(type).includes(_.toLower(term));
         });
         for (const injectableName of filteredTaskNames.slice(0, 9)) {
-          values.push({content: injectableName});
+          newValues.push({content: injectableName});
         }
-        taskMenu = new global.LiteGraph.ContextMenu(values, {
+        taskMenu = new global.LiteGraph.ContextMenu(newValues, {
           event: e,
           callback: innerCreate,
           parentMenu: preMenu,
           allow_html: true
-        }, ref_window);
+        }, refWindow);
         // remember to bind new input again, because the old one is destroyed when menu close.
         // remember to add fill the new input with current term, make it more proper.
         bindInput(term);
@@ -290,17 +268,17 @@ export class CanvasGraphComponent implements OnInit {
       }
 
       // click actions of task list menu
-      function innerCreate(v, e) {
+      function innerCreate(v, event) {
         // keep menu after click input bar
         if (v.content === filterInputHtml) {
           return true;
         }
 
         const firstEvent = preMenu.getFirstEvent();
-        const node = global.LiteGraph.createNode('rackhd/task_1');
-        if (node) {
+        const createdNode = global.LiteGraph.createNode('rackhd/task_1');
+        if (createdNode) {
           // update node position
-          node.pos = canvas.convertEventToCanvasOffset(firstEvent);
+          createdNode.pos = canvas.convertEventToCanvasOffset(firstEvent);
           // update node data
           const injectName = v.content;
           self.graphTaskService.getByIdentifier(injectName)
@@ -309,10 +287,10 @@ export class CanvasGraphComponent implements OnInit {
             const label = 'new-task-' + uuid().substr(0, 10);
             _.assign(data, {label});
             _.assign(data, {taskDefinition: task});
-            node.properties.task = data;
-            node.title = node.properties.task.label;
-            canvas.graph.add(node);
-            self.addTaskForWorkflow(node.properties.task);
+            createdNode.properties.task = data;
+            createdNode.title = createdNode.properties.task.label;
+            canvas.graph.add(createdNode);
+            self.addTaskForWorkflow(createdNode.properties.task);
           });
         }
       }
@@ -323,7 +301,7 @@ export class CanvasGraphComponent implements OnInit {
 
   getNodeMenuOptions() {
     const self = this;
-    return function(node) {
+    return (node) => {
       const options = [];
       if (!self.editable) { return options; }
       if (node.removable !== false) {
@@ -403,8 +381,8 @@ export class CanvasGraphComponent implements OnInit {
     const positionMatrix = {};
     const utils = new PositionUtils(this.workflow.tasks, taskIdKeyName, taskWaitOnKey);
 
-    const canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth);
-    const canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight);
+    const canvasWidth = parseInt(this.editorCanvas.nativeElement.offsetWidth, 10);
+    const canvasHeight = parseInt(this.editorCanvas.nativeElement.offsetHeight, 10);
 
     const waitOnsMatrix = utils.getWaitOnsMatrix();
     const colPosMatrix = utils.generateColPos(waitOnsMatrix);

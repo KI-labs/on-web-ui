@@ -116,7 +116,7 @@ export class RackhdHttpService {
     // Angular doesn't support upload formData with 'application/x-www-form-urlencoded'
     // RackHD files API only supports 'application/x-www-form-urlencoded' till now
     // Thus XMLHttpRequest() is used instead of HttpClient POST/PUT methods.
-    return Observable.create( observer => {
+    return new Observable( observer => {
       const xhr = new XMLHttpRequest();
       try {
         let url = this.urlConfig.uploadSuffix ? this.urlConfig.uploadSuffix : '';

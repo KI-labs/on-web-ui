@@ -48,15 +48,15 @@ export class SettingService {
 
   loadInitialConfig() {
     _.forEach(_.keys(RACKHD_CONFIG), key => {
-      const _key = 'rackhd.' + key;
-      if (!window.localStorage.getItem(_key)) {
+      const keyString = 'rackhd.' + key;
+      if (!window.localStorage.getItem(keyString)) {
         this[key] = RACKHD_CONFIG[key];
       }
     });
   }
 
   clearAllConfig() {
-    _.forEach(_.keys(RACKHD_CONFIG), function(key) {
+    _.forEach(_.keys(RACKHD_CONFIG), (key) => {
       key = 'rackhd.' + key;
       if (window.localStorage.getItem(key)) {
         window.localStorage.removeItem(key);

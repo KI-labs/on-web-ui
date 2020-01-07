@@ -11,13 +11,13 @@ export class NodeExtensionService {
   init(connectCb, disconnectCb, clickCb) {
     if (this.initialized) { return; }
     // inject hook actions
-    TaskNode.prototype.onConnectionsChange = function(connection, slot, connected, link_info) {
+    TaskNode.prototype.onConnectionsChange = function(connection, slot, connected, linkInfo) {
       if (connection === global.LiteGraph.OUTPUT) {
       }
       if (connection === global.LiteGraph.INPUT) {
-        const targetNode = this.graph.getNodeById( link_info.target_id );
-        const originNode = this.graph.getNodeById(link_info.origin_id);
-        const originOutput = originNode.outputs[link_info.origin_slot];
+        const targetNode = this.graph.getNodeById(linkInfo.target_id);
+        const originNode = this.graph.getNodeById(linkInfo.origin_id);
+        const originOutput = originNode.outputs[linkInfo.origin_slot];
         const originOutputName = originOutput.name;
         const task = targetNode.properties.task;
         const pretask = originNode.properties.task;
@@ -53,32 +53,37 @@ export class NodeExtensionService {
 
       ctx.textAlign = 'center';
       ctx.fillStyle = this.clicked ? 'black' : '#c25400';
-      if ( this.properties.font ) {
-          ctx.font = this.properties.font;
+      if (this.properties.font) {
+        ctx.font = this.properties.font;
       }
-      ctx.fillText('error log', this.size[0] * 0.25, this.size[1] * 0.8 );
+      ctx.fillText('error log', this.size[0] * 0.25, this.size[1] * 0.8);
     };
 
-    TaskNode.prototype.onMouseDown = function(e, local_pos) {
-      if (local_pos[0] > 1 && local_pos[1] > this.size[1] / 2 && local_pos[0] < (this.size[0] / 2 - 2) && local_pos[1] < (this.size[1] - 2) ) {
+    TaskNode.prototype.onMouseDown = function(e, localPos) {
+      if (
+        localPos[0] > 1 &&
+        localPos[1] > this.size[1] / 2 &&
+        localPos[0] < (this.size[0] / 2 - 2) &&
+        localPos[1] < (this.size[1] - 2)
+      ) {
         this.clicked = true;
-        this.trigger( 'clicked', this.properties.message );
+        this.trigger('clicked', this.properties.message);
         clickCb(e, this);
         return true;
-        }
+      }
     };
 
     TaskNode.prototype.onMouseUp = function(e) {
-    	this.clicked = false;
+      this.clicked = false;
     };
 
     // Krein Peng: (TODO) better solution is to let node accept multiple input
     // However this requires to change the node model source code
     // Below code won't support graphs have more than 3 waitOns
-    global.LiteGraph.registerNodeType('rackhd/task_0', TaskNode_0);
-    global.LiteGraph.registerNodeType('rackhd/task_1', TaskNode_1);
-    global.LiteGraph.registerNodeType('rackhd/task_2', TaskNode_2);
-    global.LiteGraph.registerNodeType('rackhd/task_3', TaskNode_3);
+    global.LiteGraph.registerNodeType('rackhd/task_0', TaskNode0);
+    global.LiteGraph.registerNodeType('rackhd/task_1', TaskNode1);
+    global.LiteGraph.registerNodeType('rackhd/task_2', TaskNode2);
+    global.LiteGraph.registerNodeType('rackhd/task_3', TaskNode3);
     this.initialized = true;
   }
 }
@@ -106,27 +111,27 @@ class TaskNode {
   }
 }
 
-class TaskNode_0 extends TaskNode {
+class TaskNode0 extends TaskNode {
   constructor() {
     super();
   }
 }
 
-class TaskNode_1 extends TaskNode {
-  constructor() {
-    super();
-    this.addInput('waitOn', global.LiteGraph.EVENT);
-  }
-}
-
-class TaskNode_2 extends TaskNode_1 {
+class TaskNode1 extends TaskNode {
   constructor() {
     super();
     this.addInput('waitOn', global.LiteGraph.EVENT);
   }
 }
 
-class TaskNode_3 extends TaskNode_2 {
+class TaskNode2 extends TaskNode1 {
+  constructor() {
+    super();
+    this.addInput('waitOn', global.LiteGraph.EVENT);
+  }
+}
+
+class TaskNode3 extends TaskNode2 {
   constructor() {
     super();
     this.addInput('waitOn', global.LiteGraph.EVENT);

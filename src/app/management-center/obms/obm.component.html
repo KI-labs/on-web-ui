@@ -1,8 +1,8 @@
 <div class="app-obm">
 
-  <inventory-header [allItems]="allObms" [name]="'OBM'"
+  <app-inventory-header [allItems]="allObms" [name]="'OBM'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedObms">
@@ -44,13 +44,13 @@
     </div>
   </div>
 
-  <details-modal *ngIf="action === 'detail'" [(isPop)]="isShowModal" [data]="selectedObm"
+  <app-details-modal *ngIf="action === 'detail'" [(isPop)]="isShowModal" [data]="selectedObm"
     [title]="'OBM ' + (selectedObm && selectedObm.id)">
-  </details-modal>
+  </app-details-modal>
 
-  <details-modal *ngIf="action === 'Config'" [(isPop)]="isShowModal" [data]="rawData"
+  <app-details-modal *ngIf="action === 'Config'" [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="'OBM ' + (selectedObm && selectedObm.id)">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="action==='update' || action==='create'"
     [(clrModalOpen)]="isShowModal" [clrModalSize]="'md'">
@@ -59,11 +59,11 @@
       <form clrForm [formGroup]="obmForm">
 
           <div class="form-group">
-            <dropdown-group *ngIf="action==='create'" [data]="allNodes"
+            <app-dropdown-group *ngIf="action==='create'" [data]="allNodes"
               [fields]="['id']" [labels]="['NodeId']" [columns]="[12]"
               [needReset]="false" [isDefaultForm]="true" [widths]="[28]"
               (selected)="onNodeSelected($event)" (cleared)="onNodeClear()">
-            </dropdown-group>
+            </app-dropdown-group>
           </div>
 
           <clr-input-container *ngIf="action==='update'" class="form-group">
@@ -96,8 +96,8 @@
     </div>
   </clr-modal>
 
-  <confirm-modal *ngIf="action === 'delete'" [(isPop)]="isShowModal" title="OBMs"
+  <app-confirm-modal *ngIf="action === 'delete'" [(isPop)]="isShowModal" title="OBMs"
     (confirm)="onConfirm($event)" [data]="selectedObms">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

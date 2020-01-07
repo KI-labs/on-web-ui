@@ -211,11 +211,11 @@ export class OsInstallComponent implements OnInit {
 
   renderNodeInfo(nodes) {
     const list = _.map(nodes, node => {
-      return forkJoin(
+      return forkJoin([
         this.getNodeSku(node).pipe(catchError( () => of(null))),
         this.getNodeObm(node).pipe(catchError( () => of(null))),
         this.getNodeTag(node).pipe(catchError( () => of(null)))
-      ).pipe(
+      ]).pipe(
           map(results => {
             node.sku = results[0];
             node.obms = results[1];

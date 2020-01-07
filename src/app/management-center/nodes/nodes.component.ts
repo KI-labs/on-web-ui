@@ -15,7 +15,7 @@ import {
   ObjectFilterByKey
 } from '../../utils/inventory-operator';
 
-import { validateJSON } from '../shared/validation-rules'
+import { validateJSON } from '../shared/validation-rules';
 
 @Component({
   selector: 'app-nodes',
@@ -83,13 +83,12 @@ export class NodesComponent implements OnInit {
     private fb: FormBuilder) {}
 
   ngOnInit() {
-    const self = this;
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
         this.nodeTypes = _.transform(
           data,
-          function(result, item) {
+          (result, item) => {
             const dt = new NodeType();
             if (_.has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;

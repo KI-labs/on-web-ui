@@ -1,8 +1,8 @@
 <div class="app-sku">
 
-  <inventory-header [allItems]="allSkus" [name]="'SKU'"
+  <app-inventory-header [allItems]="allSkus" [name]="'SKU'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedSkus">
@@ -59,13 +59,13 @@
       </span>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
+  <app-details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
     [title]="'SKU ' + (selectedSku && selectedSku.id)">
-  </details-modal>
+  </app-details-modal>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="'SKU ' + selectedSku.name">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">
     <h3 class="modal-title" *ngIf="!updateTheSku">Create SKU</h3>
@@ -143,8 +143,8 @@
     </div>
   </clr-modal>
 
-  <confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
+  <app-confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
     (confirm)="onConfirm($event)" [data]="selectedSkus">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

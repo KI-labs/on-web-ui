@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StringOperator } from '../../utils/inventory-operator';
 
 @Component({
-  selector: 'inventory-header',
+  selector: 'app-inventory-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   encapsulation: ViewEncapsulation.None

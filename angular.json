@@ -112,6 +112,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
+            "tslintConfig": "tslint.json",
             "exclude": [
               "**/node_modules/**"
             ]

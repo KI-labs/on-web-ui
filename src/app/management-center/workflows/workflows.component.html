@@ -1,8 +1,8 @@
 <div class="app-graph">
 
-  <inventory-header [allItems]="allWorkflows" [name]="'Workflow Defintion'"
+  <app-inventory-header [allItems]="allWorkflows" [name]="'Workflow Defintion'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
@@ -56,10 +56,10 @@
     </div>
   </div>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
     <h3 class="modal-title">Are you sure you want to delete below workflows</h3>

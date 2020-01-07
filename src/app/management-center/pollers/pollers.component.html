@@ -1,8 +1,8 @@
 <div class="app-pollers">
 
-  <inventory-header [allItems]="allPollers" [name]="'Poller'"
+  <app-inventory-header [allItems]="allPollers" [name]="'Poller'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedPollers">
@@ -76,13 +76,13 @@
     </div>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
+  <app-details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
     [title]="'poller ' + (selectedPoller && selectedPoller.id)">
-  </details-modal>
+  </app-details-modal>
 
-  <details-modal [(isPop)]="isShowLatestData" [data]="currentLatestData"
+  <app-details-modal [(isPop)]="isShowLatestData" [data]="currentLatestData"
     [title]="'latest data of poller ' + (currentPoller && currentPoller.id)">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create poller</h3>
@@ -164,8 +164,8 @@
     </div>
   </clr-modal>
 
-  <confirm-modal [(isPop)]="isDelete" title="pollers"
+  <app-confirm-modal [(isPop)]="isDelete" title="pollers"
     (confirm)="onConfirm($event)" [data]="selectedPollers">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

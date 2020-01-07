@@ -15,7 +15,7 @@ import { StringOperator } from '../../utils/inventory-operator';
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'dropdown-group',
+  selector: 'app-dropdown-group',
   templateUrl: './dropdown-group.component.html',
   styleUrls: ['./dropdown-group.component.scss'],
 })

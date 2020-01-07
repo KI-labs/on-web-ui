@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'no-content',
+  selector: 'app-no-content',
   template: `
     <div>
       <h1 style="margin-top: 60px;">404: page not found</h1>

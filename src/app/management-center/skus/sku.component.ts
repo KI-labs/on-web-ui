@@ -184,7 +184,7 @@ export class SkuComponent implements OnInit {
       if (_.isEmpty(jsonData.rules)) {
         self.rulesJsonValid = false;
       }
-      _.forEach(_.map(jsonData.rules, 'path'), function(item) {
+      _.forEach(_.map(jsonData.rules, 'path'), (item) => {
           if (_.isUndefined(item)) {
             self.rulesJsonValid = false;
           }

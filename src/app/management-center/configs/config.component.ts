@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlphabeticalComparator, ObjectFilterByKey} from '../../utils/inventory-operator';
-import { FormGroup, FormControl }   from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import * as _ from 'lodash';
 
 import { ConfigService } from '../services/config.service';
@@ -44,15 +44,15 @@ export class ConfigComponent implements OnInit {
   getAllConfig(): void {
     this.configService.getAll()
       .subscribe(data => {
-        const _data = [];
+        const newData = [];
         _.forEach(_.keys(data), (key) => {
           // Remove unnecessary enviroment configures
           if (key.match('^[a-z].*')) {
-            _data.push({key, value: data[key]});
+            newData.push({key, value: data[key]});
           }
         });
-        this.configStore = _data;
-        this.allConfigs = _data;
+        this.configStore = newData;
+        this.allConfigs = newData;
         this.dgDataLoading = false;
       });
   }
@@ -116,7 +116,7 @@ export class ConfigComponent implements OnInit {
     let value: any = this.modalFormGroup.get('value').value;
     const method: string = this.getHttpMethod();
     if (this.configureType === 'number') {
-      value = parseInt(value);
+      value = parseInt(value, 10);
     } else if (this.configureType === 'object') {
       value = JSON.parse(value);
     }

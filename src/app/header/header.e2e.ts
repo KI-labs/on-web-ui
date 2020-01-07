@@ -13,8 +13,8 @@ describe('Header', () => {
   });
 
   afterAll(async () => {
-      await browser.wait(function() {
-      return browser.getCurrentUrl().then(function(url) {
+      await browser.wait(() => {
+      return browser.getCurrentUrl().then((url) => {
         return /managementCenter\/nodes$/.test(url);
       });
     }, 10000);

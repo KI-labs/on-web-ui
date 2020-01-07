@@ -1,9 +1,9 @@
 <div class="profile-app">
 
-  <inventory-header [allItems]="allProfiles" [name]="'Profile'"
+  <app-inventory-header [allItems]="allProfiles" [name]="'Profile'"
     [isDeleteRequired]="false"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading">
@@ -37,10 +37,10 @@
       <clr-dg-footer></clr-dg-footer>
     </clr-datagrid>
 
-    <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+    <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
       [(isPop)]="isShowModal" [dataType]="action + 'data'" [title]="selectedProfile.name"
       [isJson]="action==='Meta'" [data]="rawData">
-    </details-modal>
+    </app-details-modal>
 
     <clr-modal
       *ngIf="modalTypes.formActions.indexOf(action) !== -1"

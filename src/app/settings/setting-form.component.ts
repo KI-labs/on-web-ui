@@ -24,7 +24,7 @@ import * as _ from 'lodash';
 })
 
 export class SettingComponent implements OnInit, AfterViewInit {
-  @Output() onSave: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() Save: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   defaultDirty: boolean;
   tokenDirty: boolean;
@@ -87,10 +87,10 @@ export class SettingComponent implements OnInit, AfterViewInit {
 
     this.settingFormGroup.get('connSecured').valueChanges.subscribe((value) => {
       this.settingService.connSecured = value;
-    })
+    });
     this.settingFormGroup.get('authEnabled').valueChanges.subscribe((value) => {
       this.settingService.authEnabled = value;
-    })
+    });
   }
 
   resetSettings() {
@@ -205,13 +205,13 @@ export class SettingComponent implements OnInit, AfterViewInit {
     });
     this.settingService.authEnabled = this.initialConfigs.authEnabled;
     this.settingService.connSecured = this.initialConfigs.connSecured;
-    this.onSave.emit(true);
+    this.Save.emit(true);
     this.accessRackhdApi();
   }
 
   onSubmit() {
     this.submitFormValues();
-    this.onSave.emit(true);
+    this.Save.emit(true);
     window.location.reload();
   }
 }

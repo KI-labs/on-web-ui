@@ -1,9 +1,9 @@
 <div class="config-app">
 
-  <inventory-header [allItems]="allConfigs"
+  <app-inventory-header [allItems]="allConfigs"
     [isDeleteRequired]="false" [name]="'Configure'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading">

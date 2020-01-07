@@ -9,7 +9,7 @@ import {
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'details-modal',
+  selector: 'app-details-modal',
   templateUrl: './details-modal.component.html',
   styleUrls: ['./details-modal.component.scss'],
   encapsulation: ViewEncapsulation.None

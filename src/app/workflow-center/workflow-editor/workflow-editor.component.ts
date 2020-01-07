@@ -5,8 +5,6 @@ import { GraphService } from '../../services/rackhd/graph.service';
 import { JSONEditor } from '../../utils/json-editor';
 import { JSONEditorOptions } from 'jsoneditor';
 
-const global = (window as any);
-
 @Component({
   selector: 'app-workflow-editor',
   templateUrl: './workflow-editor.component.html',

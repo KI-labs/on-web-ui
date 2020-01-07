@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Poller, Node , POLLER_INTERVAL} from '../../models';
+import { Poller, Node, POLLER_INTERVAL } from '../../models';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, DateComparator, ObjectFilterByKey, isJsonTextValid }
-  from '../../utils/inventory-operator';
+import { AlphabeticalComparator, DateComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import { PollersService } from '../../services/rackhd/pollers.service';
 import { NodeService } from '../../services/rackhd/node.service';
 import * as _ from 'lodash';
 
-import { validateJSON } from '../shared/validation-rules'
+import { validateJSON } from '../shared/validation-rules';
 
 @Component({
   selector: 'app-pollers',
@@ -101,19 +100,19 @@ export class PollersComponent implements OnInit {
 
   getAllPollers(): void {
     this.pollersService.getAll()
-    .subscribe(data => {
-      if (_.isEmpty(data)) {
-        this.dgDataLoading = false;
-        this.allPollers = [];
-        this.pollerStore = [];
-        return null;
-      }
-      this.allPollers = data;
-      this.pollerStore = data;
-      for (const poller of data) {
-        this.getLatestData(poller);
-      }
-    });
+      .subscribe(data => {
+        if (_.isEmpty(data)) {
+          this.dgDataLoading = false;
+          this.allPollers = [];
+          this.pollerStore = [];
+          return null;
+        }
+        this.allPollers = data;
+        this.pollerStore = data;
+        for (const poller of data) {
+          this.getLatestData(poller);
+        }
+      });
   }
 
   goToDetail(poller: Poller) {
@@ -163,18 +162,18 @@ export class PollersComponent implements OnInit {
     }
     const postData = JSON.stringify(jsonData);
     this.pollersService.patchByIdentifier(this.updatePoller.id, postData)
-    .subscribe(data => {
-      this.refresh();
-    });
+      .subscribe(data => {
+        this.refresh();
+      });
   }
 
   getLatestData(poller: Poller): void {
     this.dgDataLoading = true;
     this.pollersService.getLatestData(poller.id)
-    .subscribe(latestData => {
-      poller.latestData = latestData;
-      this.dgDataLoading = false;
-    });
+      .subscribe(latestData => {
+        poller.latestData = latestData;
+        this.dgDataLoading = false;
+      });
   }
 
   refresh() {
@@ -211,7 +210,7 @@ export class PollersComponent implements OnInit {
       // data transform
       jsonData.type = value.type;
       jsonData.node = value.node;
-      jsonData.pollInterval = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval);
+      jsonData.pollInterval = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval, 10);
       jsonData.config = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
 
       this.isCreatePoller = false;
@@ -229,9 +228,9 @@ export class PollersComponent implements OnInit {
     });
 
     this.pollersService.deleteByIdentifiers(list)
-    .subscribe(results => {
-      this.refresh();
-    });
+      .subscribe(results => {
+        this.refresh();
+      });
   }
 
   showPollerLatestData(poller: Poller) {

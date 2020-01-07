@@ -1,9 +1,9 @@
 <div class="app-catalogs">
 
-  <inventory-header [allItems]="allCatalogs"
+  <app-inventory-header [allItems]="allCatalogs"
     [isDeleteRequired]="false" [isCreateRequired]="false" [name]="'Catalog'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading">
@@ -43,9 +43,11 @@
       <clr-dg-footer></clr-dg-footer>
     </clr-datagrid>
 
-    <details-modal [(isPop)]="isShowDetail" [data]="selectedCatalog"
-      [title]="selectedCatalog && selectedCatalog.source">
-    </details-modal>
+    <app-details-modal 
+      [(isPop)]="isShowDetail"
+      [data]="selectedCatalog"
+      [title]="selectedCatalog && selectedCatalog.source"
+    ></app-details-modal>
   </div>
 
 </div>

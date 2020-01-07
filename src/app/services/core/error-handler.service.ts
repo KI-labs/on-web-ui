@@ -34,7 +34,7 @@ export class ErrorHandlerService {
 }
 
 export function  ErrorHanlder() {
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value; // save a reference to the original method
     const  newMethod = {
         value(...args: any[]) {

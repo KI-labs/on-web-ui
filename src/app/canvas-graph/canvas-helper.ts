@@ -21,8 +21,8 @@ export class DrawUtils {
   public static drawBackCanvas() {
     return function() {
       const canvas = this.bgcanvas;
-      if (canvas.width != this.canvas.width ||
-        canvas.height != this.canvas.height) {
+      if (canvas.width !== this.canvas.width ||
+        canvas.height !== this.canvas.height) {
         canvas.width = this.canvas.width;
         canvas.height = this.canvas.height;
       }
@@ -51,12 +51,12 @@ export class DrawUtils {
         if (this.background_image && this.scale > 0.5) {
           ctx.globalAlpha = (1.0 - 0.5 / this.scale) * this.editor_alpha;
           ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.imageSmoothingEnabled = false;
-          if (!this._bg_img || this._bg_img.name != this.background_image) {
+          if (!this._bg_img || this._bg_img.name !== this.background_image) {
             this._bg_img = new Image();
             this._bg_img.name = this.background_image;
             this._bg_img.src = this.background_image;
             const that = this;
-            this._bg_img.onload = function() {
+            this._bg_img.onload = () => {
               that.draw(true, true);
             };
           }
@@ -71,7 +71,12 @@ export class DrawUtils {
           }
           if (pattern) {
             ctx.fillStyle = pattern;
-            ctx.fillRect(this.visible_area[0], this.visible_area[1], this.visible_area[2] - this.visible_area[0], this.visible_area[3] - this.visible_area[1]);
+            ctx.fillRect(
+              this.visible_area[0],
+              this.visible_area[1],
+              this.visible_area[2] - this.visible_area[0],
+              this.visible_area[3] - this.visible_area[1]
+              );
             ctx.fillStyle = 'transparent';
           }
 
@@ -85,8 +90,12 @@ export class DrawUtils {
 
         // DEBUG: show clipping area
         // ctx.fillStyle = "red";
-        // ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - this.visible_area[0] - 20, this.visible_area[3] - this.visible_area[1] - 20);
-
+        // ctx.fillRect(
+        // this.visible_area[0] + 10,
+        // this.visible_area[1] + 10,
+        // this.visible_area[2] - this.visible_area[0] - 20,
+        //  this.visible_area[3] - this.visible_area[1] - 20
+        //  );
         // bg
         ctx.strokeStyle = 'transparent'; // change border to white
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
@@ -194,14 +203,13 @@ export class DrawUtils {
       const waitedBysMatrix = this.getWaitedBysMatrix(this.tasks);
       _.forEach(allTaskIds, (taskId) => {
         const curNode = taskNodeMatrix[taskId];
-        const task = curNode.properties.task;
         const waitedByTasks = waitedBysMatrix[taskId];
-        _.forEach(waitedByTasks, (state, taskId) => {
+        _.forEach(waitedByTasks, (state, waitedTaskId) => {
           const curNodeOutputSlot = CONSTS.outputSlots[state];
-          const nextNodeInputSlot = inputSlotIndexes[taskId];
-          const nextNode = taskNodeMatrix[taskId];
+          const nextNodeInputSlot = inputSlotIndexes[waitedTaskId];
+          const nextNode = taskNodeMatrix[waitedTaskId];
           curNode.connect(curNodeOutputSlot, nextNode, nextNodeInputSlot);
-          inputSlotIndexes[taskId] += 1;
+          inputSlotIndexes[waitedTaskId] += 1;
         });
       });
     }
@@ -225,8 +233,7 @@ export class PositionUtils {
      */
     public getWaitOnsMatrix(): any {
       return _.transform(this.tasks, (result, value, key) => {
-        const _value: any = value as any;
-        result[_value[this.idKey]] = _value[this.waitOnKey];
+        result[value[this.idKey]] = value[this.waitOnKey];
       }, {});
     }
 
@@ -251,7 +258,6 @@ export class PositionUtils {
     private generateColPosForTask(taskId: string, colPosMatrix: any, waitOnsList: any): number {
       const waitOns = waitOnsList[taskId];
       let colPos: number;
-      let waitOnsColPosList: any[];
       if (_.isEmpty(waitOns)) {
         colPos = 0;
       } else {

@@ -9,7 +9,7 @@ import {
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'confirm-modal',
+  selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
   encapsulation: ViewEncapsulation.None
