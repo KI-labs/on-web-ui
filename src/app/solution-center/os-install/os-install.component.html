@@ -120,9 +120,7 @@
                 <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
                   IP Address
                 </label>
-                <!-- <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('ipAddress')"> -->
-                  <input clrInput type="text" formControlName="ipAddress"/>
-                <!-- </label> -->
+                <input clrInput type="text" formControlName="ipAddress"/>
               </clr-input-container>
             </div>
             <div class="clr-col-sm-6">
@@ -130,9 +128,7 @@
                 <label class="label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
                   DNS Servers
                 </label>
-                <!-- <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('dnsServers')"> -->
-                  <input clrInput type="text" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
-                <!-- </label> -->
+                <input clrInput type="text" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
               </clr-input-container>
             </div>
           </div>
@@ -143,9 +139,7 @@
                 <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
                   Netmask
                 </label>
-                <!-- <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('netmask')"> -->
-                  <input clrInput type="text" formControlName="netmask"/>
-                <!-- </label> -->
+                <input clrInput type="text" formControlName="netmask"/>
             </clr-input-container>
             </div>
             <div class="clr-col-sm-6">
@@ -153,9 +147,7 @@
                 <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_4">
                   Gateway
                 </label>
-                <!-- <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('gateway')"> -->
-                  <input clrInput type="text" id="formFields_4" formControlName="gateway" />
-                <!-- </label> -->
+                <input clrInput type="text" id="formFields_4" formControlName="gateway" />
               </clr-input-container>
             </div>
           </div>
