@@ -22,11 +22,13 @@ export class GridConfirmModalComponent {
   @Input() data: any; // Data to be shown
   @Input() displayAttr = 'id'; // Attribute of data to be shown
   @Input() action = 'delete'; // Modal action
-  @Input() get isPop() { // Modal popup flag input
-    return this.isPopValue;
-  }
+
   @Output() isPopChange = new EventEmitter(); // Modal popup flag output
   @Output() confirm = new EventEmitter(); // Actions output
+
+  @Input() get isPop() { // Modal popup flag input
+  return this.isPopValue;
+  }
 
   set isPop(value) {
     this.isPopValue = value;

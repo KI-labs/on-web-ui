@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import { GraphService } from '../../services/rackhd/graph.service';
@@ -10,7 +10,8 @@ import { JSONEditorOptions } from 'jsoneditor';
   templateUrl: './workflow-editor.component.html',
   styleUrls: ['./workflow-editor.component.scss']
 })
-export class WorkflowEditorComponent implements OnInit {
+
+export class WorkflowEditorComponent implements OnInit, AfterViewInit  {
   onWorkflowInput = new EventEmitter();
   selectWorkflow: any;
   editor: any;
@@ -56,7 +57,7 @@ export class WorkflowEditorComponent implements OnInit {
 
   onRefresh() {
     this.clearInput();
-    this.getworkflowStore();
+    this.getWorkflowStore();
   }
 
   ngOnInit() {
@@ -66,14 +67,14 @@ export class WorkflowEditorComponent implements OnInit {
     const options: JSONEditorOptions = {mode: 'code'};
     this.editor = new JSONEditor(container, options);
     this.updateEditor(this.selectWorkflow);
-    this.getworkflowStore();
+    this.getWorkflowStore();
   }
 
   ngAfterViewInit() {
     this.pushDataToCanvas();
   }
 
-  getworkflowStore() {
+  getWorkflowStore() {
     this.graphService.getAll()
       .subscribe(graphs => {
         this.workflowStore = graphs;

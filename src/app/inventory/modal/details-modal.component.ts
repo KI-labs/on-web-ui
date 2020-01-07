@@ -22,11 +22,12 @@ export class GridDetailsModalComponent {
   @Input() title: string;
   @Input() data: any;
   @Input() dataType = 'Details';
+
+  @Output() isPopChange = new EventEmitter();
+
   @Input() get isPop() {
     return this.isPopValue;
   }
-  @Output() isPopChange = new EventEmitter();
-
   set isPop(value) {
     this.isPopValue = value;
     this.isPopChange.emit(value);
