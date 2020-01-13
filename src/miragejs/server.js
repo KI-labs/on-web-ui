@@ -29,7 +29,8 @@ export function makeServer({ environment = "development" } = {}) {
       catalog: Model,
       config: Model,
       file: Model,
-      workflow: Model
+      workflow: Model,
+      task: Model
     },
 
     routes(){

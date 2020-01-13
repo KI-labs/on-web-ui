@@ -7,6 +7,7 @@ import { HistoryWorkflowComponent } from  './history-workflow/history-workflow.c
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
 import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 import { WorkflowEditorComponent } from './workflow-editor/workflow-editor.component';
+import { CustomTaskComponent } from './custom-task/custom-task.component'
 
 const WorkflowCenterRoutes: Routes = [
   {
@@ -19,6 +20,7 @@ const WorkflowCenterRoutes: Routes = [
       {path: 'workflowViewer', component: WorkflowViewerComponent},
       {path: 'runWorkflow', component: RunWorkflowComponent},
       {path: 'workflowEditor', component: WorkflowEditorComponent},
+      {path: 'customTasks', component: CustomTaskComponent},
     ]
   }
 ];
