@@ -16,8 +16,7 @@ import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angu
 import * as _ from 'lodash';
 import { WorkflowService } from 'app/services/rackhd/workflow.service';
 import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, Task, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from 'app/models';
 
 @Component({
   selector: 'app-history-workflow',
@@ -39,8 +38,6 @@ export class HistoryWorkflowComponent implements OnInit {
   selectedStatus: string;
   statusCountMatrix: {};
   statusFilterValue: string;
-  taskFormGroup: FormGroup;
-  tasksJsonValid = true;
 
   // data grid helper
   dgDataLoading = false;
@@ -72,9 +69,8 @@ export class HistoryWorkflowComponent implements OnInit {
       ["node", "name", "injectableName", "domain", 'status'],
       new Workflow()
     );
-
     this.modalTypes = new ModalTypes(
-      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition", "Add task"]
+      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
     );
     this.isShowModal = false;
     this.getAll();
@@ -124,20 +120,6 @@ export class HistoryWorkflowComponent implements OnInit {
     .subscribe(() => {
       this.refresh();
     });
-  }
-
-  createFormGroup(task?: Task){
-    this.taskFormGroup = new FormGroup({
-      tasks: new FormControl('')
-    });
-    if (!_.isEmpty(task)) {
-      console.log(task)
-      this.taskFormGroup.patchValue({tasks: task});
-      // let _workflow = _.cloneDeep(workflow);
-      // _workflow.options = JSON.stringify(_workflow.options);
-      // _workflow.tasks = JSON.stringify(_workflow.tasks);
-      // this.taskFormGroup.patchValue(_workflow);
-    }
   }
 
   //getRawData(identifier: string): void {}
@@ -243,14 +225,6 @@ export class HistoryWorkflowComponent implements OnInit {
     let graphId = workflow.instanceId;
     let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
     this.router.navigateByUrl(url);
-  }
-
-  onAddTask(workflow: Workflow) {
-    this.selectedWorkflow = workflow;
-    console.log(this.selectedWorkflow)
-    this.action = "Add task";
-    this.createFormGroup();
-    this.isShowModal = true;
   }
 
   // onCreateSubmit(){}
