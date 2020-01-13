@@ -18,6 +18,8 @@ export function makeServer({ environment = "development" } = {}) {
       application: CustomSerializer
     },
 
+    timing: 2000,
+
     models: {
       node: Model,
       obm: Model,

@@ -9,5 +9,10 @@ export default function nodesRoutes(server){
     
       return schema.nodes.create(attrs);
     });
+    server.post("/nodes/:id/workflows", (schema, request) => {
+      const injectableName = request.queryParams.name
+
+      return schema.workflows.findBy({injectableName})
+    });
 }
 
