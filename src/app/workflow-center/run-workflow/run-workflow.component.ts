@@ -42,6 +42,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
   selectedNode: any;
+  isLoading: boolean = false;
 
   filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
   filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
@@ -197,9 +198,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
+    this.isLoading = true;
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
     .subscribe(
       data => {
+        this.isLoading = false
         this.graphId = data.instanceId;
         this.modalInformation = {
           title: "Post Workflow Successfully!",

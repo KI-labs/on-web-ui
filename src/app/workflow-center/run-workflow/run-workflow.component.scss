@@ -74,4 +74,16 @@
   .reminder {
     color: red;
   }
+  .run-workflow-tooltip{
+    white-space: nowrap;
+    width: fit-content;
+    padding: 0.5rem;
+  }
+  .run-workflow-last-row{
+    margin-top: 1rem;
+  }
+  .retry{
+    display: flex;
+    align-items: center;
+  }
 }

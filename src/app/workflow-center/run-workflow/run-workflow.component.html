@@ -36,21 +36,40 @@
       </dropdown-group>
     </span>
   </p>
+
   <div class="col-md-7 json-editor">
     <p class="run-workflow-row"><label><b>Payload:</b></label></p>
     <div #jsoneditor id="jsoneditor"></div>
   </div>
-  <div class="col-md-7 bottom-button clearfix">
-    <button class="btn btn-success" (click)="goToRunWorkflow()"
-      [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
-      Run Workflow
-    </button>
+
+  <div class='row run-workflow-last-row'>
+    <div class="col-md-3 retry">
+      <label class="label-size" for="retry"><b>Retry</b></label>
+      <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-xs">
+        <clr-icon shape="info-circle" size="24"></clr-icon>
+        <span class="tooltip-content run-workflow-tooltip">Number of retries to run a workflow</span>
+    </a>
+      <input type="number" id="retry">
+    </div>
+    
+    <div class="col-md-4 bottom-button clearfix">
+      <button class="btn btn-success" (click)="goToRunWorkflow()"
+        [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
+        Run Workflow
+      </button>
+    </div>
+
   </div>
 
+
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
-    <h3 class="modal-title" *ngIf="showModal">{{modalInformation.title}}</h3>
+    <h3 class="modal-title" *ngIf="showModal">{{isLoading? 'Running' : modalInformation.title}}</h3>
     <div class="modal-body" *ngIf="showModal">
-      <p>{{modalInformation.note}}</p>
+      <div *ngIf='isLoading'>
+          <span class="spinner spinner-inline"></span>
+          <span>Running...</span>
+      </div>      
+      <p *ngIf='!isLoading'>{{modalInformation.note}}</p>
     </div>
     <div class="modal-footer" *ngIf="showModal && modalInformation.type === 1">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
