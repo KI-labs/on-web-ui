@@ -51,14 +51,18 @@
     </a>
       <input type="number" id="retry" [(ngModel)]="totalRetries">
     </div>
+
     
     <div class="col-md-4 bottom-button clearfix">
       <button class="btn btn-success" (click)="goToRunWorkflow()"
-        [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
+        [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName && this.totalRetries > 0)">
         Run Workflow
       </button>
     </div>
 
+  </div>
+  <div *ngIf='!(totalRetries > 0)' class='reminder'>
+      The retry must be higher than zero.
   </div>
 
 
