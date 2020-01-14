@@ -49,7 +49,7 @@
         <clr-icon shape="info-circle" size="24"></clr-icon>
         <span class="tooltip-content run-workflow-tooltip">Number of retries to run a workflow</span>
     </a>
-      <input type="number" id="retry">
+      <input type="number" id="retry" [(ngModel)]="totalRetries">
     </div>
     
     <div class="col-md-4 bottom-button clearfix">
@@ -63,13 +63,21 @@
 
 
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
-    <h3 class="modal-title" *ngIf="showModal">{{isLoading? 'Running' : modalInformation.title}}</h3>
+    <h3 class="modal-title" *ngIf="showModal">
+      {{
+        modalInformation.isLoading
+        ? 
+        'Running trying: ' + retries + '/' + totalRetries
+        :
+        modalInformation.title
+      }}
+    </h3>
     <div class="modal-body" *ngIf="showModal">
-      <div *ngIf='isLoading'>
+      <div *ngIf='modalInformation.isLoading'>
           <span class="spinner spinner-inline"></span>
           <span>Running...</span>
       </div>      
-      <p *ngIf='!isLoading'>{{modalInformation.note}}</p>
+      <p *ngIf='!modalInformation.isLoading'>{{modalInformation.note}}</p>
     </div>
     <div class="modal-footer" *ngIf="showModal && modalInformation.type === 1">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>

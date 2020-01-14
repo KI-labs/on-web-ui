@@ -29,7 +29,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   modalInformation = {
     title: "",
     note: "",
-    type: 1
+    type: 1,
+    isLoading: false
   };
   showModal: boolean;
 
@@ -42,7 +43,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
   selectedNode: any;
-  isLoading: boolean = false;
+  
+  totalRetries: number = 1;
+  retries: number = 1;
 
   filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
   filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
@@ -82,7 +85,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.modalInformation = {
       title: "",
       note: "",
-      type: 1
+      type: 1,
+      isLoading: false
     };
   }
 
@@ -190,28 +194,42 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.modalInformation = {
       title: "Reminder",
       note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
-      type: 1
+      type: 1,
+      isLoading: false
     };
   }
 
   postWorkflow() {
     let payload = this.editor.get();
     let selectedNodeId = this.selectedNode && this.selectedNode.id;
+    console.log(selectedNodeId)
     this.graphId = this.graphId || this.selectedGraph.injectableName;
-    this.isLoading = true;
-    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-    .subscribe(
-      data => {
-        this.isLoading = false
-        this.graphId = data.instanceId;
-        this.modalInformation = {
-          title: "Post Workflow Successfully!",
-          note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
-          type: 2
-        };
-      },
-      err => { this.showModal = false; }
-    );
+    this.modalInformation.isLoading = true;
+    if(this.retries <= this.totalRetries){
+      this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
+        .subscribe(
+          data => {
+            this.graphId = data.instanceId;
+            this.retries = 1;
+            this.totalRetries = 1;
+            this.modalInformation = {
+              title: "Post Workflow Successfully!",
+              note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+              type: 2,
+              isLoading: false
+            };
+          },
+          err => { 
+            this.retries += 1;
+            this.postWorkflow();
+          }
+        );
+    }
+    else{
+      this.retries = 1;
+      this.totalRetries = 1;
+      this.showModal= false;
+    }
    }
 
   goToViewer() {
