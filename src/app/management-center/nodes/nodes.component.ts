@@ -80,9 +80,11 @@ export class NodesComponent implements OnInit {
     public obmService: ObmService,
     public ibmService: IbmService,
     public skuService: SkusService,
-    private fb: FormBuilder) {}
+    private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.selectedType = 'Compute';
+    this.typeFilterValue = this.selectedType;
     this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
