@@ -17,7 +17,7 @@
           </span>
         </label>
       </div>
-      <div *ngIf="apiErrorMsg" class="row error reminder">
+      <div *ngIf="apiErrorMsg" class="clr-row error reminder">
         <clr-icon shape="exclamation-circle" style="width: 20px; height: 20px;"></clr-icon>
         {{apiErrorMsg}}
       </div>
@@ -38,29 +38,31 @@
       </div>
 
       <div class="check-box">
-        <clr-checkbox
-          name="checkSecureEnable"
-          id="secureConnEnable"
-          (change)="checkboxChanged()"
-          [(clrChecked)]="settingService.connSecured">
-          Enable Secure Connections
+
+        <clr-checkbox-wrapper>
+          <input type="checkbox" clrCheckbox 
+            name="checkSecureEnable" 
+            id="secureConnEnable"
+            formControlName="connSecured"/>
+          <label> Enable Secure Connections</label>
           <i *ngIf='settingService.connSecured' class="text-indicator">
             Note: manual certificate required for secure connection
           </i>
-        </clr-checkbox>
+        </clr-checkbox-wrapper>
       </div>
 
       <div class="check-box">
-        <clr-checkbox
+
+        <clr-checkbox-wrapper>
+          <input type="checkbox" clrCheckbox 
           name="checkAuthEnable"
           id="authEnable"
-          (change)="handleAuthChanged($event.target.checked)"
-          [(clrChecked)]="settingService.authEnabled">
-          Enable API Authentication
+          formControlName="authEnabled"/>
+          <label> Enable API Authentication</label>
           <i *ngIf='settingService.authEnabled' class="text-indicator">
             Note: uncheck will clear existing token 
           </i>
-        </clr-checkbox>
+        </clr-checkbox-wrapper>
       </div>
 
       <fieldset formGroupName="rackhdAuth" class="fieldset" [disabled]='!settingService.authEnabled'>
@@ -103,7 +105,7 @@
             (click)="generateToken()"
             [disabled]="generateTokenDisabled()">Get Token</button>
         </div>
-        <div *ngIf="tokenErrorMsg && !generateTokenDisabled()" class="row error reminder">
+        <div *ngIf="tokenErrorMsg && !generateTokenDisabled()" class="clr-row error reminder">
           <clr-icon shape="exclamation-circle" style="width: 20px; height: 20px;"></clr-icon>
           {{tokenErrorMsg}}
         </div>
@@ -115,7 +117,7 @@
         </div>
       </fieldset>
     </section>
-    <div class="row error reminder">
+    <div class="clr-row error reminder">
       The fields with * above are required!
     </div>
     <div class="float-right-local button-group" role="group">

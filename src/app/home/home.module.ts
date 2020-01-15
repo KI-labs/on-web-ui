@@ -1,15 +1,15 @@
-import { NgModule }       from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 
-import { HomeComponent }  from './home.component';
+import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
   imports: [
-    ClarityModule.forChild(),
+    ClarityModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

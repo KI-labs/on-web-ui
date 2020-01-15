@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
-import { EnvironmentService } from '../services/environment.service';
 
 @Component({
   selector: 'app-header',
@@ -19,11 +15,11 @@ export class HeaderComponent implements OnInit {
 
   constructor() {}
 
-  popSettings(){
+  popSettings() {
     this.openSetting = true;
   }
 
-  onSettingSave(){
+  onSettingSave() {
     this.openSetting = false;
   }
 }

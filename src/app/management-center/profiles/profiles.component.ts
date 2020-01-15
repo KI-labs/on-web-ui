@@ -1,13 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-import { AlphabeticalComparator, StringOperator, ObjectFilterByKey } from 'app/utils/inventory-operator';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import * as _ from 'lodash';
 
-import { ProfileService } from 'app/management-center/services/profile.service';
-import { Profile, ModalTypes } from 'app/models';
+import { ProfileService } from '../../management-center/services/profile.service';
+import { Profile, ModalTypes } from '../../models';
 
 @Component({
   selector: 'app-profiles',
@@ -30,7 +26,7 @@ export class ProfilesComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No profile found!'
+  dgPlaceholder = 'No profile found!';
 
   public scopeComparator = new AlphabeticalComparator<Profile>('scope');
   public nameComparator = new AlphabeticalComparator<Profile>('name');
@@ -59,7 +55,7 @@ export class ProfilesComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
   getRawData(identifier: string) {
@@ -67,10 +63,10 @@ export class ProfilesComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  onFilter(filtered){
+  onFilter(filtered) {
     this.profilesStore = filtered;
   }
 
@@ -79,57 +75,58 @@ export class ProfilesComponent implements OnInit {
     this.getAll();
   }
 
-  create(){
-    this.action = "Upload";
+  create() {
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Create':
         this.create();
         break;
-    };
+    }
   }
 
-  onUpdate(profile: Profile){
+  onUpdate(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onGetDetails(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(profile.name);
-  };
+  }
 
   onGetRawData(profile: Profile) {
     this.selectedProfile = profile;
-    this.action = "Raw"
+    this.action = 'Raw';
     this.getRawData(profile.name);
-  };
+  }
 
-  onChange(event){
+  onChange(event) {
     this.files =  event.target.files;
   }
 
-  onCreateSubmit(){
-    //existingFilename is used to store filename when updating file
-    let existingFilename = this.selectedProfile && this.selectedProfile.name;
-    let file = this.files[0];
-    //TODO: Add more details on progress
-    //TODO: And use sync mode instead of async mode
-    //TODO: Add support on multiple files upload support
+  onCreateSubmit() {
+    // existingFilename is used to store filename when updating file
+    const existingFilename = this.selectedProfile && this.selectedProfile.name;
+    const file = this.files[0];
+    // TODO: Add more details on progress
+    // TODO: And use sync mode instead of async mode
+    // TODO: Add support on multiple files upload support
     this.isShowModal = false;
     this.profileService.upload(file, existingFilename || file.name)
     .subscribe(() => {
       this.selectedProfile = null;
       this.refresh();
-    })
+    });
+
   }
 
 }

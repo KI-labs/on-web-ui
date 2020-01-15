@@ -1,5 +1,5 @@
 
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CatalogsService } from './catalogs.service';
 import { NodeService } from './node.service';
 import { ObmService } from './obm.service';

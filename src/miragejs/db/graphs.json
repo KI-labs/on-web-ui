@@ -1,0 +1,5145 @@
+[
+        {
+          "friendlyName": "Add Hot Spare",
+          "injectableName": "Graph.Add.Hotspare",
+          "options": {
+            "defaults": {
+              "username": null,
+              "password": null,
+              "volumeId": null,
+              "driveId": null,
+              "hotspareType": "ghs",
+              "ipAddress": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "add-hotspare",
+              "taskName": "/api/2.0/workflows/tasks/Task.Add.Hotspare"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "add-hotspare": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Add Volume",
+          "injectableName": "Graph.Add.Volume",
+          "options": {
+            "defaults": {
+              "username": null,
+              "password": null,
+              "drives": null,
+              "raidLevel": null,
+              "name": null,
+              "sizeInBytes": null,
+              "ipAddress": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "add-volume",
+              "taskName": "/api/2.0/workflows/tasks/Task.Add.Volume"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "add-volume": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Arista Switch ZTP Discovery",
+          "injectableName": "Graph.Switch.Discovery.Arista.Ztp",
+          "tasks": [
+            {
+              "label": "catalog-switch",
+              "taskDefinition": {
+                "friendlyName": "Catalog Arista Switch",
+                "injectableName": "Task.Inline.Catalog.Switch.Arista",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/arista-catalog-version.py?nodeId={{ task.nodeId }}",
+                      "catalog": { "format": "json", "source": "version" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Boot LiveCD",
+          "injectableName": "Graph.BootLiveCD",
+          "options": { "install-os": { "_taskTimeout": 3600000 } },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Boot.LiveCD"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Bootstrap And Remove BMC Credentials",
+          "injectableName": "Graph.Bootstrap.With.BMC.Credentials.Remove",
+          "options": {
+            "defaults": { "graphOptions": { "target": null }, "nodeId": null }
+          },
+          "tasks": [
+            {
+              "label": "boot-graph",
+              "taskDefinition": {
+                "friendlyName": "Boot Graph",
+                "injectableName": "Task.Graph.Run.Boot",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.BootstrapUbuntu",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "remove-bmc-credentials-graph",
+              "waitOn": { "boot-graph": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Run BMC Rmove Credential Graph",
+                "injectableName": "Task.Graph.Run.Bmc",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Remove.Bmc.Credentials",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "remove-bmc-credentials-graph": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Bootstrap And Set Credentials",
+          "injectableName": "Graph.Bootstrap.With.BMC.Credentials.Setup",
+          "options": {
+            "defaults": { "graphOptions": { "target": null }, "nodeId": null }
+          },
+          "tasks": [
+            {
+              "label": "boot-graph",
+              "taskDefinition": {
+                "friendlyName": "Boot Graph",
+                "injectableName": "Task.Graph.Run.Boot",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.BootstrapUbuntu",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "set-bmc-credentials-graph",
+              "waitOn": { "boot-graph": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Run BMC Credential Graph",
+                "injectableName": "Task.Graph.Run.Bmc",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Set.Bmc.Credentials",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "set-bmc-credentials-graph": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Test decommission of a node",
+          "injectableName": "Graph.Bootstrap.Decommission.Node.Test",
+          "options": {
+            "shell-commands": {
+              "commands": [
+                {
+                  "command": "for disk in `lsblk | grep disk | awk '{print $1}'`;                  do sudo sfdisk -d /dev/$disk 2>&1 | grep 'No partitions' -q; done"
+                }
+              ]
+            },
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" },
+            "fail-command": { "makeItFail": "false", "when": "false" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "shell-commands",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Commands"
+            },
+            {
+              "label": "reboot-after-shell-commands",
+              "waitOn": { "shell-commands": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "send-finish",
+              "waitOn": {
+                "reboot-after-shell-commands": "finished",
+                "shell-commands": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            },
+            {
+              "label": "fail-command",
+              "waitOn": {
+                "reboot-after-shell-commands": "finished",
+                "shell-commands": "failed"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            }
+          ]
+        },
+        {
+          "friendlyName": "DEBUG Bootstrap Rancher",
+          "injectableName": "Graph.BootstrapRancher",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            }
+          ]
+        },
+        {
+          "friendlyName": "DEBUG Bootstrap Ubuntu",
+          "injectableName": "Graph.BootstrapUbuntu",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-ubuntu",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Ubuntu"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Clear the System Event Log",
+          "injectableName": "Graph.ClearSEL.Node",
+          "tasks": [
+            {
+              "label": "clearsel",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.ClearSEL"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Bootstrap and Decommission a node",
+          "injectableName": "Graph.Bootstrap.Decommission.Node",
+          "options": {
+            "shell-commands": {
+              "commands": [
+                {
+                  "command": "for disk in `lsblk | grep disk | awk '{print $1}'`;                  do sudo sgdisk --zap-all /dev/$disk ; done"
+                }
+              ]
+            },
+            "when-secure-erase": {
+              "useSecureErase": "false",
+              "when": "{{options.useSecureErase}}"
+            },
+            "remove-bmc-credentials": { "users": null },
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-megaraid",
+              "waitOn": { "bootstrap-rancher": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-driveid",
+              "waitOn": { "catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "remove-bmc-credentials",
+              "waitOn": { "catalog-driveid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Remove.BMC.Credentials"
+            },
+            {
+              "label": "when-secure-erase",
+              "waitOn": { "remove-bmc-credentials": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "shell-commands",
+              "waitOn": { "when-secure-erase": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Commands"
+            },
+            {
+              "label": "drive-secure-erase",
+              "waitOn": { "when-secure-erase": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Drive.SecureErase"
+            },
+            {
+              "label": "post-catalog-megaraid",
+              "waitOn": {
+                "drive-secure-erase": "finished",
+                "when-secure-erase": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "post-catalog-driveid",
+              "waitOn": {
+                "drive-secure-erase": "finished",
+                "when-secure-erase": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "reboot-after-shell-commands",
+              "waitOn": {
+                "shell-commands": "finished",
+                "when-secure-erase": "failed"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "reboot-after-drive-secure-erase",
+              "waitOn": {
+                "drive-secure-erase": "finished",
+                "when-secure-erase": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-after-shell-commands",
+              "waitOn": {
+                "shell-commands": "finished",
+                "when-secure-erase": "failed"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            },
+            {
+              "label": "finish-after-drive-secure-erase",
+              "waitOn": {
+                "drive-secure-erase": "finished",
+                "when-secure-erase": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Configure Megaraid Controler",
+          "injectableName": "Graph.Bootstrap.Megaraid.Configure",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" },
+            "config-raid": {
+              "hddArr": null,
+              "ssdStoragePoolArr": null,
+              "ssdCacheCadeArr": null,
+              "path": null,
+              "controller": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "config-raid",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Config.Megaraid"
+            },
+            {
+              "label": "refresh-catalog-megaraid",
+              "waitOn": { "config-raid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "refresh-catalog-driveid",
+              "waitOn": { "refresh-catalog-megaraid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "refresh-catalog-lsall",
+              "waitOn": { "refresh-catalog-driveid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "refresh-catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Brocade Switch Discovery",
+          "injectableName": "Graph.Switch.Discovery.Brocade.Ztp",
+          "tasks": [
+            {
+              "label": "catalog-brocade-switch",
+              "taskDefinition": {
+                "friendlyName": "Catalog Brocade Switch",
+                "injectableName": "Task.Inline.Catalog.Switch.Brocade",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/brocade-catalog-version.py?nodeId={{ task.nodeId }}",
+                      "catalog": { "format": "json", "source": "version" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Cisco Switch POAP Discovery",
+          "injectableName": "Graph.Switch.Discovery.Cisco.Poap",
+          "tasks": [
+            {
+              "label": "catalog-switch",
+              "taskDefinition": {
+                "friendlyName": "Catalog Cisco Switch",
+                "injectableName": "Task.Inline.Catalog.Switch.Cisco",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/cisco-catalog-version.py?nodeId={{ task.nodeId }}",
+                      "catalog": { "format": "json", "source": "version" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create Emc FabricService Pollers",
+          "injectableName": "Graph.Emc.Redfish.FabricService.Poller.Create",
+          "options": {
+            "defaults": {
+              "nodeId": null,
+              "pollers": [
+                {
+                  "type": "redfish",
+                  "pollInterval": 10000,
+                  "config": { "command": "fabricservice" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "create-redfish-pollers",
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.CreateDefault"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create IPMI OBM Settings",
+          "injectableName": "Graph.Obm.Ipmi.CreateSettings",
+          "tasks": [
+            {
+              "label": "create-ipmi-obm-settings",
+              "taskDefinition": {
+                "friendlyName": "Create IPMI OBM settings",
+                "injectableName": "Task.Obm.Ipmi.CreateSettings",
+                "implementsTask": "Task.Base.Obm.Ipmi.CreateSettings",
+                "options": { "ipmichannel": null, "user": null, "password": null },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create RAID via Storcli",
+          "injectableName": "Graph.Raid.Create.MegaRAID",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "create-raid",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Raid.Create.MegaRAID"
+            },
+            {
+              "label": "refresh-catalog-megaraid",
+              "waitOn": { "create-raid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "refresh-catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create Redfish Chassis Pollers",
+          "injectableName": "Graph.Redfish.Chassis.Poller.Create",
+          "options": {
+            "defaults": {
+              "nodeId": null,
+              "pollers": [
+                {
+                  "type": "redfish",
+                  "pollInterval": 10000,
+                  "config": { "command": "thermal" }
+                },
+                {
+                  "type": "redfish",
+                  "pollInterval": 10000,
+                  "config": { "command": "power" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "create-redfish-pollers",
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.Redfish.CreateDefault"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create Redfish Managers Pollers",
+          "injectableName": "Graph.Redfish.Managers.Poller.Create",
+          "options": {
+            "defaults": {
+              "nodeId": null,
+              "pollers": [
+                {
+                  "type": "redfish",
+                  "pollInterval": 10000,
+                  "config": { "command": "managers.logservices" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "create-redfish-pollers",
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.CreateDefault"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create Redfish Systems Pollers",
+          "injectableName": "Graph.Redfish.Systems.Poller.Create",
+          "options": {
+            "defaults": {
+              "nodeId": null,
+              "pollers": [
+                {
+                  "type": "redfish",
+                  "pollInterval": 10000,
+                  "config": { "command": "systems.logservices" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "create-redfish-pollers",
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.CreateDefault"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create VirtualBox OBM Settings",
+          "injectableName": "Graph.Obm.Vbox.CreateSettings",
+          "tasks": [
+            {
+              "label": "create-vbox-obm-settings",
+              "taskDefinition": {
+                "friendlyName": "Create VirtualBox OBM settings",
+                "injectableName": "Task.Obm.Vbox.CreateSettings",
+                "implementsTask": "Task.Base.Obm.CreateSettings",
+                "options": { "service": "vbox-obm-service", "config": {} },
+                "properties": { "obm": { "type": "virtualbox" } }
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Delete RAID via Storcli",
+          "injectableName": "Graph.Raid.Delete.MegaRAID",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "delete-raid",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Raid.Delete.MegaRAID"
+            },
+            {
+              "label": "refresh-catalog-megaraid",
+              "waitOn": { "delete-raid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "refresh-catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Delete Volume",
+          "injectableName": "Graph.Delete.Volume",
+          "options": {
+            "defaults": {
+              "username": null,
+              "password": null,
+              "volumeId": null,
+              "ipAddress": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "delete-volume",
+              "taskName": "/api/2.0/workflows/tasks/Task.Delete.Volume"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "delete-volume": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Configure Dell Idrac",
+          "injectableName": "Graph.Dell.Configure.Idrac",
+          "options": {
+            "set-iDRAC-ip": {
+              "action": "setIdracIP",
+              "ip": null,
+              "netMask": null,
+              "gateway": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-iDRAC-ip",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.Control"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Configure Dell Redfish Alerting",
+          "injectableName": "Graph.Dell.Configure.Redfish.Alerting",
+          "options": { "redfish-subscription": { "redfishEndpointIp": null } },
+          "tasks": [
+            {
+              "label": "enable-alerting",
+              "taskDefinition": {
+                "friendlyName": "Enable Dell Alerting",
+                "injectableName": "Task.Dell.Enable.Alerts",
+                "implementsTask": "Task.Base.Dell.Racadm.Control",
+                "options": { "action": "enableAlert" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "enable-redfish-alerts",
+              "waitOn": { "enable-alerting": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Enable Redfish Alerting",
+                "injectableName": "Task.Dell.Enable.Redfish.Alert",
+                "implementsTask": "Task.Base.Dell.Racadm.Control",
+                "options": { "action": "enableRedfish" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "disable-redfish-alerts",
+              "waitOn": { "enable-redfish-alerts": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Disable Redfish Alerting",
+                "injectableName": "Task.Dell.Disable.Redfish.Alert",
+                "implementsTask": "Task.Base.Dell.Racadm.Control",
+                "options": { "action": "disableRedfish" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "redfish-subscription",
+              "waitOn": { "disable-redfish-alerts": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Subscribe  To Redfish Alerting",
+                "injectableName": "Task.Dell.Subscribe.Redfish.Alert",
+                "implementsTask": "Task.Base.Redfish.Alert.Enable",
+                "options": {
+                  "url": null,
+                  "credential": { "username": null, "password": null },
+                  "data": {}
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Switch Onie Discovery",
+          "injectableName": "Graph.Switch.Discovery.Dell.Onie",
+          "tasks": [
+            {
+              "label": "catalog-switch",
+              "taskDefinition": {
+                "friendlyName": "Catalog Dell Switch",
+                "injectableName": "Task.Inline.Catalog.Switch.Dell",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/dell-switch-onie-catalog.sh?nodeId={{ task.nodeId }}",
+                      "catalog": { "format": "json", "source": "onieSysinfo" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Create RAID via perccli",
+          "injectableName": "Graph.Raid.Create.Perccli",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" },
+            "config-raid": {
+              "hddArr": null,
+              "ssdStoragePoolArr": null,
+              "ssdCacheCadeArr": null,
+              "path": null,
+              "controller": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "config-raid",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Config.Megaraid"
+            },
+            {
+              "label": "refresh-catalog-megaraid",
+              "waitOn": { "config-raid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.perccli"
+            },
+            {
+              "label": "refresh-catalog-driveid",
+              "waitOn": { "refresh-catalog-megaraid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "refresh-catalog-lsall",
+              "waitOn": { "refresh-catalog-driveid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "refresh-catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell perccli Catalog",
+          "injectableName": "Graph.Dell.perccli.Catalog",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-perccli",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.perccli"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-perccli": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Disable VTx Graph",
+          "injectableName": "Graph.Dell.Disable.VTx",
+          "options": {
+            "dell-racadm-disable-VTx": {
+              "forceReboot": true,
+              "serverUsername": null,
+              "serverPassword": null,
+              "serverFilePath": null,
+              "action": "disableVTx"
+            },
+            "when-require-refresh-catalog": {
+              "refresh": "true",
+              "when": "{{options.refresh}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-racadm-disable-VTx",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.Control"
+            },
+            {
+              "label": "when-require-refresh-catalog",
+              "waitOn": { "dell-racadm-disable-VTx": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "refresh-racadm-catalog",
+              "waitOn": { "when-require-refresh-catalog": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetConfigCatalog"
+            },
+            {
+              "label": "noop",
+              "waitOn": { "when-require-refresh-catalog": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Enable VTx Graph",
+          "injectableName": "Graph.Dell.Enable.VTx",
+          "options": {
+            "dell-racadm-enable-VTx": {
+              "forceReboot": true,
+              "serverUsername": null,
+              "serverPassword": null,
+              "serverFilePath": null,
+              "action": "enableVTx"
+            },
+            "when-require-refresh-catalog": {
+              "refresh": "true",
+              "when": "{{options.refresh}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-racadm-enable-VTx",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.Control"
+            },
+            {
+              "label": "when-require-refresh-catalog",
+              "waitOn": { "dell-racadm-enable-VTx": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "refresh-racadm-catalog",
+              "waitOn": { "when-require-refresh-catalog": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetConfigCatalog"
+            },
+            {
+              "label": "noop",
+              "waitOn": { "when-require-refresh-catalog": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Get BIOS Graph",
+          "injectableName": "Graph.Dell.Racadm.GetBIOS",
+          "options": {
+            "defaults": {
+              "serverUsername": null,
+              "serverPassword": null,
+              "serverFilePath": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-racadm-get-bios",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetBIOS"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Get Config Catalog Graph",
+          "injectableName": "Graph.Dell.Racadm.GetConfigCatalog",
+          "tasks": [
+            {
+              "label": "dell-racadm-get-config-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetConfigCatalog"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Get Firmware List Catalog Graph",
+          "injectableName": "Graph.Dell.Racadm.GetFirmwareListCatalog",
+          "options": {
+            "dell-racadm-get-firmware-list-catalog": {
+              "updateExistingCatalog": true
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-racadm-get-firmware-list-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetFirmwareListCatalog"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Reset Components Graph",
+          "injectableName": "Graph.Dell.Racadm.ResetComponents",
+          "options": { "defaults": { "components": [] } },
+          "tasks": [
+            {
+              "label": "dell-racadm-Reset-Components",
+              "taskDefinition": {
+                "friendlyName": "dell racadm reset components",
+                "injectableName": "Task.Dell.Racadm.ResetComponents",
+                "implementsTask": "Task.Base.Dell.Racadm.Control",
+                "options": { "action": "resetComponents" },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Set BIOS Graph",
+          "injectableName": "Graph.Dell.Racadm.SetBIOS",
+          "options": {
+            "defaults": {
+              "serverUsername": null,
+              "serverPassword": null,
+              "serverFilePath": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-racadm-set-bios",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.SetBIOS"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Racadm Update Firmware Graph",
+          "injectableName": "Graph.Dell.Racadm.Update.Firmware",
+          "options": {
+            "defaults": {
+              "serverUsername": null,
+              "serverPassword": null,
+              "serverFilePath": null
+            },
+            "dell-racadm-get-firmware-list-catalog": {
+              "updateExistingCatalog": true
+            },
+            "catalog-dmi": { "updateExistingCatalog": true },
+            "catalog-bmc": { "updateExistingCatalog": true }
+          },
+          "tasks": [
+            {
+              "label": "download-http-file",
+              "taskName": "/api/2.0/workflows/tasks/Task.Download.Http.File"
+            },
+            {
+              "label": "dell-racadm-update-firmware",
+              "waitOn": { "download-http-file": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.Update.Firmware"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "dell-racadm-update-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "dell-racadm-get-firmware-list-catalog",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Racadm.GetFirmwareListCatalog"
+            },
+            {
+              "label": "catalog-dmi",
+              "waitOn": { "dell-racadm-get-firmware-list-catalog": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.dmi"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "catalog-dmi": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Switch configuration",
+          "injectableName": "Graph.Switch.Dell.Configuration",
+          "tasks": [
+            {
+              "label": "config-switch",
+              "taskDefinition": {
+                "friendlyName": "Dell Switch configuration",
+                "injectableName": "Task.Inline.Switch.Dell.Configuration",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "mgmtPort": "1/1",
+                  "username": "rackhd",
+                  "userPassword": "RackHDRocks1!",
+                  "adminPassword": "RackHDRocks1!",
+                  "hostname": "rackhd",
+                  "ipAddr": "dhcp",
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/dell-switch-basic-config.exp?nodeId={{ task.nodeId }}"
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Switch Bmp Discovery",
+          "injectableName": "Graph.Switch.Discovery.Dell.Bmp",
+          "tasks": [
+            {
+              "label": "catalog-switch",
+              "taskDefinition": {
+                "friendlyName": "Catalog Dell Switch",
+                "injectableName": "Task.Inline.Catalog.Switch.Dell",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/dell-switch-catalog.sh?nodeId={{ task.nodeId }}",
+                      "catalog": { "format": "json", "source": "sysinfo" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Switch Nos installation",
+          "injectableName": "Graph.Switch.Dell.Nos.Install",
+          "tasks": [
+            {
+              "label": "install-os",
+              "taskDefinition": {
+                "friendlyName": "Dell Switch Nos install",
+                "injectableName": "Task.Inline.Switch.Dell.Nos.Install",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": {
+                  "nosImageUri": "{{ file.server }}/PKGS_OS10-Enterprise-10.3.1E.121-installer-x86_64.bin",
+                  "commands": [
+                    {
+                      "downloadUrl": "{{ api.templates }}/dell-switch-nos-install.sh?nodeId={{ task.nodeId }}"
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Add Hotspare",
+          "injectableName": "Graph.Dell.Wsman.Add.Hotspare",
+          "options": {
+            "defaults": {
+              "username": null,
+              "password": null,
+              "volumeId": null,
+              "hotspareType": "ghs",
+              "ipAddress": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-add-hotspare-getXml",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Add.Hotspare.GetXml"
+            },
+            {
+              "label": "dell-wsman-add-hotspare-updateXml",
+              "waitOn": { "dell-wsman-add-hotspare-getXml": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Add.Hotspare.UpdateXml"
+            },
+            {
+              "label": "dell-wsman-RAID",
+              "waitOn": { "dell-wsman-add-hotspare-updateXml": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.RAID"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "dell-wsman-RAID": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Add Volume",
+          "injectableName": "Graph.Dell.Wsman.Add.Volume",
+          "options": {
+            "defaults": {
+              "enable": null,
+              "raidLevel": 0,
+              "stripeSize": 128,
+              "writePolicy": "WriteBack",
+              "shutdownType": 0,
+              "verifySSL": false,
+              "_taskTimeout": 900000,
+              "domain": "wsman",
+              "removeXmlFile": true,
+              "ipAddress": "",
+              "username": "",
+              "password": ""
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-add-volume-getXml",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Add.Volume.getXml"
+            },
+            {
+              "label": "dell-wsman-add-volume-updateXml",
+              "waitOn": { "dell-wsman-add-volume-getXml": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Add.Volume.UpdateXml"
+            },
+            {
+              "label": "dell-wsman-RAID",
+              "waitOn": { "dell-wsman-add-volume-updateXml": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.RAID"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "dell-wsman-RAID": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Config Services",
+          "injectableName": "Graph.Dell.Wsman.ConfigServices",
+          "options": { "defaults": { "configServer": "http://127.0.0.1:9600" } },
+          "tasks": [
+            {
+              "label": "dell-wsman-config-services",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Config.Services"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Configure BIOS",
+          "injectableName": "Graph.Dell.Wsman.ConfigureBios",
+          "options": {
+            "defaults": {
+              "attributes": null,
+              "biosBootSequenceOrder": [""],
+              "hddSequenceOrder": [""],
+              "enableBootDevices": [""],
+              "disableBootDevices": [""],
+              "rebootJobType": 1
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-configure-bios",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.ConfigureBios"
+            },
+            {
+              "label": "dell-wsman-get-bios",
+              "waitOn": { "dell-wsman-configure-bios": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetBios"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Configure Dell Idrac using WSMAN",
+          "injectableName": "Graph.Dell.Wsman.Configure.Idrac",
+          "options": {
+            "defaults": { "address": null, "netmask": null, "gateway": null },
+            "dell-wsman-update-systemcomponents": {
+              "serverComponents": [
+                {
+                  "fqdd": "{{ context.outputs[\"dell-wsman-configure-idrac\"].fqdd }}",
+                  "attributes": [
+                    {
+                      "name": "IPv4Static.1#Netmask",
+                      "value": "{{ context.outputs[\"dell-wsman-configure-idrac\"].netmask }}"
+                    },
+                    {
+                      "name": "IPv4Static.1#Gateway",
+                      "value": "{{ context.outputs[\"dell-wsman-configure-idrac\"].gateway }}"
+                    },
+                    {
+                      "name": "IPv4Static.1#Address",
+                      "value": "{{ context.outputs[\"dell-wsman-configure-idrac\"].address }}"
+                    }
+                  ]
+                }
+              ],
+              "shutdownType": 0,
+              "forceUpdate": true
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-inventory",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            },
+            {
+              "label": "dell-wsman-configure-idrac",
+              "waitOn": { "dell-wsman-get-inventory": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.configure.Idrac"
+            },
+            {
+              "label": "dell-wsman-update-systemcomponents",
+              "waitOn": { "dell-wsman-configure-idrac": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.UpdateSystemConfigComponents"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Configure Dell Redfish Alert using WSMAN",
+          "injectableName": "Graph.Dell.Wsman.Configure.Redfish.Alert",
+          "options": {
+            "dell-wsman-configure-redfish-alert": {
+              "shutdownType": 0,
+              "forceUpdate": true
+            },
+            "redfish-subscription": { "redfishEndpointIp": null }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-systemcomponents",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetSystemConfigComponents"
+            },
+            {
+              "label": "dell-wsman-configure-redfish-alert",
+              "waitOn": { "dell-wsman-get-systemcomponents": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Configure.Redfish.Alert"
+            },
+            {
+              "label": "redfish-subscription",
+              "waitOn": { "dell-wsman-configure-redfish-alert": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Subscribe  To Redfish Alerting",
+                "injectableName": "Task.Dell.Subscribe.Redfish.Alert",
+                "implementsTask": "Task.Base.Redfish.Alert.Enable",
+                "options": {
+                  "url": null,
+                  "credential": { "username": null, "password": null },
+                  "data": {}
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Create Firmware Repo Graph",
+          "injectableName": "Graph.Dell.Wsman.Create.Repo",
+          "options": {
+            "defaults": {
+              "catalogFilePath": null,
+              "targetFilePath": null,
+              "updates": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-create-repo",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Create.Repo"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Delete Volume",
+          "injectableName": "Graph.Dell.Wsman.Delete.Volume",
+          "options": {
+            "defaults": {
+              "enable": null,
+              "shutdownType": 0,
+              "verifySSL": false,
+              "_taskTimeout": 900000,
+              "domain": "wsman",
+              "removeXmlFile": true,
+              "ipAddress": "",
+              "username": "",
+              "password": ""
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-delete-volume-getXml",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Delete.Volume.GetXml"
+            },
+            {
+              "label": "dell-wsman-delete-volume-updateXml",
+              "waitOn": { "dell-wsman-delete-volume-getXml": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Delete.Volume.UpdateXml"
+            },
+            {
+              "label": "dell-wsman-RAID",
+              "waitOn": { "dell-wsman-delete-volume-updateXml": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.RAID"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "dell-wsman-RAID": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Discovery",
+          "injectableName": "Graph.Dell.Wsman.Discovery",
+          "options": {
+            "defaults": {
+              "ranges": [],
+              "inventory": false,
+              "deviceTypesToDiscover": []
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-discovery",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Discovery"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Downlaod Catalog Graph",
+          "injectableName": "Graph.Dell.Wsman.Download.Catalog",
+          "options": {
+            "defaults": {
+              "fileName": null,
+              "fileURL": null,
+              "targetLocation": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-downaload-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Download.Catalog"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Export SCP",
+          "injectableName": "Graph.Dell.Wsman.Export.SCP",
+          "options": {
+            "defaults": {
+              "serverIP": null,
+              "serverUsername": null,
+              "serverPassword": null,
+              "shareType": null,
+              "shareAddress": null,
+              "shareName": null,
+              "fileName": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-export-scp",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Export.SCP"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Get Bios",
+          "injectableName": "Graph.Dell.Wsman.GetBios",
+          "options": {},
+          "tasks": [
+            {
+              "label": "dell-wsman-get-bios",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetBios"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Get Inventory",
+          "injectableName": "Graph.Dell.Wsman.GetInventory",
+          "options": { "defaults": { "callback": true } },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-inventory",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Get System Configuration Components Catalog Graph",
+          "injectableName": "Graph.Dell.Wsman.GetSystemComponentsCatalog",
+          "options": { "defaults": { "shutdownType": 0, "componentNames": [] } },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-systemcomponents",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetSystemConfigComponents"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Get Trap Config",
+          "injectableName": "Graph.Dell.Wsman.GetTrapConfig",
+          "options": { "defaults": { "target": null } },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-trap-config",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetTrapConfig"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Import SCP",
+          "injectableName": "Graph.Dell.Wsman.Import.SCP",
+          "options": {
+            "defaults": {
+              "serverIP": null,
+              "serverUsername": null,
+              "serverPassword": null,
+              "shareType": null,
+              "shareAddress": null,
+              "shareName": null,
+              "fileName": null,
+              "shutdownType": null,
+              "componentNames": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-import-scp",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Import.SCP"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell wsman OS Deployment Create ISO Graph",
+          "injectableName": "Graph.Dell.Wsman.Os.Create",
+          "options": {
+            "defaults": {
+              "destinationDir": null,
+              "destinationFileName": null,
+              "fileName": null,
+              "kickStartFileName": null,
+              "ksLocation": null,
+              "shareAddress": null,
+              "sourceDir": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-os-create",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Os.Create"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell wsman OS Deploy ISO Graph",
+          "injectableName": "Graph.Dell.Wsman.Os.Deploy",
+          "options": {
+            "defaults": {
+              "hypervisorType": null,
+              "hypervisorVersion": null,
+              "isoFileShare": {
+                "address": null,
+                "description": null,
+                "fileName": null,
+                "name": null,
+                "path": null,
+                "scriptDirectory": null,
+                "scriptName": null,
+                "type": null,
+                "passwordCredential": {
+                  "domain": null,
+                  "password": null,
+                  "username": null
+                }
+              },
+              "serverAddress": null,
+              "userName": null,
+              "password": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-os-deploy",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Os.Deploy"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman PostDiscovery",
+          "injectableName": "Graph.Dell.Wsman.PostDiscovery",
+          "options": {
+            "defaults": {
+              "data": null,
+              "credentials": { "user": null, "password": null }
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-get-inventory",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            },
+            {
+              "label": "dell-wsman-get-bios",
+              "waitOn": { "dell-wsman-get-inventory": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetBios"
+            },
+            {
+              "label": "update-lookups",
+              "waitOn": { "dell-wsman-get-bios": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wsman.Update.Lookups"
+            },
+            {
+              "label": "create-wsman-pollers",
+              "waitOn": { "update-lookups": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "wsman",
+                      "pollInterval": 30000,
+                      "config": { "command": "powerthermal" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell wsman PowerThermal Graph",
+          "injectableName": "Graph.Dell.Wsman.Powerthermal",
+          "options": { "defaults": { "powerCap": null, "enableCapping": null } },
+          "tasks": [
+            {
+              "label": "dell-wsman-powerthermal-capping",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Powerthermal"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Reset Components Graph",
+          "injectableName": "Graph.Dell.Wsman.Reset.Components",
+          "options": { "defaults": { "components": null } },
+          "tasks": [
+            {
+              "label": "dell-wsman-reset-components",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Reset.Components"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell Wsman Simple Update Firmware Graph",
+          "injectableName": "Graph.Dell.Wsman.Simple.Update.Firmware",
+          "options": { "defaults": { "imageURI": null } },
+          "tasks": [
+            {
+              "label": "dell-wsman-simple-update-firmware",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Simple.Update.Firmware"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell wsman Update Firmware Graph",
+          "injectableName": "Graph.Dell.Wsman.Update.Firmware",
+          "options": {
+            "dell-wsman-update-firmware": { "shareFolderAddress": null }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-update-firmware",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.Update.Firmware"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Dell WSMAN Update System Configuration Components",
+          "injectableName": "Graph.Dell.Wsman.UpdateSystemComponents",
+          "options": {
+            "defaults": {
+              "serverIP": null,
+              "serverUsername": null,
+              "serverPassword": null,
+              "shareType": null,
+              "shareAddress": null,
+              "shareName": null,
+              "fileName": null,
+              "shutdownType": null,
+              "serverComponents": null,
+              "cleanup": null,
+              "forceUpdate": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "dell-wsman-update-systemcomponents",
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.UpdateSystemConfigComponents"
+            },
+            {
+              "label": "dell-wsman-get-inventory",
+              "waitOn": { "dell-wsman-update-systemcomponents": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetInventory"
+            },
+            {
+              "label": "dell-wsman-get-bios",
+              "waitOn": { "dell-wsman-get-inventory": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Dell.Wsman.GetBios"
+            },
+            {
+              "label": "create-wsman-pollers",
+              "waitOn": { "dell-wsman-get-bios": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "wsman",
+                      "pollInterval": 30000,
+                      "config": { "command": "powerthermal" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Discovery",
+          "injectableName": "Graph.Discovery",
+          "options": {
+            "bootstrap-ubuntu": { "triggerGroup": "bootstrap" },
+            "finish-bootstrap-trigger": { "triggerGroup": "bootstrap" },
+            "skip-reboot-post-discovery": {
+              "skipReboot": "false",
+              "when": "{{options.skipReboot}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "bootstrap-ubuntu",
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Ubuntu"
+            },
+            {
+              "label": "catalog-dmi",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.dmi"
+            },
+            {
+              "label": "catalog-ohai",
+              "waitOn": { "catalog-dmi": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ohai"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "catalog-ohai": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "set-interfaces",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Set.Interfaces"
+            },
+            {
+              "label": "catalog-lsall",
+              "waitOn": { "set-interfaces": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "catalog-megaraid",
+              "waitOn": { "catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-smart",
+              "waitOn": { "catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.smart"
+            },
+            {
+              "label": "catalog-driveid",
+              "waitOn": { "catalog-smart": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "catalog-lldp",
+              "waitOn": { "catalog-driveid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.LLDP"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "catalog-lldp": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Set PXE boot",
+                "injectableName": "Task.Node.PxeBoot",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": { "commands": "sudo ipmitool chassis bootdev pxe" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "skip-reboot-post-discovery",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "skip-reboot-post-discovery": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "noop",
+              "waitOn": { "skip-reboot-post-discovery": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "finish-bootstrap-trigger": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Mgmt Discovery",
+          "injectableName": "Graph.Mgmt.Discovery",
+          "tasks": [
+            {
+              "label": "catalog-mgmt-bmc",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Mgmt.bmc"
+            },
+            {
+              "label": "catalog-mgmt-lldp",
+              "waitOn": { "catalog-mgmt-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Local.LLDP"
+            },
+            {
+              "label": "catalog-mgmt-dmi",
+              "waitOn": { "catalog-mgmt-lldp": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Local.DMI"
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "catalog-mgmt-dmi": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "MgmtSKU Discovery",
+          "injectableName": "Graph.MgmtSKU.Discovery",
+          "options": {
+            "defaults": {
+              "graphOptions": { "target": null },
+              "nodeId": null,
+              "nodeIds": ["{{ options.nodeId }}"]
+            }
+          },
+          "tasks": [
+            {
+              "label": "discovery-mgmt-graph",
+              "taskDefinition": {
+                "friendlyName": "Run Discovery Graph",
+                "injectableName": "Task.Graph.Run.Discovery",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Mgmt.Discovery",
+                  "graphOptions": {}
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-mgmt-sku",
+              "waitOn": { "discovery-mgmt-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-mgmt-tag",
+              "waitOn": { "discovery-mgmt-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "generate-enclosure",
+              "waitOn": { "discovery-mgmt-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateEnclosure"
+            },
+            {
+              "label": "create-mgmt-default-pollers",
+              "waitOn": { "discovery-mgmt-graph": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 15000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 30000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "run-mgmtsku-graph",
+              "waitOn": { "generate-mgmt-sku": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run SKU-specific graph",
+                "injectableName": "Task.Graph.Run.SkuSpecific",
+                "implementsTask": "Task.Base.Graph.RunSku",
+                "options": {},
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Redfish System Discovery",
+          "injectableName": "Graph.Redfish.System.Discovery",
+          "options": {
+            "bootstrap-rancher": {
+              "triggerGroup": "bootstrap",
+              "kargs": { "acpi": "off" }
+            },
+            "finish-bootstrap-trigger": { "triggerGroup": "bootstrap" },
+            "reboot-start": {
+              "obmServiceName": "redfish-obm-service",
+              "force": true
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-dmi",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.dmi"
+            },
+            {
+              "label": "catalog-ohai",
+              "waitOn": { "catalog-dmi": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ohai"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "catalog-ohai": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "catalog-lsall",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "catalog-megaraid",
+              "waitOn": { "catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-smart",
+              "waitOn": { "catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.smart"
+            },
+            {
+              "label": "catalog-driveid",
+              "waitOn": { "catalog-smart": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "catalog-lldp",
+              "waitOn": { "catalog-driveid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.LLDP"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-lldp": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "shell-reboot": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "finish-bootstrap-trigger": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Refresh node delayed",
+          "injectableName": "Graph.Refresh.Delayed.Discovery",
+          "options": {
+            "discovery-refresh-graph": {
+              "graphOptions": { "target": null },
+              "nodeId": null
+            },
+            "generate-sku": { "nodeId": null },
+            "generate-enclosure": { "nodeId": null },
+            "create-default-pollers": { "nodeId": null },
+            "run-sku-graph": { "nodeId": null },
+            "nodeId": null
+          },
+          "tasks": [
+            {
+              "label": "discovery-refresh-graph",
+              "taskDefinition": {
+                "friendlyName": "Run Discovery Refresh Graph",
+                "injectableName": "Task.Graph.Run.Discovery",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": { "graphName": "Graph.Discovery", "graphOptions": {} },
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-enclosure",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateEnclosure"
+            },
+            {
+              "label": "create-default-pollers",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selEntries" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 15000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 30000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Refresh node immediate",
+          "injectableName": "Graph.Refresh.Immediate.Discovery",
+          "options": {
+            "reset-at-start": { "nodeId": null },
+            "discovery-refresh-graph": {
+              "graphOptions": { "target": null },
+              "nodeId": null
+            },
+            "generate-sku": { "nodeId": null },
+            "generate-enclosure": { "nodeId": null },
+            "create-default-pollers": { "nodeId": null },
+            "run-sku-graph": { "nodeId": null },
+            "nodeId": null
+          },
+          "tasks": [
+            {
+              "label": "reset-at-start",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset"
+            },
+            {
+              "label": "discovery-refresh-graph",
+              "waitOn": { "reset-at-start": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run Discovery Refresh Graph",
+                "injectableName": "Task.Graph.Run.Discovery",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": { "graphName": "Graph.Discovery", "graphOptions": {} },
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-enclosure",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateEnclosure"
+            },
+            {
+              "label": "create-default-pollers",
+              "waitOn": { "discovery-refresh-graph": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selEntries" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 15000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 30000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Restart",
+          "injectableName": "Graph.Docker.Restart",
+          "options": {
+            "docker-restart": {
+              "exec": [
+                { "method": "restart", "args": ["{{options.containerId}}", {}] }
+              ],
+              "containerId": "$containerId"
+            }
+          },
+          "tasks": [
+            {
+              "label": "docker-restart",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Container List",
+          "injectableName": "Graph.Docker.ListContainers",
+          "options": {
+            "docker-list": {
+              "exec": [
+                {
+                  "method": "list",
+                  "args": [{ "all": 1 }],
+                  "emit": {
+                    "docker-reconciler": { "type": "containers", "ref": 0 }
+                  }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "docker-list",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Run",
+          "injectableName": "Graph.Docker.Run",
+          "options": {
+            "docker-run": {
+              "exec": [
+                {
+                  "method": "pull",
+                  "args": ["{{options.image}}", {}],
+                  "then": [{ "method": "run", "args": ["{{options.image}}", {}] }]
+                }
+              ],
+              "image": "ubuntu:latest"
+            }
+          },
+          "tasks": [
+            {
+              "label": "docker-run",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Start",
+          "injectableName": "Graph.Docker.Start",
+          "options": {
+            "docker-start": {
+              "exec": [
+                { "method": "start", "args": ["{{options.containerId}}", {}] }
+              ],
+              "containerId": "$containerId"
+            }
+          },
+          "tasks": [
+            {
+              "label": "docker-start",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Generate SKU",
+          "injectableName": "Graph.GenerateSku",
+          "tasks": [
+            {
+              "label": "generate-sku",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            }
+          ]
+        },
+        {
+          "friendlyName": "SKU Discovery",
+          "injectableName": "Graph.SKU.Discovery",
+          "options": {
+            "defaults": {
+              "graphOptions": { "target": null },
+              "nodeId": null,
+              "nodeIds": ["{{ options.nodeId }}"]
+            },
+            "skip-pollers": {
+              "skipPollersCreation": "false",
+              "when": "{{options.skipPollersCreation}}"
+            },
+            "obm-option": {
+              "autoCreateObm": "false",
+              "when": "{{options.autoCreateObm}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "discovery-graph",
+              "taskDefinition": {
+                "friendlyName": "Run Discovery Graph",
+                "injectableName": "Task.Graph.Run.Discovery",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.rancherDiscovery",
+                  "graphOptions": {}
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "obm-option",
+              "waitOn": { "discovery-graph": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "set-bmc-credentials-graph",
+              "waitOn": {
+                "obm-option": "succeeded",
+                "discovery-graph": "finished"
+              },
+              "taskDefinition": {
+                "friendlyName": "Run BMC Credential Graph",
+                "injectableName": "Task.Graph.Run.Bmc",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Set.Bmc.Credentials",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop-1",
+              "waitOn": { "obm-option": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-tag",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "generate-enclosure",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateEnclosure"
+            },
+            {
+              "label": "skip-pollers",
+              "waitOn": { "generate-enclosure": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "create-default-pollers",
+              "waitOn": {
+                "discovery-graph": "succeeded",
+                "skip-pollers": "failed"
+              },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selEntries" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 15000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 30000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop-2",
+              "waitOn": { "skip-pollers": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "run-sku-graph",
+              "waitOn": { "generate-sku": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run SKU-specific graph",
+                "injectableName": "Task.Graph.Run.SkuSpecific",
+                "implementsTask": "Task.Base.Graph.RunSku",
+                "options": {},
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "SKU Orig Discovery",
+          "injectableName": "Graph.SKU.Orig.Discovery",
+          "options": {
+            "defaults": {
+              "graphOptions": { "target": null },
+              "nodeId": null,
+              "nodeIds": ["{{ options.nodeId }}"]
+            },
+            "skip-pollers": {
+              "skipPollersCreation": "false",
+              "when": "{{options.skipPollersCreation}}"
+            },
+            "obm-option": {
+              "autoCreateObm": "false",
+              "when": "{{options.autoCreateObm}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "discovery-graph",
+              "taskDefinition": {
+                "friendlyName": "Run Discovery Graph",
+                "injectableName": "Task.Graph.Run.Discovery",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": { "graphName": "Graph.Discovery", "graphOptions": {} },
+                "properties": {}
+              }
+            },
+            {
+              "label": "obm-option",
+              "waitOn": { "discovery-graph": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "set-bmc-credentials-graph",
+              "waitOn": {
+                "obm-option": "succeeded",
+                "discovery-graph": "finished"
+              },
+              "taskDefinition": {
+                "friendlyName": "Run BMC Credential Graph",
+                "injectableName": "Task.Graph.Run.Bmc",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Set.Bmc.Credentials",
+                  "defaults": { "graphOptions": {} }
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop-1",
+              "waitOn": { "obm-option": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-tag",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "generate-enclosure",
+              "waitOn": { "discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateEnclosure"
+            },
+            {
+              "label": "skip-pollers",
+              "waitOn": { "generate-enclosure": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "create-default-pollers",
+              "waitOn": {
+                "discovery-graph": "succeeded",
+                "skip-pollers": "failed"
+              },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selEntries" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 15000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 30000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop-2",
+              "waitOn": { "skip-pollers": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "run-sku-graph",
+              "waitOn": { "generate-sku": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run SKU-specific graph",
+                "injectableName": "Task.Graph.Run.SkuSpecific",
+                "implementsTask": "Task.Base.Graph.RunSku",
+                "options": {},
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Stop",
+          "injectableName": "Graph.Docker.Stop",
+          "options": {
+            "docker-stop": {
+              "exec": [
+                { "method": "stop", "args": ["{{options.containerId}}", {}] }
+              ],
+              "containerId": "$containerId"
+            }
+          },
+          "tasks": [
+            {
+              "label": "docker-stop",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker"
+            }
+          ]
+        },
+        {
+          "friendlyName": "EMC Compose System Graph",
+          "injectableName": "Graph.Emc.Compose.System",
+          "options": {
+            "defaults": { "endpoints": null, "name": null, "action": "compose" }
+          },
+          "tasks": [
+            {
+              "label": "emc-compose-system",
+              "taskName": "/api/2.0/workflows/tasks/Task.Emc.Compose.System"
+            },
+            {
+              "label": "create-redfish-pollers",
+              "waitOn": { "emc-compose-system": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.Redfish.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.Redfish.CreateDefault",
+                "options": {
+                  "pollers": [
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "systems.logservices" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "EMC Redfish Catalog",
+          "injectableName": "Graph.Emc.Redfish.Catalog",
+          "options": {},
+          "tasks": [
+            {
+              "label": "emc-redfish-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Emc.Redfish.Catalog"
+            }
+          ]
+        },
+        {
+          "friendlyName": "DEBUG Bootstrap Ubuntu Mocks",
+          "injectableName": "Graph.BootstrapUbuntuMocks",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-ubuntu",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Ubuntu"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Chef Client",
+          "injectableName": "Graph.Chef.Install",
+          "tasks": [
+            {
+              "label": "sftp-archive",
+              "taskDefinition": {
+                "friendlyName": "Sftp chef keys",
+                "injectableName": "Task.SftpKey",
+                "implementsTask": "Task.Base.Sftp",
+                "options": {
+                  "archiveSrc": null,
+                  "archiveName": null,
+                  "fileSource": "{{options.archiveSrc}}",
+                  "fileDestination": "/etc/{{options.archiveName}}"
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "get-chef-client",
+              "waitOn": { "sftp-archive": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Task.Get.Chef.Installer",
+                "injectableName": "Task.Chef.GetInstaller",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": {
+                  "chefIP": null,
+                  "domainName": null,
+                  "archiveName": null,
+                  "commands": [
+                    "curl -L https://omnitruck.chef.io/install.sh | sudo bash;",
+                    "{{#options.chefIP}}{{#options.domainName}}echo '{{options.chefIP}}     {{options.domainName}}' | sudo tee -a /etc/hosts{{/options.domainName}}{{/options.chefIP}}",
+                    "tar -xvf /etc/{{options.archiveName}} -C /etc"
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "run-client",
+              "waitOn": { "get-chef-client": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Ssh and run Chef client",
+                "injectableName": "Task.Run.Client",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": {
+                  "name": null,
+                  "commands": "sudo /usr/bin/chef-client -N {{options.name || task.nodeId}}"
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Docker Service",
+          "injectableName": "Graph.Service.Docker",
+          "options": {
+            "docker-reconciler": { "schedulerOverrides": { "timeout": -1 } }
+          },
+          "tasks": [
+            {
+              "label": "docker-reconciler",
+              "taskName": "/api/2.0/workflows/tasks/Task.Docker.Reconciler"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Chef Server",
+          "injectableName": "Graph.Chef.Install.Server",
+          "tasks": [
+            {
+              "label": "sftp-file",
+              "taskDefinition": {
+                "friendlyName": "Sftp chef core",
+                "injectableName": "Task.SftpFile",
+                "implementsTask": "Task.Base.Sftp",
+                "options": { "fileSource": null, "fileDestination": null },
+                "properties": {}
+              }
+            },
+            {
+              "label": "install-chef-core",
+              "waitOn": { "sftp-file": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Install Chef",
+                "injectableName": "Task.Chef.InstallCore",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": {
+                  "domainName": null,
+                  "chefDest": null,
+                  "sshExecOptions": null,
+                  "installCommand": "sudo dpkg -i",
+                  "commands": [
+                    "{{options.installCommand}} {{options.chefDest}}",
+                    "echo '127.0.1.1     {{options.domainName}}' | sudo tee -a /etc/hosts"
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "reconfigure",
+              "waitOn": { "install-chef-core": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Ssh and run Chef client",
+                "injectableName": "Task.Run.Client",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": { "commands": "sudo chef-server-ctl reconfigure" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "add-user",
+              "waitOn": { "reconfigure": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "add user",
+                "injectableName": "Task.Chef.User.Add",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": {
+                  "username": null,
+                  "firstName": null,
+                  "lastName": null,
+                  "email": null,
+                  "password": null,
+                  "userPemFile": null,
+                  "commands": [
+                    "chef-server-ctl user-create {{options.username}} {{options.firstName}} {{options.lastName}} {{options.email}} {{options.password}}{{#options.userPemFile}} -f {{options.userPemFile}}{{/options.userPemFile}}"
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "add-org",
+              "waitOn": { "add-user": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "add user",
+                "injectableName": "Task.Run.Client",
+                "implementsTask": "Task.Base.Ssh.Command",
+                "options": {
+                  "sshExecOptions": null,
+                  "shortName": null,
+                  "fullName": null,
+                  "username": null,
+                  "validatorPemFile": null,
+                  "commands": [
+                    "chef-server-ctl org-create {{options.shortName}} '{{options.fullName}}'{{#options.username}} -a {{options.username}}{{/options.username}}{{#options.validatorPemFile}} -f {{options.validatorPemFile}}{{/options.validatorPemFile}}"
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "ESXi Driver Version Retrieval",
+          "injectableName": "Graph.ESXi.Driver.Version.Retrieval",
+          "options": {
+            "versionRetrieval": { "updateExistingCatalog": true },
+            "defaults": { "commands": null }
+          },
+          "tasks": [
+            {
+              "label": "versionRetrieval",
+              "taskDefinition": {
+                "friendlyName": "Ssh and run Esxi commands",
+                "injectableName": "Task.Run.Ssh",
+                "implementsTask": "Task.Base.Ssh.Catalog",
+                "options": { "commands": null },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Flash MegaRAID controller",
+          "injectableName": "Graph.Flash.LSI.MegaRAID",
+          "options": {
+            "defaults": { "file": null, "downloadDir": "/opt/downloads" },
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" },
+            "flash-firmware": { "adapter": "0" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-firmware",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "catalog-megaraid-before",
+              "waitOn": { "download-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Megaraid"
+            },
+            {
+              "label": "flash-firmware",
+              "waitOn": { "catalog-megaraid-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.LSI.MegaRAID"
+            },
+            {
+              "label": "catalog-megaraid-after",
+              "waitOn": { "flash-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Megaraid"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "catalog-megaraid-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "iPDU firmware update by Sftp",
+          "injectableName": "Graph.FirmwareUpdateIPDU",
+          "tasks": [
+            {
+              "label": "sftp-upload-firmware",
+              "taskDefinition": {
+                "friendlyName": "sftp upload firmware of iPDU",
+                "injectableName": "Task.SftpFile",
+                "implementsTask": "Task.Base.Sftp",
+                "options": {
+                  "isPDU": "true",
+                  "fileSource": null,
+                  "fileDestination": null
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Flash Quanta All Firmwares",
+          "injectableName": "Graph.Flash.Quanta",
+          "options": {
+            "defaults": { "downloadDir": "/opt/downloads" },
+            "bootstrap-rancher": { "dockerFile": "quanta.flash.docker.tar.xz" },
+            "download-megaraid-firmware": { "file": null },
+            "download-bios-firmware": { "file": null },
+            "download-bmc-firmware": { "file": null },
+            "flash-megaraid": { "file": null },
+            "flash-bios": { "file": null },
+            "flash-bmc": { "file": null }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-megaraid-firmware",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "download-bios-firmware",
+              "waitOn": { "download-megaraid-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "download-bmc-firmware",
+              "waitOn": { "download-bios-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "catalog-quanta-megaraid-before",
+              "waitOn": { "download-bmc-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-quanta-bios-before",
+              "waitOn": { "catalog-quanta-megaraid-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ami"
+            },
+            {
+              "label": "catalog-quanta-bmc-before",
+              "waitOn": { "catalog-quanta-bios-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "provide-quanta-bios-version",
+              "waitOn": { "catalog-quanta-bmc-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalogs.Provide.Ami.BiosVersion"
+            },
+            {
+              "label": "flash-megaraid",
+              "waitOn": { "provide-quanta-bios-version": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.LSI.MegaRAID"
+            },
+            {
+              "label": "flash-bios",
+              "waitOn": { "flash-megaraid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.Ami.Bios"
+            },
+            {
+              "label": "flash-bmc",
+              "waitOn": { "flash-bios": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.Quanta.Bmc"
+            },
+            {
+              "label": "catalog-quanta-megaraid-after",
+              "waitOn": { "flash-bmc": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-quanta-bios-after",
+              "waitOn": { "catalog-quanta-megaraid-after": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ami"
+            },
+            {
+              "label": "catalog-quanta-bmc-after",
+              "waitOn": { "catalog-quanta-bios-after": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "catalog-quanta-bmc-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Flash Quanta BIOS",
+          "injectableName": "Graph.Flash.Quanta.BIOS",
+          "options": {
+            "defaults": { "downloadDir": "/opt/downloads" },
+            "bootstrap-rancher": { "dockerFile": "quanta.flash.docker.tar.xz" },
+            "download-bios-firmware": { "file": null },
+            "flash-bios": { "file": null }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-bios-firmware",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "catalog-quanta-bios-before",
+              "waitOn": { "download-bios-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ami"
+            },
+            {
+              "label": "provide-quanta-bios-version",
+              "waitOn": { "catalog-quanta-bios-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalogs.Provide.Ami.BiosVersion"
+            },
+            {
+              "label": "flash-bios",
+              "waitOn": { "provide-quanta-bios-version": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.Ami.Bios"
+            },
+            {
+              "label": "catalog-quanta-bios-after",
+              "waitOn": { "flash-bios": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ami"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "catalog-quanta-bios-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Flash Quanta BMC",
+          "injectableName": "Graph.Flash.Quanta.Bmc",
+          "options": {
+            "defaults": { "downloadDir": "/opt/downloads" },
+            "bootstrap-rancher": { "dockerFile": "quanta.flash.docker.tar.xz" },
+            "download-bmc-firmware": { "file": null },
+            "flash-bmc": { "file": null }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-bmc-firmware",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "catalog-quanta-bmc-before",
+              "waitOn": { "download-bmc-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "flash-bmc",
+              "waitOn": { "catalog-quanta-bmc-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.Quanta.Bmc"
+            },
+            {
+              "label": "catalog-quanta-bmc-after",
+              "waitOn": { "flash-bmc": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Get Switch Version Graph",
+          "injectableName": "Graph.Get.Switch.Version",
+          "options": {
+            "defaults": {
+              "endpoint": {
+                "ipaddress": null,
+                "username": null,
+                "password": null,
+                "switchType": null
+              }
+            },
+            "Get-switch-version": {
+              "loginToken": "Bearer {{ context.outputs[\"On-network-login\"].restData.body.token }}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "On-network-login",
+              "taskName": "/api/2.0/workflows/tasks/Task.Post.Login.On-network"
+            },
+            {
+              "label": "Get-switch-version",
+              "waitOn": { "On-network-login": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Get.Switch.Version"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Get Switch Config Graph",
+          "injectableName": "Graph.Get.Switch.Config",
+          "options": {
+            "defaults": {
+              "endpoint": {
+                "ipaddress": null,
+                "username": null,
+                "password": null,
+                "switchType": null
+              }
+            },
+            "Get-switch-config": {
+              "loginToken": "Bearer {{ context.outputs[\"On-network-login\"].restData.body.token }}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "On-network-login",
+              "taskName": "/api/2.0/workflows/tasks/Task.Post.Login.On-network"
+            },
+            {
+              "label": "Get-switch-config",
+              "waitOn": { "On-network-login": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Get.Switch.Config"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Flash Quanta MegaRAID",
+          "injectableName": "Graph.Flash.Quanta.MegaRAID",
+          "options": {
+            "defaults": { "downloadDir": "/opt/downloads" },
+            "bootstrap-rancher": { "dockerFile": "quanta.flash.docker.tar.xz" },
+            "download-megaraid-firmware": { "file": null },
+            "flash-megaraid": { "file": null }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-megaraid-firmware",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "catalog-quanta-megaraid-before",
+              "waitOn": { "download-megaraid-firmware": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "flash-megaraid",
+              "waitOn": { "catalog-quanta-megaraid-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Flash.LSI.MegaRAID"
+            },
+            {
+              "label": "catalog-quanta-megaraid-after",
+              "waitOn": { "flash-megaraid": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "catalog-quanta-megaraid-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install CentOS",
+          "injectableName": "Graph.InstallCentOS",
+          "options": {
+            "install-os": { "version": null, "_taskTimeout": 3600000 },
+            "rackhd-callback-notification-wait": { "_taskTimeout": 1200000 }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.CentOS"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Generate Tag",
+          "injectableName": "Graph.GenerateTags",
+          "options": { "generate-tag": { "nodeIds": null } },
+          "tasks": [
+            {
+              "label": "generate-tag",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Photon OS",
+          "injectableName": "Graph.InstallPhotonOS",
+          "options": {
+            "install-os": {
+              "version": null,
+              "schedulerOverrides": { "timeout": 3600000 }
+            },
+            "rackhd-callback-notification-wait": {
+              "schedulerOverrides": { "timeout": 1200000 }
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.PhotonOS"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Debian/Ubuntu",
+          "injectableName": "Graph.InstallDebian",
+          "options": {},
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-debian",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.Debian"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-debian": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Ubuntu",
+          "injectableName": "Graph.InstallUbuntu",
+          "options": {
+            "install-ubuntu": { "osName": "ubuntu", "version": "trusty" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-ubuntu",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.Debian"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-ubuntu": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install ESXi",
+          "injectableName": "Graph.InstallESXi",
+          "options": {
+            "defaults": {
+              "version": null,
+              "repo": "{{file.server}}/esxi/{{options.version}}"
+            },
+            "install-os": { "_taskTimeout": 3600000 },
+            "firstboot-callback-notification-wait": { "_taskTimeout": 1200000 },
+            "installed-callback-notification-wait": { "_taskTimeout": 1200000 }
+          },
+          "tasks": [
+            {
+              "label": "analyze-repo",
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Esx.Analyze.Repo"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "analyze-repo": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.ESXi"
+            },
+            {
+              "label": "firstboot-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            },
+            {
+              "label": "installed-callback-notification-wait",
+              "waitOn": { "firstboot-callback-notification-wait": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Intel Flashupdt Info",
+          "injectableName": "Graph.Catalog.Intel.Flashupdt",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "intel.flash.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-flashupdt",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.flashupdt"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-flashupdt": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install Windows Server 2012",
+          "injectableName": "Graph.InstallWindowsServer",
+          "options": { "defaults": { "smbUser": null, "smbPassword": null } },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.Win"
+            },
+            {
+              "label": "firstboot-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install CoreOS",
+          "injectableName": "Graph.InstallCoreOS",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-coreos",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.CoreOS"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install SUSE",
+          "injectableName": "Graph.InstallSUSE",
+          "options": { "install-os": { "version": null, "_taskTimeout": 3600000 } },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.SUSE"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Poller Service",
+          "injectableName": "Graph.Service.Poller",
+          "options": {
+            "clean-workitems": { "schedulerOverrides": { "timeout": -1 } },
+            "run-workitems": { "schedulerOverrides": { "timeout": -1 } },
+            "ipmi": { "schedulerOverrides": { "timeout": -1 } },
+            "snmp": { "schedulerOverrides": { "timeout": -1 } },
+            "ipmi-sdr-alert": { "schedulerOverrides": { "timeout": -1 } },
+            "ipmi-sel-alert": { "schedulerOverrides": { "timeout": -1 } },
+            "poller-cache": { "schedulerOverrides": { "timeout": -1 } },
+            "redfish": { "schedulerOverrides": { "timeout": -1 } },
+            "wsman": { "schedulerOverrides": { "timeout": -1 } },
+            "ucs": { "schedulerOverrides": { "timeout": -1 } }
+          },
+          "tasks": [
+            {
+              "label": "clean-workitems",
+              "taskDefinition": {
+                "friendlyName": "Clean Poller Work Items",
+                "injectableName": "Task.Inline.Poller.WorkItems.Clean",
+                "implementsTask": "Task.Base.WorkItems.Clean",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "run-workitems",
+              "taskDefinition": {
+                "friendlyName": "Run Poller Work Items",
+                "injectableName": "Task.Inline.Poller.WorkItems.Run",
+                "implementsTask": "Task.Base.WorkItems.Run",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "ipmi",
+              "taskDefinition": {
+                "friendlyName": "Ipmi requester",
+                "injectableName": "Task.Inline.Ipmi",
+                "implementsTask": "Task.Base.Ipmi",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "snmp",
+              "taskDefinition": {
+                "friendlyName": "SNMP requester",
+                "injectableName": "Task.Inline.Snmp",
+                "implementsTask": "Task.Base.Snmp",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "ipmi-sdr-alert",
+              "taskDefinition": {
+                "friendlyName": "IPMI Sdr alerter",
+                "injectableName": "Task.Inline.Poller.Alert.Ipmi.Sdr",
+                "implementsTask": "Task.Base.Poller.Alert.Ipmi.Sdr",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "ipmi-sel-alert",
+              "taskDefinition": {
+                "friendlyName": "IPMI Sel alerter",
+                "injectableName": "Task.Inline.Poller.Alert.Ipmi.Sel",
+                "implementsTask": "Task.Base.Poller.Alert.Ipmi.Sel",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "poller-cache",
+              "taskDefinition": {
+                "friendlyName": "Poller cache",
+                "injectableName": "Task.Inline.Poller.Cache",
+                "implementsTask": "Task.Base.Message.Cache",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "redfish",
+              "taskDefinition": {
+                "friendlyName": "Redfish requester",
+                "injectableName": "Task.Inline.Redfish",
+                "implementsTask": "Task.Base.Redfish",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "wsman",
+              "taskDefinition": {
+                "friendlyName": "Wsman requester",
+                "injectableName": "Task.Inline.Wsman",
+                "implementsTask": "Task.Base.Wsman",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "ucs",
+              "taskDefinition": {
+                "friendlyName": "UCS requester",
+                "injectableName": "Task.Inline.Ucs",
+                "implementsTask": "Task.Base.Ucs",
+                "options": {},
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "noop-graph",
+          "injectableName": "Graph.noop-example",
+          "tasks": [
+            { "label": "noop-1", "taskName": "/api/2.0/workflows/tasks/Task.noop" },
+            {
+              "label": "noop-2",
+              "waitOn": { "noop-1": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "parallel-noop-1",
+              "waitOn": { "noop-2": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "parallel-noop-2",
+              "waitOn": { "noop-2": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            }
+          ]
+        },
+        {
+          "friendlyName": "PowerOn Node",
+          "injectableName": "Graph.PowerOn.Node",
+          "tasks": [
+            {
+              "label": "poweron",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PowerOn"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Discovery by Rancher",
+          "injectableName": "Graph.rancherDiscovery",
+          "options": {
+            "bootstrap-rancher": { "triggerGroup": "bootstrap" },
+            "finish-bootstrap-trigger": { "triggerGroup": "bootstrap" },
+            "skip-reboot-post-discovery": {
+              "skipReboot": "false",
+              "when": "{{options.skipReboot}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "bootstrap-rancher",
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-dmi",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.dmi"
+            },
+            {
+              "label": "catalog-ohai",
+              "waitOn": { "catalog-dmi": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ohai"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "catalog-ohai": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "set-interfaces",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Set.Interfaces"
+            },
+            {
+              "label": "catalog-lsall",
+              "waitOn": { "set-interfaces": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "catalog-megaraid",
+              "waitOn": { "catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-perccli",
+              "waitOn": { "catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.perccli"
+            },
+            {
+              "label": "catalog-smart",
+              "waitOn": { "catalog-perccli": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.smart"
+            },
+            {
+              "label": "catalog-driveid",
+              "waitOn": { "catalog-smart": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "catalog-lldp",
+              "waitOn": { "catalog-driveid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.LLDP"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "catalog-lldp": "finished" },
+              "taskDefinition": {
+                "friendlyName": "Set PXE boot",
+                "injectableName": "Task.Node.PxeBoot",
+                "implementsTask": "Task.Base.Linux.Commands",
+                "options": { "commands": "sudo ipmitool chassis bootdev pxe" },
+                "properties": {}
+              }
+            },
+            {
+              "label": "skip-reboot-post-discovery",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "skip-reboot-post-discovery": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "noop",
+              "waitOn": { "skip-reboot-post-discovery": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "finish-bootstrap-trigger": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Remove BMC Credentials",
+          "injectableName": "Graph.Remove.Bmc.Credentials",
+          "options": { "remove-bmc-credentials": { "users": null } },
+          "tasks": [
+            {
+              "label": "remove-bmc-credentials",
+              "taskName": "/api/2.0/workflows/tasks/Task.Remove.BMC.Credentials"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "remove-bmc-credentials": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Install RHEL",
+          "injectableName": "Graph.InstallRHEL",
+          "options": {
+            "install-os": { "version": null, "_taskTimeout": 3600000 },
+            "rackhd-callback-notification-wait": { "_taskTimeout": 1200000 }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "install-os",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.CentOS"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-os": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Cold Reset BMC",
+          "injectableName": "Graph.McReset",
+          "tasks": [
+            {
+              "label": "mc-reset",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.McResetCold"
+            }
+          ]
+        },
+        {
+          "friendlyName": "PowerOff Node",
+          "injectableName": "Graph.PowerOff.Node",
+          "tasks": [
+            {
+              "label": "poweroff",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PowerOff"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Reboot Node",
+          "injectableName": "Graph.Reboot.Node",
+          "tasks": [
+            {
+              "label": "reboot",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Set BMC Credentials",
+          "injectableName": "Graph.Set.Bmc.Credentials",
+          "options": { "generate-pass": { "user": null, "password": null } },
+          "tasks": [
+            {
+              "label": "generate-pass",
+              "taskDefinition": {
+                "friendlyName": "Generate BMC Password",
+                "injectableName": "Task.Generate.BMC.Password",
+                "implementsTask": "Task.Base.Generate.Password",
+                "options": { "user": null },
+                "properties": {}
+              }
+            },
+            {
+              "label": "set-bmc",
+              "waitOn": { "generate-pass": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Set.BMC.Credentials"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "set-bmc": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "create-ipmi-obm-settings",
+              "waitOn": { "catalog-bmc": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Ipmi.CreateSettings"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "create-ipmi-obm-settings": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "create-ipmi-obm-settings": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Reset Node",
+          "injectableName": "Graph.Reset.Node",
+          "tasks": [
+            {
+              "label": "reset",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Set Idrac Ipaddress",
+          "injectableName": "Graph.SetIdracIp",
+          "options": { "defaults": { "commands": [] } },
+          "tasks": [
+            {
+              "label": "ssh-to-microkernel",
+              "taskName": "/api/2.0/workflows/tasks/Task.Ssh.Exec"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Persist Poller Data",
+          "injectableName": "Graph.Persist.Poller.Data",
+          "options": {
+            "defaults": {
+              "pollerId": null,
+              "nodeId": null,
+              "interval": null,
+              "duration": null,
+              "catalogName": null,
+              "path": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "persist-poller-data",
+              "taskName": "/api/2.0/workflows/tasks/Task.Persist.Poller.Data"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Catalog by Rancher",
+          "injectableName": "Graph.Catalog.Rancher",
+          "options": {
+            "bootstrap-rancher": { "triggerGroup": "catalog" },
+            "finish-bootstrap-trigger": { "triggerGroup": "catalog" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-dmi",
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.dmi"
+            },
+            {
+              "label": "catalog-ohai",
+              "waitOn": { "catalog-dmi": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.ohai"
+            },
+            {
+              "label": "catalog-bmc",
+              "waitOn": { "catalog-ohai": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.bmc"
+            },
+            {
+              "label": "set-interfaces",
+              "waitOn": { "catalog-bmc": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Set.Interfaces"
+            },
+            {
+              "label": "catalog-lsall",
+              "waitOn": { "set-interfaces": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.lsall"
+            },
+            {
+              "label": "catalog-megaraid",
+              "waitOn": { "catalog-lsall": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-perccli",
+              "waitOn": { "catalog-megaraid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.perccli"
+            },
+            {
+              "label": "catalog-smart",
+              "waitOn": { "catalog-perccli": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.smart"
+            },
+            {
+              "label": "catalog-driveid",
+              "waitOn": { "catalog-smart": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "catalog-lldp",
+              "waitOn": { "catalog-driveid": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.LLDP"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-lldp": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "catalog-lldp": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Switch Discovery",
+          "injectableName": "Graph.Switch.Discovery",
+          "options": {
+            "defaults": { "nodeId": null, "nodeIds": ["{{ options.nodeId }}"] },
+            "create-switch-snmp-pollers": {
+              "pollers": [
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-interface-bandwidth-utilization" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-interface-state" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-processor-load" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-memory-usage" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-txrx-counters" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-switch-sensor-status" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "ping-host",
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Ping"
+            },
+            {
+              "label": "collect-snmp",
+              "waitOn": { "ping-host": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Collect.Discovery"
+            },
+            {
+              "label": "catalog-snmp",
+              "waitOn": { "ping-host": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Catalog"
+            },
+            {
+              "label": "update-lookups",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Update.Lookups"
+            },
+            {
+              "label": "create-switch-snmp-pollers",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.CreateDefault"
+            },
+            {
+              "label": "update-node-name",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Node.Update"
+            },
+            {
+              "label": "switch-node-relations",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run switch to nodes relations",
+                "injectableName": "Task.Catalog.SwitchRelations",
+                "implementsTask": "Task.Base.Catalog.SwitchRelations",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "switch-node-relations": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-tag",
+              "waitOn": { "switch-node-relations": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "update-node-name": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Redfish Reset Actions",
+          "injectableName": "Graph.Redfish.Actions.Reset",
+          "options": { "defaults": { "target": null } },
+          "tasks": [
+            {
+              "label": "actions-reset",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Redfish.Actions.Reset"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Secure Erase Drive",
+          "injectableName": "Graph.Drive.SecureErase",
+          "options": {
+            "bootstrap-rancher": {
+              "dockerFile": "secure.erase.docker.tar.xz",
+              "triggerGroup": "secureErase"
+            },
+            "drive-secure-erase": { "eraseSettings": null },
+            "drive-scan-delay": { "duration": 10000 },
+            "finish-bootstrap-trigger": { "triggerGroup": "secureErase" }
+          },
+          "tasks": [
+            {
+              "label": "cache-driveId-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Get.DriveId.Catalog"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "cache-driveId-catalog": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "drive-scan-delay",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Node.Sleep"
+            },
+            {
+              "label": "catalog-driveid-before",
+              "waitOn": { "drive-scan-delay": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "catalog-megaraid-before",
+              "waitOn": { "catalog-driveid-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "drive-secure-erase",
+              "waitOn": { "catalog-megaraid-before": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Drive.SecureErase"
+            },
+            {
+              "label": "catalog-megaraid-after",
+              "waitOn": { "drive-secure-erase": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "catalog-driveid-after",
+              "waitOn": { "catalog-megaraid-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.Drive.Id"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-driveid-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            },
+            {
+              "label": "finish-bootstrap-trigger",
+              "waitOn": { "catalog-driveid-after": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Trigger.Send.Finish"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Active Switch SKU Discovery",
+          "injectableName": "Graph.SKU.Switch.Discovery.Active",
+          "options": {
+            "defaults": {
+              "nodeId": null,
+              "nodeIds": ["{{ options.nodeId }}"],
+              "graphOptions": { "target": null }
+            },
+            "vendor-discovery-graph": { "graphName": null }
+          },
+          "tasks": [
+            {
+              "label": "vendor-discovery-graph",
+              "taskDefinition": {
+                "friendlyName": "Run Vendor-specific Switch Discovery",
+                "injectableName": "Task.Graph.Run.Switch.Discovery.VendorSpecific",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": { "graphName": null, "graphOptions": {} },
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "vendor-discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-tag",
+              "waitOn": { "vendor-discovery-graph": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "run-sku-graph",
+              "waitOn": { "generate-sku": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run SKU-specific graph",
+                "injectableName": "Task.Graph.Run.SkuSpecific",
+                "implementsTask": "Task.Base.Graph.RunSku",
+                "options": { "nodeId": null },
+                "properties": {}
+              }
+            },
+            {
+              "label": "run-sku-post-hooks",
+              "waitOn": { "run-sku-graph": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run Switch SKU graph post-hooks",
+                "injectableName": "Task.Graph.Run.Switch.Discovery.Hooks.Post",
+                "implementsTask": "Task.Base.Graph.Run",
+                "options": {
+                  "graphName": "Graph.Switch.SKU.Discovery.Hooks.Post",
+                  "graphOptions": {}
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "UCS Poller",
+          "injectableName": "Graph.UCS.Poller",
+          "options": {
+            "defaults": {
+              "graphOptions": { "target": null },
+              "nodeId": null,
+              "nodeIds": ["{{ options.nodeId }}"]
+            }
+          },
+          "tasks": [
+            {
+              "label": "create-ucs-pollers",
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.powerthermal" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.fan" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.psu" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.disk" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.led" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.sel" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "PDU Discovery",
+          "injectableName": "Graph.PDU.Discovery",
+          "options": {
+            "defaults": { "nodeId": null, "nodeIds": ["{{ options.nodeId }}"] },
+            "create-pdu-snmp-pollers": {
+              "pollers": [
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-pdu-power-status" }
+                },
+                {
+                  "type": "snmp",
+                  "pollInterval": 60000,
+                  "config": { "metric": "snmp-pdu-sensor-status" }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "ping-host",
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Ping"
+            },
+            {
+              "label": "collect-snmp",
+              "waitOn": { "ping-host": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Collect.Discovery"
+            },
+            {
+              "label": "catalog-snmp",
+              "waitOn": { "ping-host": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Catalog"
+            },
+            {
+              "label": "create-pdu-snmp-pollers",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Pollers.CreateDefault"
+            },
+            {
+              "label": "update-node-name",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Snmp.Node.Update"
+            },
+            {
+              "label": "pdu-node-relations",
+              "waitOn": { "catalog-snmp": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run pdu to nodes relations",
+                "injectableName": "Task.Catalog.PduRelations",
+                "implementsTask": "Task.Base.Catalog.PduRelations",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "generate-sku",
+              "waitOn": { "pdu-node-relations": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateSku"
+            },
+            {
+              "label": "generate-tag",
+              "waitOn": { "pdu-node-relations": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.GenerateTag"
+            },
+            {
+              "label": "run-sku-graph",
+              "waitOn": { "generate-sku": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Run SKU-specific graph",
+                "injectableName": "Task.Graph.Run.SkuSpecific",
+                "implementsTask": "Task.Base.Graph.RunSku",
+                "options": {},
+                "properties": {}
+              }
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "update-node-name": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Run a UEFI Application",
+          "injectableName": "Graph.RunUefi",
+          "options": { "defaults": { "repo": null, "uefitool": null, "args": "" } },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "runuefi",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Run.Uefi"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Quanta storcli Catalog",
+          "injectableName": "Graph.Quanta.storcli.Catalog",
+          "options": {
+            "bootstrap-rancher": { "dockerFile": "secure.erase.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "catalog-storcli",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Catalog.megaraid"
+            },
+            {
+              "label": "shell-reboot",
+              "waitOn": { "catalog-storcli": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.ProcShellReboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Redfish Ip Range Discovery",
+          "injectableName": "Graph.Redfish.Ip.Range.Discovery",
+          "options": {
+            "defaults": {
+              "ranges": [
+                {
+                  "startIp": null,
+                  "endIp": null,
+                  "credentials": { "userName": null, "password": null }
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "label": "redfish-ip-range-discovery",
+              "taskName": "/api/2.0/workflows/tasks/Task.Redfish.Ip.Range.Discovery"
+            },
+            {
+              "label": "redfish-discovery-list",
+              "waitOn": { "redfish-ip-range-discovery": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Redfish.Discovery.List"
+            },
+            {
+              "label": "redfish-catalog-discovered",
+              "waitOn": { "redfish-discovery-list": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.General.Redfish.Catalog"
+            },
+            {
+              "label": "redfish-update-lookups",
+              "waitOn": { "redfish-catalog-discovered": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Redfish.Update.Lookups"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Run rest command",
+          "injectableName": "Graph.Run.Rest.Command",
+          "options": {
+            "defaults": {
+              "url": null,
+              "credential": null,
+              "method": null,
+              "headers": null,
+              "data": null,
+              "verifySSL": null,
+              "recvTimeoutMs": null
+            }
+          },
+          "tasks": [
+            {
+              "label": "run-rest-command",
+              "taskName": "/api/2.0/workflows/tasks/Task.run.rest.command"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Soft Reset Node",
+          "injectableName": "Graph.Reset.Soft.Node",
+          "tasks": [
+            {
+              "label": "soft-reset",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset.Soft"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Zerotouch vEOS Graph",
+          "injectableName": "Graph.Arista.Zerotouch.vEOS",
+          "tasks": [
+            {
+              "label": "zerotouch-veos",
+              "taskDefinition": {
+                "friendlyName": "Arista Zerotouch vEOS",
+                "injectableName": "Task.Inline.Arista.Zerotouch.vEOS",
+                "implementsTask": "Task.Base.Arista.Zerotouch",
+                "options": {
+                  "profile": "zerotouch-configure.zt",
+                  "bootConfig": "arista-boot-config",
+                  "startupConfig": "arista-startup-config",
+                  "eosImage": "common/zerotouch-vEOS.swi",
+                  "bootfile": "zerotouch-vEOS.swi",
+                  "hostname": "RenasarVEOS"
+                },
+                "properties": {
+                  "os": { "switch": { "type": "vEOS", "virtual": true } }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Ucs Discovery",
+          "injectableName": "Graph.Ucs.Discovery",
+          "options": {
+            "defaults": { "uri": null },
+            "when-discover-physical-ucs": {
+              "discoverPhysicalServers": "true",
+              "updateExistingCatalog": true,
+              "when": "{{options.discoverPhysicalServers}}"
+            },
+            "when-discover-logical-ucs": {
+              "discoverLogicalServer": "true",
+              "updateExistingCatalog": true,
+              "when": "{{options.discoverLogicalServer}}"
+            },
+            "when-catalog-ucs": {
+              "autoCatalogUcs": "true",
+              "updateExistingCatalog": true,
+              "when": "{{options.autoCatalogUcs}}"
+            },
+            "skip-pollers": {
+              "skipPollersCreation": "false",
+              "when": "{{options.skipPollersCreation}}"
+            },
+            "skip-ipmi-pollers": {
+              "skipIPMIPollersCreation": "true",
+              "when": "{{options.skipIPMIPollersCreation}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "when-discover-physical-ucs",
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "when-discover-logical-ucs",
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "ucs-physical-discovery",
+              "waitOn": { "when-discover-physical-ucs": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Ucs.Discovery"
+            },
+            {
+              "label": "ucs-logical-discovery",
+              "waitOn": { "when-discover-logical-ucs": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Ucs.Service.Profile.Discovery"
+            },
+            {
+              "label": "ucs-physical-discovery-done",
+              "waitOn": {
+                "anyOf": {
+                  "when-discover-physical-ucs": "failed",
+                  "ucs-physical-discovery": "succeeded"
+                }
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "ucs-logical-discovery-done",
+              "waitOn": {
+                "anyOf": {
+                  "when-discover-logical-ucs": "failed",
+                  "ucs-logical-discovery": "succeeded"
+                }
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            },
+            {
+              "label": "when-catalog-ucs",
+              "waitOn": {
+                "ucs-physical-discovery-done": "succeeded",
+                "ucs-logical-discovery-done": "succeeded"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "ucs-catalog",
+              "waitOn": { "when-catalog-ucs": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Ucs.Catalog"
+            },
+            {
+              "label": "skip-pollers",
+              "waitOn": { "ucs-catalog": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "create-ucs-pollers",
+              "waitOn": { "ucs-catalog": "succeeded", "skip-pollers": "failed" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.powerthermal" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.fan" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.psu" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.disk" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.led" }
+                    },
+                    {
+                      "type": "ucs",
+                      "pollInterval": 60000,
+                      "config": { "command": "ucs.sel" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "skip-ipmi-pollers",
+              "waitOn": { "ucs-catalog": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "create-ucs-ipmi-pollers",
+              "waitOn": {
+                "ucs-catalog": "succeeded",
+                "skip-ipmi-pollers": "failed"
+              },
+              "taskDefinition": {
+                "friendlyName": "Create Default IPMI Pollers",
+                "injectableName": "Task.Inline.Pollers.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.CreateDefault",
+                "options": {
+                  "nodeId": null,
+                  "pollers": [
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sdr" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selInformation" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "sel" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "selEntries" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "chassis" }
+                    },
+                    {
+                      "type": "ipmi",
+                      "pollInterval": 60000,
+                      "config": { "command": "driveHealth" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop",
+              "waitOn": { "when-catalog-ucs": "failed" },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Write Quanta BIOS NVRAM",
+          "injectableName": "Graph.Write.Quanta.BIOS.NVRAM",
+          "options": {
+            "defaults": { "file": null },
+            "bootstrap-rancher": { "dockerFile": "quanta.flash.docker.tar.xz" }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "download-nvram-settings",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.DownloadFiles"
+            },
+            {
+              "label": "nvram-settings",
+              "waitOn": { "download-nvram-settings": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.SetNvram.Ami"
+            },
+            {
+              "label": "final-reboot",
+              "waitOn": { "nvram-settings": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Redfish Discovery",
+          "injectableName": "Graph.Redfish.Discovery",
+          "options": {
+            "defaults": { "uri": null },
+            "when-catalog-emc": {
+              "autoCatalogEmc": "false",
+              "when": "{{options.autoCatalogEmc}}"
+            },
+            "when-pollers-emc": {
+              "autoCreatePollerEmc": "false",
+              "when": "{{options.autoCreatePollerEmc}}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "redfish-client-discovery",
+              "taskName": "/api/2.0/workflows/tasks/Task.Redfish.Discovery"
+            },
+            {
+              "label": "create-redfish-pollers",
+              "waitOn": { "redfish-client-discovery": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.Redfish.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.Redfish.CreateDefault",
+                "options": {
+                  "pollers": [
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "thermal" }
+                    },
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "power" }
+                    },
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "managers.logservices" }
+                    },
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "systems.logservices" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "when-catalog-emc",
+              "waitOn": { "create-redfish-pollers": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "emc-redfish-catalog",
+              "waitOn": { "when-catalog-emc": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Emc.Redfish.Catalog"
+            },
+            {
+              "label": "general-redfish-catalog",
+              "waitOn": { "redfish-client-discovery": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.General.Redfish.Catalog"
+            },
+            {
+              "label": "when-pollers-emc",
+              "waitOn": { "create-redfish-pollers": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Evaluate.Condition"
+            },
+            {
+              "label": "create-emc-redfish-pollers",
+              "waitOn": { "when-pollers-emc": "succeeded" },
+              "taskDefinition": {
+                "friendlyName": "Create Default Pollers",
+                "injectableName": "Task.Inline.Pollers.Redfish.CreateDefault",
+                "implementsTask": "Task.Base.Pollers.Redfish.CreateDefault",
+                "options": {
+                  "pollers": [
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "fabricservice" }
+                    },
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "elements.thermal" }
+                    },
+                    {
+                      "type": "redfish",
+                      "pollInterval": 10000,
+                      "config": { "command": "elements.power" }
+                    }
+                  ]
+                },
+                "properties": {}
+              }
+            },
+            {
+              "label": "noop",
+              "waitOn": {
+                "when-catalog-emc": "failed",
+                "when-pollers-emc": "failed"
+              },
+              "taskName": "/api/2.0/workflows/tasks/Task.noop"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Run EMC Diagnostics",
+          "injectableName": "Graph.Run.Emc.Diag",
+          "options": {
+            "set-boot-pxe": { "delay": 1000, "retries": 10 },
+            "reboot-start": { "delay": 1000, "retries": 10 }
+          },
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Force.Pxe.Boot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset"
+            },
+            {
+              "label": "bootstrap-emc-diag",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Run.Emc.Diag"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Shell Commands",
+          "injectableName": "Graph.ShellCommands",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot-start",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reboot-start": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "shell-commands",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Commands"
+            },
+            {
+              "label": "reboot-end",
+              "waitOn": { "shell-commands": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Ucs Catalog",
+          "injectableName": "Graph.Ucs.Catalog",
+          "options": {},
+          "tasks": [
+            {
+              "label": "ucs-catalog",
+              "taskName": "/api/2.0/workflows/tasks/Task.Ucs.Catalog"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Bootstrap WinPE",
+          "injectableName": "Graph.BootstrapWinPE",
+          "tasks": [
+            {
+              "label": "set-boot-pxe",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reboot",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reboot"
+            },
+            {
+              "label": "bootstrap-winpe",
+              "waitOn": { "reboot": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.WinPE.Bootstrap"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Switch Discovery SKU Graph post-hooks",
+          "injectableName": "Graph.Switch.SKU.Discovery.Hooks.Post",
+          "tasks": [
+            {
+              "label": "exit-switch-taskrunner-success",
+              "taskDefinition": {
+                "friendlyName": "Exit switch taskrunner with success",
+                "injectableName": "Task.Inline.ExitSwitchTaskRunner.Succeeded",
+                "implementsTask": "Task.Base.ShellReboot",
+                "options": { "rebootCode": 0 },
+                "properties": {}
+              }
+            },
+            {
+              "label": "node-discovered-alert",
+              "waitOn": { "exit-switch-taskrunner-success": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Alert.Node.Discovered"
+            }
+          ]
+        },
+        {
+          "friendlyName": "Update Switch Firmware",
+          "injectableName": "Graph.Update.Switch.Firmware",
+          "options": {
+            "defaults": {
+              "endpoint": {
+                "ipaddress": null,
+                "username": null,
+                "password": null,
+                "switchType": null
+              },
+              "switchModel": null,
+              "firmwareImages": null
+            },
+            "Get-switch-config": {
+              "loginToken": "Bearer {{ context.outputs[\"On-network-login\"].restData.body.token }}"
+            },
+            "Post-update-switch-firmware": {
+              "loginToken": "Bearer {{ context.outputs[\"On-network-login\"].restData.body.token }}"
+            }
+          },
+          "tasks": [
+            {
+              "label": "On-network-login",
+              "taskName": "/api/2.0/workflows/tasks/Task.Post.Login.On-network"
+            },
+            {
+              "label": "Get-switch-config",
+              "waitOn": { "On-network-login": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Get.Switch.Config"
+            },
+            {
+              "label": "Post-update-switch-firmware",
+              "waitOn": { "On-network-login": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Post.Update.Switch"
+            }
+          ]
+        },
+        {
+          "friendlyName": "WSMAN Poller Service",
+          "injectableName": "Graph.Service.Poller.Wsman",
+          "options": { "defaults": { "serviceId": null, "nodeId": null } },
+          "tasks": [
+            {
+              "label": "wsman",
+              "taskDefinition": {
+                "friendlyName": "Wsman requester",
+                "injectableName": "Task.Inline.Wsman",
+                "implementsTask": "Task.Base.Wsman",
+                "options": { "serviceId": null, "nodeId": null },
+                "properties": {}
+              }
+            }
+          ]
+        },
+        {
+          "friendlyName": "Setup inspur node",
+          "injectableName": "Graph.Setup.Inspur.Custom",
+          "options": {
+            "install-ubuntu": {
+              "timezone": "UTC",
+              "baseUrl": "install/netboot/ubuntu-installer/amd64",
+              "profile": "ubuntu-custom.ipxe",
+              "repo": "{{ file.server }}/ubuntu",
+              "installDisk": "/dev/md0",
+              "rootPassword": "RackHDRocks!",
+              "osName": "ubuntu",
+              "installScriptUri": "{{ api.templates }}/custom-preseed.cfg?nodeId={{ task.nodeId }}",
+              "version": "bionic",
+              "kargs": { "raid": "part" }
+            },
+            "check-bios-version": { "bios_desired_version": "4.0.7" },
+            "set-ipmi-settings": { "password": "admin", "user": "admin" },
+            "bootstrap-rancher": {
+              "_taskTimeout": 600000,
+              "dockerFile": "provision.docker.tar.xz"
+            }
+          },
+          "tasks": [
+            {
+              "label": "set-ipmi-settings",
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Ipmi.CreateSettings"
+            },
+            {
+              "label": "set-boot-pxe",
+              "waitOn": { "set-ipmi-settings": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reset",
+              "waitOn": { "set-boot-pxe": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset"
+            },
+            {
+              "label": "bootstrap-rancher",
+              "waitOn": { "reset": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Linux.Bootstrap.Rancher"
+            },
+            {
+              "label": "configure-jbod",
+              "waitOn": { "bootstrap-rancher": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Init.ConfigureJBOD"
+            },
+            {
+              "label": "set-boot-pxe-2",
+              "waitOn": { "configure-jbod": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.PxeBoot"
+            },
+            {
+              "label": "reset-2",
+              "waitOn": { "set-boot-pxe-2": "finished" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Obm.Node.Reset"
+            },
+            {
+              "label": "install-ubuntu",
+              "waitOn": { "reset-2": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Os.Install.Debian"
+            },
+            {
+              "label": "rackhd-callback-notification-wait",
+              "waitOn": { "install-ubuntu": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            },
+            {
+              "label": "update-netbox",
+              "waitOn": { "rackhd-callback-notification-wait": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            },
+            {
+              "label": "ansible-provision",
+              "waitOn": { "update-netbox": "succeeded" },
+              "taskName": "/api/2.0/workflows/tasks/Task.Wait.Notification"
+            }
+          ]
+        }
+      ]
