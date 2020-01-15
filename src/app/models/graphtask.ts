@@ -13,4 +13,4 @@ export class GraphTask {
 export const GRAPHTASK_URL = {
     getAllUrl: '/workflows/tasks',
     getByIdentifierUrl: '/workflows/tasks/',
-}
+};

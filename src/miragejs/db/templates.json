@@ -1,0 +1,398 @@
+[
+        {
+          "id": "a6956088-73c6-4162-9e41-8d91d8dec58f",
+          "hash": "m1CAtakJVP4iVNiRHGFU4g==",
+          "name": "bootstrap.js",
+          "scope": "global"
+        },
+        {
+          "id": "4d0f1e18-b1a3-40bd-934b-d458ccf7a8ef",
+          "hash": "9mVhnhsGwrAcBfBQIl3tnw==",
+          "name": "get_smart.sh",
+          "scope": "global"
+        },
+        {
+          "id": "b5419620-1499-4615-bc8c-ff6b570b7d07",
+          "hash": "o1SkSI8UfNMLXVtjZqksPg==",
+          "name": "set_bmc_credentials.sh",
+          "scope": "global"
+        },
+        {
+          "id": "95842eb7-f8a5-41a8-8b6f-b4ec01a7648b",
+          "hash": "SBZmHoeeQRUAOQGQhYaPWA==",
+          "name": "winpe-kickstart.ps1",
+          "scope": "global"
+        },
+        {
+          "id": "d69e4163-a017-4dfd-9b1e-b570dc0865b0",
+          "hash": "fMpGK4vyAxpFba9JkSnlNA==",
+          "name": "arista-catalog-ip.py",
+          "scope": "global"
+        },
+        {
+          "id": "7b65ea89-ba88-4109-8a34-fe2a81261d60",
+          "hash": "PWlzEzaFhSYehMhBDwiwYg==",
+          "name": "autounattend_windows_2012_r2_SMC_6028U-TR4+.xml",
+          "scope": "global"
+        },
+        {
+          "id": "1136d9fe-9861-43ed-8fc5-685b66f4f4c5",
+          "hash": "0o41iVhn0xBwvxWZaaxy6w==",
+          "name": "brocade-catalog-version.py",
+          "scope": "global"
+        },
+        {
+          "id": "dbd6db1b-1ee3-482b-b453-80d1aca9220e",
+          "hash": "Ir02OvabSLxl8wPRuf7+rw==",
+          "name": "cisco-deploy-config-and-images.py",
+          "scope": "global"
+        },
+        {
+          "id": "d77e45da-a70b-40c8-baa3-26660496537e",
+          "hash": "SRtLFmItogparI3zsaD5cQ==",
+          "name": "custom-preseed.cfg",
+          "scope": "global"
+        },
+        {
+          "id": "f66804d2-f1de-41e3-8f20-3fbed033524f",
+          "hash": "nAeOlNGG+Oi5G99P4krmxA==",
+          "name": "dell-switch-nos-install.sh",
+          "scope": "global"
+        },
+        {
+          "id": "6ac6dd97-9463-410c-9447-5fafcc7ae9f0",
+          "hash": "DKN8NUxl/43zG1k2dGA6Xg==",
+          "name": "esx-pxelinux-cfg",
+          "scope": "global"
+        },
+        {
+          "id": "d8bb810b-9aea-4220-9bfd-3978ca265883",
+          "hash": "4sd5fc2gmtrFG4AJ2FYNAQ==",
+          "name": "ignition.json",
+          "scope": "global"
+        },
+        {
+          "id": "fa33abfc-f75a-4272-b873-89beb4556cc2",
+          "hash": "7XBv5lH02CY5tXC4tBtn5A==",
+          "name": "debian.rackhdcallback",
+          "scope": "global"
+        },
+        {
+          "id": "2007dc62-b580-41b6-8c66-2664033df3dd",
+          "hash": "Su0dsdkjsj6kfYcCpkQcuw==",
+          "name": "post-install-photon.sh",
+          "scope": "global"
+        },
+        {
+          "id": "433d505f-9509-43cc-8967-0841748a9e12",
+          "hash": "zdkY7RoJMQdUpA0bankNGA==",
+          "name": "pxe-cloud-config.yml",
+          "scope": "global"
+        },
+        {
+          "id": "ec7de993-af6f-4bab-9da7-4515641b2193",
+          "hash": "2daGG5QnH+h0Z0MUHmN/ow==",
+          "name": "set_interfaces.py",
+          "scope": "global"
+        },
+        {
+          "id": "6f40cdc7-370b-47c5-88d5-3fa561b96b30",
+          "hash": "zz6yQHWMOu116Vcd66J+XA==",
+          "name": "cisco-catalog-config.py",
+          "scope": "global"
+        },
+        {
+          "id": "0559baab-b981-4258-89ea-56dda51f43fa",
+          "hash": "AAMUowOS7/AzQZRjzKIm9g==",
+          "name": "Makefile",
+          "scope": "global"
+        },
+        {
+          "id": "fd406a75-aa5a-4750-981e-fc0ea10d8b56",
+          "hash": "kE5Pbp061TuWorL0dOy/fA==",
+          "name": "arista-catalog-snmp-settings.py",
+          "scope": "global"
+        },
+        {
+          "id": "bf488305-062c-42d5-8a18-b3c244ed940e",
+          "hash": "PWlzEzaFhSYehMhBDwiwYg==",
+          "name": "autounattend_windows_2012_r2_unknown.xml",
+          "scope": "global"
+        },
+        {
+          "id": "cc068412-d5b1-4423-a5b1-e19c371935e9",
+          "hash": "BKBJDDo53MmKbNmKz+4/xA==",
+          "name": "brocade-vdx-deploy-config.py",
+          "scope": "global"
+        },
+        {
+          "id": "6268e137-a53f-4fc6-b18d-df6babd2521c",
+          "hash": "m8ASnUfVeW7hs1S6ppLweQ==",
+          "name": "cloud-config.yaml",
+          "scope": "global"
+        },
+        {
+          "id": "4923e699-f64c-4f1c-a922-b776bc69e2cf",
+          "hash": "pISd0qNIuEspbzIgh47QmQ==",
+          "name": "custom-preseed.cfg.test",
+          "scope": "global"
+        },
+        {
+          "id": "11804709-38e9-4453-84f6-66c344e86f9e",
+          "hash": "bxELCYktCZE2/kmiNpb7mg==",
+          "name": "dell-switch-onie-catalog.sh",
+          "scope": "global"
+        },
+        {
+          "id": "64f818a4-ea19-4d05-a4ac-8033447461ae",
+          "hash": "X02KC2XIW8Mdludis1ZnbA==",
+          "name": "esx-ks",
+          "scope": "global"
+        },
+        {
+          "id": "222cb7e6-b6c0-4efc-a3eb-3cb73f1ef796",
+          "hash": "y4wybWv/eSP4gcu0OGeRWw==",
+          "name": "install-coreos.sh",
+          "scope": "global"
+        },
+        {
+          "id": "89b009c6-63d2-48c0-b9e2-f93a45385baf",
+          "hash": "Oon7OkspKAt65X62wytp+w==",
+          "name": "post-install-debian.sh",
+          "scope": "global"
+        },
+        {
+          "id": "7121c13a-e32c-41c3-8e17-96a6737f85df",
+          "hash": "9dII57UcE37MrE/1RDQLxw==",
+          "name": "megaraid-config.sh",
+          "scope": "global"
+        },
+        {
+          "id": "c181c62f-d59a-4cce-bc71-7a3e59f29441",
+          "hash": "5Ff9eBUg41gD6JqjcqIkFA==",
+          "name": "remove_bmc_credentials.sh",
+          "scope": "global"
+        },
+        {
+          "id": "b4639bc4-f3f7-4b34-b5c2-90342e1e38d1",
+          "hash": "cGW/W1Sfb6bsMFRWo08D7Q==",
+          "name": "startup.ps1",
+          "scope": "global"
+        },
+        {
+          "id": "e0e532a8-77d7-4668-a41b-e4b947449df0",
+          "hash": "OYVu/7alDoL0UdB5IJRA0Q==",
+          "name": "centos-ks",
+          "scope": "global"
+        },
+        {
+          "id": "1f755ca7-b085-47fb-a846-1a13755dd361",
+          "hash": "SYMvzMMUyNAcwhF3tX25wQ==",
+          "name": "arista-boot-config",
+          "scope": "global"
+        },
+        {
+          "id": "38487db9-86d5-4ce1-83d7-594c58e58f20",
+          "hash": "qeBw0PiA9FVqSkSBG3NyKw==",
+          "name": "arista-catalog-version.py",
+          "scope": "global"
+        },
+        {
+          "id": "bd25f02e-232b-40db-bfa3-157093aa07e0",
+          "hash": "ndpd5HooJlZ6RCqo4TADFg==",
+          "name": "autounattend_windows_2012_r2_vmware.xml",
+          "scope": "global"
+        },
+        {
+          "id": "40dc602b-ec32-44e8-9d97-51ecc9b46de6",
+          "hash": "3BVFYB3dZBXQlGRjO27p3Q==",
+          "name": "cisco-catalog-snmp-settings.py",
+          "scope": "global"
+        },
+        {
+          "id": "d0f23975-9bb7-43cb-8858-998307c65f06",
+          "hash": "X7d/8TZBLcHKtkUF9wG2Ww==",
+          "name": "custom-preseed",
+          "scope": "global"
+        },
+        {
+          "id": "ae2cf6c1-c7ba-4f48-b1a3-4ca9248a956f",
+          "hash": "rJcT5ZJgQfHgv4s+kquwgQ==",
+          "name": "dell-catalog-sysinfo.sh",
+          "scope": "global"
+        },
+        {
+          "id": "d02b1b66-5783-4d38-8fe4-39861f664fe6",
+          "hash": "Kzr3R4Hl6YcxfjL45Cfy4A==",
+          "name": "esx-boot-cfg",
+          "scope": "global"
+        },
+        {
+          "id": "7f1ca1ff-76db-4da5-a1cf-565662d727d5",
+          "hash": "NxPdE2T2yGPlRb63XY+I6g==",
+          "name": "esx.rackhdcallback",
+          "scope": "global"
+        },
+        {
+          "id": "03923051-2893-4485-989e-88e40c354154",
+          "hash": "sr0AkQh7BqoxEvgxUDQLPw==",
+          "name": "debian-preseed",
+          "scope": "global"
+        },
+        {
+          "id": "fc3f05d1-d37c-4912-93b4-e573aa885828",
+          "hash": "oPD15rP3LYeA41NI55ilKw==",
+          "name": "ubuntu-netplan-interfaces",
+          "scope": "global"
+        },
+        {
+          "id": "fac569eb-37cb-4d03-9b57-aa3edc9a3223",
+          "hash": "u5lCUwP/DeOoyL91xQ/owQ==",
+          "name": "monorail-backup.sh",
+          "scope": "global"
+        },
+        {
+          "id": "1d4baac5-bd87-4ade-b803-35c0b953b9a1",
+          "hash": "2Hmi/YDYFG9CezRfd4xVOA==",
+          "name": "renasar-ansible.pub",
+          "scope": "global"
+        },
+        {
+          "id": "99096ae5-fc31-4a7a-8fe5-c1c277e4b601",
+          "hash": "+NCzGWpUjEnokJMHhIHzVQ==",
+          "name": "suse-autoinst.xml",
+          "scope": "global"
+        },
+        {
+          "id": "396d3552-61fd-434d-aeee-f83a96f39f6a",
+          "hash": "nn0hsk4DqHGzbqoEt0I/dw==",
+          "name": "ansible-external-inventory.js",
+          "scope": "global"
+        },
+        {
+          "id": "849556ac-0e44-4f32-b733-e979faf84ec1",
+          "hash": "vwhxR8w5HC9bq9MwDd2f0Q==",
+          "name": "arista-deploy-startup-config.py",
+          "scope": "global"
+        },
+        {
+          "id": "ae78b3f8-ab30-4b74-8c01-1298defe5c6d",
+          "hash": "zzCuqvaiVz/7eJbPuor7Og==",
+          "name": "bios_check.sh",
+          "scope": "global"
+        },
+        {
+          "id": "15af9aab-3cf6-41ce-8287-2ee1550520f1",
+          "hash": "Lo6cLoqfufqDLWNLG2sJ5A==",
+          "name": "centos.rackhdcallback",
+          "scope": "global"
+        },
+        {
+          "id": "5224dbdc-32ac-4516-8b77-55ec3baaaf7e",
+          "hash": "YbKVpw0t2R/+acODY14OrA==",
+          "name": "custom-preseed.backup",
+          "scope": "global"
+        },
+        {
+          "id": "5ef647cb-5a8b-4443-b95f-d8e565e8ecbe",
+          "hash": "wNWUNKZpZDxLh9mwqZ0q7w==",
+          "name": "dell-switch-basic-config.exp",
+          "scope": "global"
+        },
+        {
+          "id": "f520b0fb-1af2-4d6e-aa3b-c57ed9806afe",
+          "hash": "92cxE54j06S+D5ulLnAHeQ==",
+          "name": "esx-boot-cfg-http",
+          "scope": "global"
+        },
+        {
+          "id": "55ae642c-0c5b-4d53-bc43-1fa9c3bee57d",
+          "hash": "bztj5VUwKBDQWouwD4x9Sw==",
+          "name": "get_driveid.js",
+          "scope": "global"
+        },
+        {
+          "id": "4e6ab81e-de62-4875-a049-9b2a9fa4b5dc",
+          "hash": "0wmFaRNL2/bRKBhfbTUBcQ==",
+          "name": "debian-interfaces",
+          "scope": "global"
+        },
+        {
+          "id": "a441cfc3-854b-4919-9493-a7f282e22fe5",
+          "hash": "thQvwzyOzBPKRSFctj8Nkw==",
+          "name": "photon-os-ks",
+          "scope": "global"
+        },
+        {
+          "id": "58637769-9912-4afb-b892-47c34429e8f7",
+          "hash": "16nyyO0SmPRbYHKFoGk3Qg==",
+          "name": "monorail-restore.sh",
+          "scope": "global"
+        },
+        {
+          "id": "2ea0be45-6571-4d96-b8e4-87b4acb742f8",
+          "hash": "TVou21wkdixICqOTpjOelg==",
+          "name": "secure_erase.py",
+          "scope": "global"
+        },
+        {
+          "id": "c25aa3aa-8b64-434b-b6c9-95d990106c60",
+          "hash": "IGwCBBONPOW5+ARO4Sh/kA==",
+          "name": "unattend_server2012.xml",
+          "scope": "global"
+        },
+        {
+          "id": "54e71912-dbc4-4525-95ae-c096ce18e2ff",
+          "hash": "iV2s8Z9ALReQj08PKtp8uw==",
+          "name": "arista-catalog-config.py",
+          "scope": "global"
+        },
+        {
+          "id": "bdcb84df-07e6-4012-acba-40e957cca9d8",
+          "hash": "KzVhrsZJJ4XLDEArQbdtyg==",
+          "name": "arista-startup-config",
+          "scope": "global"
+        },
+        {
+          "id": "ff8db97b-2c6b-462c-bfb8-57e1bb73f503",
+          "hash": "aU89dvxpI1B1MBatJ365Ew==",
+          "name": "cisco-catalog-version.py",
+          "scope": "global"
+        },
+        {
+          "id": "5d665a9e-84e3-48da-85cf-64bb6db0e0e8",
+          "hash": "I2zJv8wa4R2V7YZoZeLsUQ==",
+          "name": "custom-preseed-16-09-2019-13:13.30",
+          "scope": "global"
+        },
+        {
+          "id": "cb27f348-a3f7-4bb7-93f2-47e7f1ae7a9d",
+          "hash": "T0lCzRJsigzx2VAtGA2vpQ==",
+          "name": "dell-switch-catalog.sh",
+          "scope": "global"
+        },
+        {
+          "id": "352c967f-509b-4c86-a185-b0838c7084ea",
+          "hash": "Elgk6+zmtJwBI49UEaW2tg==",
+          "name": "esx-boot-cfg-tftp",
+          "scope": "global"
+        },
+        {
+          "id": "cfe439e5-0838-41a4-855a-5c26afd4275c",
+          "hash": "u93Rne/IV4EoquO8xxfr9w==",
+          "name": "debian-sources",
+          "scope": "global"
+        },
+        {
+          "id": "8bf6a3b9-aec7-4f54-b151-41589837f309",
+          "hash": "D6Em2t3PmcKXyVOlcUfKtA==",
+          "name": "photon-os.rackhdcallback",
+          "scope": "global"
+        },
+        {
+          "id": "7a8cb255-f6b0-44c3-abc8-cd5e572265fb",
+          "hash": "98ah5voeTa69r+7aV1kQuw==",
+          "name": "post-windows-install.ps1",
+          "scope": "global"
+        }
+      ]

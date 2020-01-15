@@ -30,4 +30,4 @@ export const CONSTS = {
     cancelled: {color: '#DC143C', bgColor: '#9932CC'},
     timeout: {color: '#ADFF2F', bgColor: '#DAA520'}
   }
-}
+};

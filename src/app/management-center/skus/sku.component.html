@@ -1,8 +1,8 @@
 <div class="app-sku">
 
-  <inventory-header [allItems]="allSkus" [name]="'SKU'"
+  <app-inventory-header [allItems]="allSkus" [name]="'SKU'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedSkus">
@@ -49,9 +49,7 @@
           <button class="action-item" (click)="goToDetail(sku)">Details</button>
         </clr-dg-action-overflow>
       </clr-dg-row>
-      <clr-dg-footer>
-        <inventory-footer></inventory-footer>
-      </clr-dg-footer>
+      <clr-dg-footer></clr-dg-footer>
     </clr-datagrid>
 
     <div class="selected">
@@ -61,13 +59,13 @@
       </span>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
+  <app-details-modal [(isPop)]="isShowDetail" [data]="selectedSku"
     [title]="'SKU ' + (selectedSku && selectedSku.id)">
-  </details-modal>
+  </app-details-modal>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="'SKU ' + selectedSku.name">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="isCreateSku" [(clrModalOpen)]="isCreateSku" [clrModalSize]="'lg'">
     <h3 class="modal-title" *ngIf="!updateTheSku">Create SKU</h3>
@@ -75,14 +73,14 @@
     <div class="modal-body">
       <div class="form-group">
           <label>Choose how to create sku</label>
-          <div class="radio-inline">
-              <input type="radio" name="gridRadios" id="skuPack" [checked]='!isSkuOnly' (change)="onRadioChange()">
-              <label for="skuPack">SKU pack</label>
-          </div>
-          <div class="radio-inline">
-              <input type="radio" name="gridRadios" id="skuOnly" [checked]='isSkuOnly' (change)="onRadioChange()">
-              <label for="skuOnly">SKU only</label>
-          </div>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="gridRadios" id="skuPack" [checked]='!isSkuOnly' (change)="onRadioChange()" />
+            <label for="skuPack">SKU pack</label>
+          </clr-radio-wrapper>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="gridRadios" id="skuOnly" [checked]='isSkuOnly' (change)="onRadioChange()" />
+            <label for="skuOnly">SKU only</label>
+          </clr-radio-wrapper>
       </div>
       <div *ngIf="!isSkuOnly" class="form-group">
         <label for="fileInput">Choose File</label>
@@ -91,14 +89,16 @@
       <form *ngIf="isSkuOnly" [formGroup]="skuForm" novalidate>
         <section class="form-block">
           <div class="form-group">
-            <label  class=" required " >name</label>
             <label for="formFileds_1"
                    aria-haspopup="true"
                    role="tooltip"
                    class="tooltip tooltip-validation tooltip-sm tooltip-bottom-left"
                    [class.invalid]= "skuForm.get('name').invalid">
-              <input id="formFileds_1" type="text"
-                     formControlName="name">
+            <clr-input-container>
+              <label>Name</label>
+              <input id="formFileds_1" type="text" clrInput formControlName="name" />
+            </clr-input-container>
+            <label  class=" required " >name</label>
               <span class="tooltip-content">
                     Name is required.
                 </span>
@@ -106,8 +106,10 @@
 
           </div>
           <div class="form-group">
-            <label  for="formFileds_2">discoveryGraphName</label>
-            <input type="text" id="formFileds_2" formControlName="discoveryGraphName">
+            <clr-input-container>
+              <label>discoveryGraphName</label>
+              <input type="text" clrInput id="formFileds_2" formControlName="discoveryGraphName" />
+            </clr-input-container>
           </div>
           <div class="form-group">
             <label class="required" for="formFileds_3">rules</label>
@@ -141,8 +143,8 @@
     </div>
   </clr-modal>
 
-  <confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
+  <app-confirm-modal [(isPop)]="isDelete" title="SKUs" displayAttr="name"
     (confirm)="onConfirm($event)" [data]="selectedSkus">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

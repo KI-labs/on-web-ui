@@ -1,114 +1,110 @@
-<div class="content-container row offset-bottom">
-  <div class="col-md-12 col-xs-12 col-lg-12 title">
+<div class="content-container clr-row offset-bottom">
+  <div class="clr-col-md-12 clr-col-12 clr-col-lg-12 title">
     <h4>OS Install</h4>
   </div>
-  <div class='col-md-12 col-xs-12 col-lg-12 os-install-note'>
+  <div class='clr-col-md-12 clr-col-12 clr-col-lg-12 os-install-note'>
       The fields with * below are required!
   </div>
-  <div class="col-md-12 col-xs-12 col-lg-12 bottom-gap">
-    <dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[4]" id="dropdown-group-0"
+  <div class="clr-col-md-12 clr-col-12 clr-col-lg-12 bottom-gap">
+    <app-dropdown-group [data]="selNodeStore" [fields]="['id']" [columns]="[4]" id="dropdown-group-0"
       [labels]="['Node']" [labelBold]="false" [fieldsRequired]="[true]" isDefaultForm="true"
       (selected)="onNodeSelect($event)" (cleared)="onReset()">
-    </dropdown-group>
+    </app-dropdown-group>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
     <div class="filter-by">
       <label class="filter-title">
         <b>Filter Node</b>
       </label>
       <section>
-        <dropdown-group [data]="nodeStore" [fields]="filterFields" [labels]="filterLabels"
+        <app-dropdown-group [data]="nodeStore" [fields]="filterFields" [labels]="filterLabels"
           [columns]="filterColumns" [labelBold]="false" marginTop="15px" id="dropdown-group-0"
           (selected)="onFilterSelect($event)" (cleared)="onFilterRefresh()">
-        </dropdown-group>
+        </app-dropdown-group>
       </section>
     </div>
   </div>
 
-  <div class="col-md-7 bottom-button">
+  <div class="clr-col-md-7 bottom-button">
     <button class="btn btn-primary" (click)="onReset()">Reset Filters</button>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
-    <form class="compact" [formGroup]="payloadForm" novalidate>
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
+    <form clrForm [formGroup]="payloadForm">
       <section class="form-block my-form-block bottom-gap">
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="selects_1" class="required" [class.invalid]="formClassInvalid('osType')">OS Type
-              </label>
-              <div class="select">
-                <select id="selects_1" formControlName="osType" (change)="onChangeOsType($event.target.value)">
-                  <option></option>
-                  <option *ngFor="let type of allOsTypes;">{{ type }}</option>
-                </select>
-              </div>
-            </div>
+        <div class="clr-row">
+          <div class="clr-col-sm-6">
+              <clr-select-container class='form-control'>
+                <label class="required label-one-line" [class.invalid]="formClassInvalid('osType')">
+                  OS Type
+                </label>
+                <select clrSelect formControlName="osType" 
+                class='form-padding'
+                (change)="onChangeOsType($event.target.value)"
+                >
+                <option></option>
+                <option *ngFor="let type of allOsTypes;">{{ type }}</option>
+              </select>
+              
+            </clr-select-container>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="selects_2" class="required" [class.invalid]="formClassInvalid('version')">Version
+          <div class="clr-col-sm-6">
+            <clr-select-container class='form-control'>
+              <label class="required label-one-line" [class.invalid]="formClassInvalid('version')">
+                Version
               </label>
-              <div class="select">
-                <select id="selects_2" formControlName="version">
-                  <option></option>
-                  <option *ngFor="let version of OS_TYPE_VERSION[payloadForm.value['osType']];">{{ version }}</option>
-                </select>
-              </div>
-            </div>
+              <select clrSelect formControlName="version" class='form-padding'>
+                <option></option>
+                <option *ngFor="let version of OS_TYPE_VERSION[payloadForm.value['osType']];">{{ version }}</option>
+              </select>
+            </clr-select-container>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="formFields_1" class="required" [class.invalid]="formClassInvalid('rootPassword')">Root Password</label>
-              <label class="root-passowrd">
-                <input type="text" id="formFields_1" formControlName="rootPassword">
-              </label>
-            </div>
+        <div class="clr-row">
+            <div class="clr-col-sm-6">
+            <clr-input-container class='form-control'>
+              <label class="required label-one-line" [class.invalid]="formClassInvalid('rootPassword')">Root Password</label>
+                <input clrInput type="text" formControlName="rootPassword">
+            </clr-input-container>
           </div>
+          <div class="clr-col-sm-6">
+          <clr-select-container class='form-control'>
+            <label class="label-one-line">Install Disk</label>
+              <select clrSelect formControlName="installDisk">
+                <option></option>
+                <option *ngFor="let diskName of diskOptions;">
+                  {{ diskName }}</option>
+              </select>
+          </clr-select-container>
+        </div>
+        </div>
 
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="selects_4">Install Disk</label>
-              <div class="select">
-                <select id="selects_4" formControlName="installDisk">
-                  <option></option>
-                  <option *ngFor="let diskName of diskOptions;">
-                    {{ diskName }}</option>
-                </select>
-              </div>
-            </div>
+        <div class="clr-row">
+          <div class="clr-col-sm-10">
+            <clr-input-container class='form-control'>
+                <label class="required label-one-line">Repo URL</label>
+                <input clrInput class="input-width" type="text" [placeholder]="selectedRepoPlaceHolder" formControlName="repoUrl">
+            </clr-input-container>
+          </div>
+          <div aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md input-width" [class.invalid]="formClassInvalid('repoUrl')">
+              <span class="tooltip-content">
+                The input repo url is invalid!
+              </span>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-lg-10 col-md-10 col-sm-10 com-xs-10">
-            <div class="form-group">
-              <label class="required os-install-repo">Repo URL</label>
-              <label for="formFields_repo" aria-haspopup="true" role="tooltip" class="tooltip tooltip-validation invalid tooltip-md input-width" [class.invalid]="formClassInvalid('repoUrl')">
-                <input class="input-width" type="text" id="formFields_repo" [placeholder]="selectedRepoPlaceHolder" formControlName="repoUrl">
-                <span class="tooltip-content">
-                  The input repo url is invalid!
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-            <div class="form-group">
-              <label for="selects_5">Network Interface</label>
-              <div class="select">
-                <select id="selects_5" formControlName="networkDevice" (change)="onChangeNetworkDevice($event.target.value)">
-                  <option></option>
-                  <option *ngFor="let network of networkDeviceOptions;">
-                    {{ network }}</option>
-                </select>
-              </div>
-            </div>
+        <div class="clr-row">
+          <div class="clr-col-sm-6">
+            <clr-select-container class='form-control'>
+              <label class="label-one-line">Network Interface</label>
+              <select clrSelect formControlName="networkDevice" (change)="onChangeNetworkDevice($event.target.value)">
+                <option></option>
+                <option *ngFor="let network of networkDeviceOptions;">
+                  {{ network }}</option>
+              </select>
+            </clr-select-container>
           </div>
         </div>
       </section>
@@ -118,41 +114,41 @@
           <b>Network Options</b>
         </legend>
         <section class="networkOptions">
-          <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_3">
-                IP Address
-              </label>
-              <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('ipAddress')">
-                <input type="text" id="formFields_3" formControlName="ipAddress"/>
-              </label>
+          <div class="clr-row">
+            <div class="clr-col-sm-6">
+              <clr-input-container class='form-control'>
+                <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
+                  IP Address
+                </label>
+                <input clrInput type="text" formControlName="ipAddress"/>
+              </clr-input-container>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_2">
-                DNS Servers
-              </label>
-              <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('dnsServers')">
-                <input type="text" id="formFields_2" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
-              </label>
+            <div class="clr-col-sm-6">
+              <clr-input-container class='form-control'>
+                <label class="label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
+                  DNS Servers
+                </label>
+                <input clrInput type="text" formControlName="dnsServers" placeholder="8.8.8.8, 8.8.4.4" />
+              </clr-input-container>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_5">
-                Netmask
-              </label>
-              <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('netmask')">
-                <input type="text" id="formFields_5" formControlName="netmask"/>
-              </label>
+          <div class="clr-row">
+            <div class="clr-col-sm-6">
+              <clr-input-container class='form-control'>
+                <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}">
+                  Netmask
+                </label>
+                <input clrInput type="text" formControlName="netmask"/>
+            </clr-input-container>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 com-xs-6">
-              <label class="required" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_4">
-                Gateway
-              </label>
-              <label [ngClass]="{'tooltip tooltip-validation' : modifyDefaultSetting}" [class.invalid]="formClassInvalid('gateway')">
-                <input type="text" id="formFields_4" formControlName="gateway" />
-              </label>
+            <div class="clr-col-sm-6">
+              <clr-input-container class='form-control'>
+                <label class="required label-one-line" [ngClass]="{'disabled-label': !modifyDefaultSetting}" for="formFields_4">
+                  Gateway
+                </label>
+                <input clrInput type="text" id="formFields_4" formControlName="gateway" />
+              </clr-input-container>
             </div>
           </div>
         </section>
@@ -163,7 +159,7 @@
     </form>
   </div>
 
-  <div class="col-sm-7 col-md-7 col-lg-7 form-padding-right">
+  <div class="clr-col-sm-7 clr-col-md-7 clr-col-lg-7 form-padding-right">
     <label>
       <b>Payload:</b>
     </label>

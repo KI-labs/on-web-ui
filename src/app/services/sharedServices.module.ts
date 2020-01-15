@@ -4,10 +4,9 @@
 // there will be multiple instance of this service instead of singleton
 //
 //////////////////////////////////////////////////////////////////////
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppCoreModule } from './core/core.module';
-import { ActivityService } from './activity.service';
 
 import { RackhdCommonServicesModule } from './rackhd/rackhd.module';
 

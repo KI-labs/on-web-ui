@@ -1,28 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Poller, Node, API_PATTERN, ADDR_PATTERN, REPO_PATTERN, IP_PATTERN, DNS_PATTERN } from 'app/models';
+import { Node, REPO_PATTERN, IP_PATTERN, DNS_PATTERN } from '../../models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {
-  AlphabeticalComparator,
-  DateComparator,
-  ObjectFilterByKey,
   StringOperator
-} from 'app/utils/inventory-operator';
+} from '../../utils/inventory-operator';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/observable/forkJoin'
-import { of } from 'rxjs/observable/of'
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { of } from 'rxjs/observable/of';
 import { map, catchError } from 'rxjs/operators';
 
 import * as _ from 'lodash';
-import { CatalogsService } from 'app/services/rackhd/catalogs.service';
-import { NodeService } from 'app/services/rackhd/node.service';
-import { PollersService } from 'app/services/pollers.service';
-import { WorkflowService } from 'app/services/rackhd/workflow.service';
-import { JSONEditor } from 'app/utils/json-editor';
-import { ObmService } from 'app/services/rackhd/obm.service';
-import { SkusService } from 'app/services/rackhd/sku.service';
-import { TagService } from 'app/services/rackhd/tag.service';
+import { CatalogsService } from '../../services/rackhd/catalogs.service';
+import { NodeService } from '../../services/rackhd/node.service';
+import { WorkflowService } from '../../services/rackhd/workflow.service';
+import { JSONEditor } from '../../utils/json-editor';
+import { ObmService } from '../../services/rackhd/obm.service';
+import { SkusService } from '../../services/rackhd/sku.service';
+import { TagService } from '../../services/rackhd/tag.service';
+import { JSONEditorOptions } from 'jsoneditor';
 
 @Component({
   selector: 'app-os-install',
@@ -60,13 +57,13 @@ export class OsInstallComponent implements OnInit {
   searchTerms = new Subject<string>();
 
   selNodeStore: any[] = [];
-  filterFields = ["type", "name", "sku", "id", "obms", 'tags'];
-  filterLabels = ["Node Type", "Node Name", "SKU Name", "Node ID", "OBM Host", "Tag Name"];
+  filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
+  filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
   filterColumns = [4, 4, 4, 4, 4, 4];
   selectedNode: any;
   nodeStore: Array<any> = [];
 
-  submitInfo = { status: "Are you sure to submit the workflow ?" };
+  submitInfo = { status: 'Are you sure to submit the workflow ?' };
 
   constructor(
     public nodeService: NodeService,
@@ -77,34 +74,34 @@ export class OsInstallComponent implements OnInit {
     public tagService: TagService,
     private fb: FormBuilder,
   ) {
-  };
+  }
 
   ngOnInit() {
     this.OS_TYPE_VERSION = {
-      'esxi': ['6.5', '6', '5.5'],
-      'centos': ['7', '6.5'],
-      'rhel': ['7.0', '7.1', '7.2'],
-      'ubuntu': ['trusty', 'xenial', 'artful'],
+      esxi: ['6.5', '6', '5.5'],
+      centos: ['7', '6.5'],
+      rhel: ['7.0', '7.1', '7.2'],
+      ubuntu: ['trusty', 'xenial', 'artful'],
     };
     this.OS_TYPE_NAME = {
-      'esxi': 'Graph.InstallESXi',
-      'centos': 'Graph.InstallCentOS',
-      'ubuntu': 'Graph.InstallUbuntu',
-      'rhel': 'Graph.InstallRHEL',
+      esxi: 'Graph.InstallESXi',
+      centos: 'Graph.InstallCentOS',
+      ubuntu: 'Graph.InstallUbuntu',
+      rhel: 'Graph.InstallRHEL',
     };
 
     this.REPO_PLACE_HOLDER = {
       '': 'Select OS TYPE first.',
-      'esxi': 'http://172.31.128.2:9090/common/esxi/6.5',
-      'centos': 'http://172.31.128.2:9090/common/centos/7/os/x86_64',
-      'ubuntu': 'http://172.31.128.2:9090/common/ubuntu/16.04',
-      'rhel': 'http://172.31.128.2:9090/common/rhel/7.1/os/x86_64',
+      esxi: 'http://172.31.128.2:9090/common/esxi/6.5',
+      centos: 'http://172.31.128.2:9090/common/centos/7/os/x86_64',
+      ubuntu: 'http://172.31.128.2:9090/common/ubuntu/16.04',
+      rhel: 'http://172.31.128.2:9090/common/rhel/7.1/os/x86_64',
     };
 
     this.selectedRepoPlaceHolder = 'Select OS TYPE first.';
 
-    let container = document.getElementById('jsoneditor');
-    let options = { mode: 'code' };
+    const container = document.getElementById('jsoneditor');
+    const options: JSONEditorOptions = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
 
     this.allOsTypes = Object.keys(this.OS_TYPE_VERSION);
@@ -112,7 +109,7 @@ export class OsInstallComponent implements OnInit {
     this.getAllNodes();
     this.createForm();
 
-    let searchTrigger = this.searchTerms.pipe(
+    const searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
@@ -125,16 +122,16 @@ export class OsInstallComponent implements OnInit {
 
   searchIterm(term: string): void {
     this.allNodes = this.dataStore;
-    if (this.payloadForm.value['nodeModel']) {
+    if (this.payloadForm.value.nodeModel) {
       this.allNodes = StringOperator.search(term, this.allNodes);
     }
-    if (this.payloadForm.value['manufacturer']) {
+    if (this.payloadForm.value.manufacturer) {
       this.allNodes = StringOperator.search(term, this.allNodes);
     }
-    if (this.payloadForm.value['macName']) {
+    if (this.payloadForm.value.macName) {
       this.allNodes = StringOperator.search(term, this.allNodes);
     }
-    if (this.payloadForm.value['nodeId']) {
+    if (this.payloadForm.value.nodeId) {
       this.allNodes = StringOperator.search(term, this.allNodes);
     }
   }
@@ -142,19 +139,19 @@ export class OsInstallComponent implements OnInit {
   getAllNodes(): void {
     this.nodeService.getAll()
       .subscribe(data => {
-        let computeNodes = _.filter(data, (item) => {
+        const computeNodes = _.filter(data, (item) => {
           return item.type === 'compute';
         });
         this.allNodes = computeNodes;
         this.dataStore = computeNodes;
         this.renderNodeInfo(computeNodes);
-        for (let node of this.allNodes) {
+        for (const node of this.allNodes) {
           this.catalogsService.getSource(node.id, 'dmi')
           .subscribe(
             item => {
-              let systemInfo = item['data']['System Information'];
+              const systemInfo = item.data['System Information'];
               if (systemInfo) {
-                node.manufacturer = systemInfo['Manufacturer'];
+                node.manufacturer = systemInfo.Manufacturer;
                 node.model = systemInfo['Product Name'];
               }
             },
@@ -208,21 +205,21 @@ export class OsInstallComponent implements OnInit {
       this.enableNetworkSetting = false;
       this.modifyDefaultSetting = false;
     }
-    let device = _.split(item, ',');
+    const device = _.split(item, ',');
     this.selectedNetworkDevice = device[0];
   }
 
   renderNodeInfo(nodes) {
-    let list = _.map(nodes, node => {
-      return forkJoin(
+    const list = _.map(nodes, node => {
+      return forkJoin([
         this.getNodeSku(node).pipe(catchError( () => of(null))),
         this.getNodeObm(node).pipe(catchError( () => of(null))),
         this.getNodeTag(node).pipe(catchError( () => of(null)))
-      ).pipe(
+      ]).pipe(
           map(results => {
-            node["sku"] = results[0];
-            node["obms"] = results[1];
-            node["tags"] = results[2];
+            node.sku = results[0];
+            node.obms = results[1];
+            node.tags = results[2];
           })
       );
     });
@@ -236,13 +233,13 @@ export class OsInstallComponent implements OnInit {
   }
 
   getNodeSku(node): Observable<string> {
-    let hasSkuId = !!node.sku;
-    let isComputeWithoutSku = (node.sku === null) && node.type === "compute";
+    const hasSkuId = !!node.sku;
+    const isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
-      return this.skuService.getByIdentifier(node.sku.split("/").pop())
+      return this.skuService.getByIdentifier(node.sku.split('/').pop())
         .pipe( map(data => data.name) );
     } else if (isComputeWithoutSku) {
-      return this.catalogsService.getSource(node.id, "ohai")
+      return this.catalogsService.getSource(node.id, 'ohai')
         .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
@@ -251,7 +248,7 @@ export class OsInstallComponent implements OnInit {
 
   getNodeObm(node): Observable<string> {
     if (!_.isEmpty(node.obms)) {
-      let obmId = node.obms[0].ref.split("/").pop();
+      const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
         .pipe( map(data => data.config.host) );
     } else {
@@ -278,16 +275,16 @@ export class OsInstallComponent implements OnInit {
     if (!_.isEqual(this.selNodeStore, [node])) {
       setTimeout(() => {
         this.selNodeStore = [node];
-      })
+      });
     }
-  };
+  }
 
   onFilterRefresh() {
     this.selNodeStore = [];
     setTimeout(() => {
       this.nodeStore = _.cloneDeep(this.allNodes);
       this.selNodeStore = _.cloneDeep(this.allNodes);
-    })
+    });
   }
 
   onReset() {
@@ -310,8 +307,8 @@ export class OsInstallComponent implements OnInit {
     if (!_.isEqual(this.nodeStore, [node])) {
       this.nodeStore = [node];
     }
-    this.onNodeIdChange(node['id']);
-  };
+    this.onNodeIdChange(node.id);
+  }
 
   onNodeRefresh() {
     this.nodeStore = [];
@@ -325,9 +322,9 @@ export class OsInstallComponent implements OnInit {
     .subscribe(
       data => {
         this.diskOptions = new Array();
-        let diskData = data['data'];
-        for (let disk of diskData) {
-          this.diskOptions.push(disk['devName']);
+        const diskData = data.data;
+        for (const disk of diskData) {
+          this.diskOptions.push(disk.devName);
         }
         this.diskOptionsReady = true;
       },
@@ -340,13 +337,13 @@ export class OsInstallComponent implements OnInit {
     .subscribe(
       iterm => {
         this.networkDeviceOptions = new Array();
-        let usableInterface = [];
-        let interfaceObj = iterm.data.network.interfaces;
-        let keys = Object.keys(interfaceObj);
-        for (let key of keys) {
+        const usableInterface = [];
+        const interfaceObj = iterm.data.network.interfaces;
+        const keys = Object.keys(interfaceObj);
+        for (const key of keys) {
           if (key.startsWith('eth')) {
             usableInterface.push(key);
-            let interfaceKey = key + ', mac:' + Object.keys(interfaceObj[key]['addresses'])[0];
+            const interfaceKey = key + ', mac:' + Object.keys(interfaceObj[key].addresses)[0];
             this.networkDeviceOptions.push(interfaceKey);
           }
         }
@@ -363,11 +360,11 @@ export class OsInstallComponent implements OnInit {
 
   onSubmit() {
     this.confirmSubmited = false;
-    let workflow = this.editor.get();
+    const workflow = this.editor.get();
     this.payloadJson = workflow;
     this.workflowService.runWorkflow(
       this.selectedNodeId,
-      this.OS_TYPE_NAME[this.payloadForm.value['osType']],
+      this.OS_TYPE_NAME[this.payloadForm.value.osType],
       this.payloadJson
     ).subscribe(
       data => { this.submitSuccess = true; },
@@ -384,62 +381,62 @@ export class OsInstallComponent implements OnInit {
 
   createPayloadOptions(): object {
     let tmpJson = {};
-    let generalJson = {};
-    let version = { 'version': this.payloadForm.value['version'] };
-    let repo = { 'repo': this.payloadForm.value['repoUrl'] };
-    let rootPassword = { 'rootPassword': this.payloadForm.value['rootPassword'] };
+    const generalJson = {};
+    const version = { version: this.payloadForm.value.version };
+    const repo = { repo: this.payloadForm.value.repoUrl };
+    const rootPassword = { rootPassword: this.payloadForm.value.rootPassword };
     let installDisk = {};
-    if (this.payloadForm.value['osType'] === 'ubuntu') {
-      let ubuntuOnly = {
-        'baseUrl': 'install/netboot/ubuntu-installer/amd64',
-        'kargs': {
-          'live-installer/net-image': this.payloadForm.value['repoUrl'] + '/ubuntu/install/filesystem.squashfs'
+    if (this.payloadForm.value.osType === 'ubuntu') {
+      const ubuntuOnly = {
+        baseUrl: 'install/netboot/ubuntu-installer/amd64',
+        kargs: {
+          'live-installer/net-image': this.payloadForm.value.repoUrl + '/ubuntu/install/filesystem.squashfs'
         }
       };
       _.assign(generalJson, ubuntuOnly);
     }
-    if (!_.isEmpty(this.payloadForm.value['installDisk'])) {
-      if (this.payloadForm.value['osType'] === 'esxi') {
-        installDisk = { 'installDisk': this.payloadForm.value['installDisk'] };
+    if (!_.isEmpty(this.payloadForm.value.installDisk)) {
+      if (this.payloadForm.value.osType === 'esxi') {
+        installDisk = { installDisk: this.payloadForm.value.installDisk };
       } else {
-        installDisk = { 'installDisk': "/dev/" + this.payloadForm.value['installDisk'] };
+        installDisk = { installDisk: '/dev/' + this.payloadForm.value.installDisk };
       }
     }
 
     _.assign(generalJson, version, repo, rootPassword, installDisk);
 
     if (this.enableNetworkSetting) {
-      if (!_.isEmpty(this.payloadForm.value['dnsServers'])) {
-        let dnsServers = { 'dnsServers': [this.payloadForm.value['dnsServers']] };
+      if (!_.isEmpty(this.payloadForm.value.dnsServers)) {
+        const dnsServers = { dnsServers: [this.payloadForm.value.dnsServers] };
         _.assign(generalJson, dnsServers);
       }
 
-      let ipv4 = {
-        "ipAddr": this.payloadForm.value['ipAddress'],
-        "gateway": this.payloadForm.value['gateway'],
-        "netmask": this.payloadForm.value['netmask']
+      const ipv4 = {
+        ipAddr: this.payloadForm.value.ipAddress,
+        gateway: this.payloadForm.value.gateway,
+        netmask: this.payloadForm.value.netmask
       };
 
-      if (this.payloadForm.value['osType'] === 'esxi') {
-        let vmnic = 'vmnic' + this.selectedNetworkDevice.substring(3);
-        let networkDevices = {
-          'networkDevices': [{
-            "device": vmnic,
-            "ipv4": ipv4
+      if (this.payloadForm.value.osType === 'esxi') {
+        const vmnic = 'vmnic' + this.selectedNetworkDevice.substring(3);
+        const networkDevices = {
+          networkDevices: [{
+            device: vmnic,
+            ipv4
           }]
         };
         _.assign(generalJson, networkDevices);
       } else {
-        let networkDevices = {
-          'networkDevices': [{
-            "device": this.selectedNetworkDevice,
-            "ipv4": ipv4
+        const networkDevices = {
+          networkDevices: [{
+            device: this.selectedNetworkDevice,
+            ipv4
           }]
         };
         _.assign(generalJson, networkDevices);
       }
     }
-    tmpJson = _.assign(tmpJson, { options: { 'defaults': generalJson } });
+    tmpJson = _.assign(tmpJson, { options: { defaults: generalJson } });
     return tmpJson;
   }
 
@@ -451,8 +448,8 @@ export class OsInstallComponent implements OnInit {
     return this.payloadForm.get(value).invalid;
   }
 
-  get enableSavePayload(){
-    let majorEnable = (!this.formClassInvalid('nodeId')) &&
+  get enableSavePayload() {
+    const majorEnable = (!this.formClassInvalid('nodeId')) &&
       (!this.formClassInvalid('repoUrl') && (!this.formClassInvalid('version'))) &&
       (!this.formClassInvalid('rootPassword'));
     let networkEnable = true;

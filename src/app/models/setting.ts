@@ -4,11 +4,11 @@
 import * as _ from 'lodash';
 
 export class RackhdSetting {
-    constructor(payload:any){
-        _.assign(this,payload);
+    constructor(payload: any) {
+        _.assign(this, payload);
     }
     northboundApi: string;
-    websocketUrl:  string;
+    websocketUrl: string;
     authEnabled: boolean;
     connSecured: boolean;
     authToken?: string;

@@ -11,4 +11,4 @@ export class IBM {
 export const IBM_URL = {
     ibms: '/ibms',
     ibmsById: '/ibms/',
-}
+};
