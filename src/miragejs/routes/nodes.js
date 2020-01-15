@@ -16,16 +16,16 @@ export default function nodesRoutes(server){
       const random = Math.floor(Math.random()*10)
 
       //According to Aguiar, this route fails just because
-      if(random % 2 == 0){
-        return new Response(500)
+      if(random % 5 == 0){   
+        //Just to ensure it returns something, in db there is some injectableName without workflow
+        return schema.workflows.findBy({injectableName})
+        ? 
+        schema.workflows.findBy({injectableName})
+        :
+        schema.workflows.findBy({injectableName: 'Graph.Service.Docker'}) 
       }
 
-      //Just to ensure it returns something, in db there is some injectableName without workflow
-      return schema.workflows.findBy({injectableName})
-      ? 
-      schema.workflows.findBy({injectableName})
-      :
-      schema.workflows.findBy({injectableName: 'Graph.Service.Docker'}) 
+      return new Response(500)
     });
 }
 

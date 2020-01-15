@@ -1,9 +1,9 @@
 <div class="config-app">
 
-  <inventory-header [allItems]="allConfigs"
+  <app-inventory-header [allItems]="allConfigs"
     [isDeleteRequired]="false" [name]="'Configure'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading">
@@ -34,12 +34,16 @@
         <form [formGroup]="modalFormGroup" novalidate>
           <section class="form-block compact">
             <div class="modal-input">
-              <label class="label-size" for="key"><b>Key: </b></label>
-              <input type="text" id="key" formControlName="key">
+              <clr-input-container>
+                <label>Key:</label>
+                <input clrInput  name="name" formControlName="key" />
+              </clr-input-container>
             </div>
             <div class="modal-input">
-              <label class="label-size" for="value"><b>Value: </b></label>
-              <input type="text" id="value" formControlName="value">
+              <clr-input-container>
+                <label>Value:</label>
+                <input clrInput  name="name" formControlName="value" />
+              </clr-input-container>
             </div>
           </section>
         </form>

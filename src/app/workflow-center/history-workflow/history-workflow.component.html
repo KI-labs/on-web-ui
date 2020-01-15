@@ -1,8 +1,8 @@
 <div class="app-history-workflows">
 
-  <div class="row toolbar status-header">
+  <div class="clr-row toolbar status-header">
     <div *ngFor="let status of statusTypes"
-      class="col-lg-2 col-md-2 col-sm-2 col-xs-2 status-button"
+      class="clr-col-lg-2 clr-col-md-2 clr-col-sm-2 clr-col-2 status-button"
       (click)="selectStatus(status)"
       [class.selected]="selectedStatus == status">
       <h2>{{ statusCountMatrix && statusCountMatrix[status] || 0 }}</h2>
@@ -10,10 +10,10 @@
     </div>
   </div>
 
-  <inventory-header [allItems]="allWorkflows"
+  <app-inventory-header [allItems]="allWorkflows"
     [name]="'History Workflow'" [isCreateRequired]="false"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
@@ -114,13 +114,13 @@
     </div>
   </div>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </details-modal>
+  </app-details-modal>
 
-  <confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
+  <app-confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" title="graph objects" displayAttr="instanceId"
     (confirm)="onConfirm($event)" [data]="selectedWorkflows">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

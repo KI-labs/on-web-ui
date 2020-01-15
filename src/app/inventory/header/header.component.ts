@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StringOperator } from '../../utils/inventory-operator';
 
 @Component({
-  selector: 'inventory-header',
+  selector: 'app-inventory-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -13,16 +13,16 @@ import { StringOperator } from '../../utils/inventory-operator';
 export class InventoryHeaderComponent implements OnInit {
   @Input() allItems: any;
   @Input() name: string;
-  @Input() isSearchRequired: boolean = true;
-  @Input() isRefreshRequired: boolean = true;
-  @Input() isDeleteRequired: boolean = true;
-  @Input() isCreateRequired: boolean = true;
-  @Input() isCancelRequired: boolean = false;
+  @Input() isSearchRequired = true;
+  @Input() isRefreshRequired = true;
+  @Input() isDeleteRequired = true;
+  @Input() isCreateRequired = true;
+  @Input() isCancelRequired = false;
 
   @Output() filter = new EventEmitter();
   @Output() action = new EventEmitter();
 
-  searchValue:string = '';
+  searchValue = '';
   filteredItems: any[];
   searchTerms = new Subject<string>();
 
@@ -30,7 +30,7 @@ export class InventoryHeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    let searchTrigger = this.searchTerms.pipe(
+    const searchTrigger = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
@@ -55,18 +55,18 @@ export class InventoryHeaderComponent implements OnInit {
   }
 
   onCreate() {
-    this.action.emit("Create");
+    this.action.emit('Create');
   }
 
   onRefresh() {
-    this.action.emit("Refresh");
+    this.action.emit('Refresh');
   }
 
   onBatchDelete() {
-    this.action.emit("Delete");
+    this.action.emit('Delete');
   }
 
   onBatchCancel() {
-    this.action.emit("Cancel")
+    this.action.emit('Cancel');
   }
 }

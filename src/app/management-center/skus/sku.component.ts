@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SKU, ModalTypes } from 'app/models';
+import { SKU, ModalTypes } from '../../models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlphabeticalComparator, ObjectFilterByKey, StringOperator, isJsonTextValid } from 'app/utils/inventory-operator';
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { AlphabeticalComparator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
 import * as _ from 'lodash';
-import { SkusService } from 'app/services/rackhd/sku.service';
-import {isEmbeddedView} from "@angular/core/src/view/util";
+import { SkusService } from '../../services/rackhd/sku.service';
 
 
 @Component({
@@ -37,7 +33,7 @@ export class SkuComponent implements OnInit {
   skuForm: FormGroup;
   skuPackFiles: FileList;
 
-  defaultRules: string = ' ' ;
+  defaultRules = ' ' ;
   rulesJsonValid = true;
   optionsJsonValid = true;
   modalTypes: ModalTypes;
@@ -65,7 +61,7 @@ export class SkuComponent implements OnInit {
   }
 
   onConfirm(value) {
-    switch(value) {
+    switch (value) {
       case 'reject':
         this.isDelete = false;
         break;
@@ -75,8 +71,8 @@ export class SkuComponent implements OnInit {
     }
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -86,7 +82,7 @@ export class SkuComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
   createForm() {
@@ -94,11 +90,11 @@ export class SkuComponent implements OnInit {
       name: new FormControl('', { validators: [Validators.required] }),
       discoveryGraphName: '',
       discoveryGraphOptions: '',
-      rules:new FormControl('', { validators: [Validators.required] })
+      rules: new FormControl('', { validators: [Validators.required] })
     });
   }
 
-  onRadioChange(){
+  onRadioChange() {
     this.isSkuOnly = !this.isSkuOnly;
   }
 
@@ -116,12 +112,13 @@ export class SkuComponent implements OnInit {
     this.isShowDetail = true;
   }
 
-  getChild(objKey: string, sku: SKU){
+  getChild(objKey: string, sku: SKU) {
     this.selectedSku = sku;
     this.action = _.startCase(objKey);
     this.rawData = sku && sku[objKey];
-    if (this.selectedSku && this.action && (!_.isEmpty(this.rawData)))
+    if (this.selectedSku && this.action && (!_.isEmpty(this.rawData))) {
       this.isShowModal = true;
+    }
   }
 
   create(): void {
@@ -135,14 +132,14 @@ export class SkuComponent implements OnInit {
   willUpdate(sku: SKU): void {
     this.rulesJsonValid = true;
     this.optionsJsonValid = true;
-    let name = sku.name;
-    let rules = sku.rules;
-    let formValues = {
-      name: name,
+    const name = sku.name;
+    const rules = sku.rules;
+    const formValues = {
+      name,
       discoveryGraphName: sku.discoveryGraphName,
       rules: JSON.stringify(rules),
       discoveryGraphOptions: JSON.stringify(sku.discoveryGraphOptions)
-    }
+    };
     this.skuForm.patchValue(formValues);
     this.isCreateSku = true;
     this.isSkuOnly = true;
@@ -150,7 +147,7 @@ export class SkuComponent implements OnInit {
   }
 
   batchDelete(): void {
-    if(!_.isEmpty(this.selectedSkus)){
+    if (!_.isEmpty(this.selectedSkus)) {
       this.isDelete = true;
     }
   }
@@ -165,48 +162,48 @@ export class SkuComponent implements OnInit {
     this.getAllSkus();
   }
 
-  onChange(event){
+  onChange(event) {
     this.skuPackFiles = event.target.files;
   }
 
   createSku(): void {
-    let jsonData = {};
+    const jsonData: any = {};
     this.skuForm.getRawValue();
-    let value = this.skuForm.value;
+    const value = this.skuForm.value;
     // data transform
-    jsonData['name'] = value['name'];
-    //TODO: name is required;
-    if(value['discoveryGraphName']){
-      jsonData['discoveryGraphName'] = value['discoveryGraphName'];
+    jsonData.name = value.name;
+    // TODO: name is required;
+    if (value.discoveryGraphName) {
+      jsonData.discoveryGraphName = value.discoveryGraphName;
     }
-    this.rulesJsonValid = isJsonTextValid(value['rules']);
-    this.optionsJsonValid = isJsonTextValid(value['discoveryGraphOptions']);
+    this.rulesJsonValid = isJsonTextValid(value.rules);
+    this.optionsJsonValid = isJsonTextValid(value.discoveryGraphOptions);
     if (this.rulesJsonValid) {
-      jsonData['rules'] = value['rules'] ? JSON.parse(value['rules']) : [];
-      let self = this;
-      if(_.isEmpty(jsonData['rules'])){
+      jsonData.rules = value.rules ? JSON.parse(value.rules) : [];
+      const self = this;
+      if (_.isEmpty(jsonData.rules)) {
         self.rulesJsonValid = false;
       }
-      _.forEach(_.map(jsonData['rules'], 'path'), function (item) {
-          if(_.isUndefined(item)){
+      _.forEach(_.map(jsonData.rules, 'path'), (item) => {
+          if (_.isUndefined(item)) {
             self.rulesJsonValid = false;
           }
-      })
+      });
     }
     if (this.optionsJsonValid) {
-      let data = value['discoveryGraphOptions']  && JSON.parse(value['discoveryGraphOptions']);
-      if(!_.isEmpty(data)){
-        jsonData['discoveryGraphOptions'] = data;
+      const data = value.discoveryGraphOptions  && JSON.parse(value.discoveryGraphOptions);
+      if (!_.isEmpty(data)) {
+        jsonData.discoveryGraphOptions = data;
       }
     }
     if (this.rulesJsonValid && this.optionsJsonValid && this.skuForm.get('name').valid) {
       this.isCreateSku = false;
-      if(this.updateTheSku === true){
+      if (this.updateTheSku === true) {
         this.updateTheSku = false;
         this.skusService.updateSku(jsonData)
           .subscribe(data => {
             this.refresh();
-          })
+          });
       } else {
         this.skusService.createSku(jsonData)
           .subscribe(data => {
@@ -219,8 +216,8 @@ export class SkuComponent implements OnInit {
 
   createSkupack(): void {
     this.isCreateSku = false;
-    let file = this.skuPackFiles[0];
-    let identifier = this.selectedSkus.length && this.selectedSku['id'];
+    const file = this.skuPackFiles[0];
+    const identifier = this.selectedSkus.length && this.selectedSku.id;
     this.skusService.uploadByPost(file, identifier)
     .subscribe(() => {
       this.refresh();
@@ -228,13 +225,13 @@ export class SkuComponent implements OnInit {
   }
 
   deleteSel(): void {
-    let list = [];
+    const list = [];
     _.forEach(this.selectedSkus, sku => {
       list.push(sku.id);
     });
 
     this.skusService.deleteByIdentifiers(list)
-    .subscribe(results =>{
+    .subscribe(results => {
       this.refresh();
     });
   }

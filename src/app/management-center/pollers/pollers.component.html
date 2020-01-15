@@ -1,8 +1,8 @@
 <div class="app-pollers">
 
-  <inventory-header [allItems]="allPollers" [name]="'Poller'"
+  <app-inventory-header [allItems]="allPollers" [name]="'Poller'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedPollers">
@@ -76,44 +76,67 @@
     </div>
   </div>
 
-  <details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
+  <app-details-modal [(isPop)]="isShowDetail" [data]="selectedPoller"
     [title]="'poller ' + (selectedPoller && selectedPoller.id)">
-  </details-modal>
+  </app-details-modal>
 
-  <details-modal [(isPop)]="isShowLatestData" [data]="currentLatestData"
+  <app-details-modal [(isPop)]="isShowLatestData" [data]="currentLatestData"
     [title]="'latest data of poller ' + (currentPoller && currentPoller.id)">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal [(clrModalOpen)]="isCreatePoller" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create poller</h3>
     <div class="modal-body">
-      <form [formGroup]="pollerForm" novalidate>
-        <section class="form-block">
-          <div class="form-group">
-            <label for="selects_1">Poller Type *</label>
-            <ngx-select [items]="['ipmi', 'snmp']"  [allowClear]="'true'" formControlName="type"></ngx-select>
-          </div>
-          <div class="form-group">
-            <label for="selects_2">Node *</label>
-            <ngx-select [items]="allNodes"  [allowClear]="'true'" optionTextField="id"  optionValueField="id" formControlName="node"></ngx-select>
-          </div>
-          <div class="form-group">
+      <form clrForm [formGroup]="pollerForm">
+       
+          <clr-select-container>
+            <label>Poller Type *</label>
+            <select clrSelect formControlName="type" class='clr-select' class='clr-select'>
+                <option></option>
+                <option>ipmi</option>
+                <option>snmp</option>
+            </select>
+          </clr-select-container>
+
+          <clr-select-container>
+            <label> Node *</label>
+            <select clrSelect formControlName="node" class='clr-select'>
+                <option></option>
+                <option *ngFor="let node of allNodes">
+                    {{node.id}}
+                  </option>
+            </select>
+          </clr-select-container>
+
+          <clr-select-container>
             <label for="selects_3">Poll Interval</label>
-            <ngx-select [items]="pollerInterval"  [allowClear]="'true'" formControlName="pollInterval"></ngx-select>
-          </div>
-          <div class="form-group">
-            <label for="formFields">Config</label>
-            <textarea id="formFields" rows="4" placeholder='{"command": "driveHealth"}' formControlName="config"></textarea>
-            <div class="alertMessage" *ngIf="!jsonValid">
+            <select clrSelect formControlName="pollInterval" class='clr-select'>
+                <option></option>
+                <option *ngFor="let interval of pollerInterval">
+                    {{interval}}
+                </option>
+            </select>
+          </clr-select-container>
+
+          <clr-textarea-container>
+              <label for="formFields">Config</label>
+              <textarea 
+                clrTextarea
+                placeholder='{"command": "driveHealth"}'
+                formControlName="config"
+                class='clr-textarea'
+              ></textarea>
+            </clr-textarea-container>
+
+            <!-- <div class="alertMessage" *ngIf="nodeForm.get('otherConfig').invalid">
                 Invalid JSON payload.
-            </div>
-          </div>
-        </section>
+            </div> -->
+
       </form>
       <p class="warning">The fields with * are required</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false; jsonValid = true;">Cancel</button>
+      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="createPoller();" [disabled]="pollerForm.status!='VALID'">Ok</button>
     </div>
   </clr-modal>
@@ -141,8 +164,8 @@
     </div>
   </clr-modal>
 
-  <confirm-modal [(isPop)]="isDelete" title="pollers"
+  <app-confirm-modal [(isPop)]="isDelete" title="pollers"
     (confirm)="onConfirm($event)" [data]="selectedPollers">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

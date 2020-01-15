@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse, HttpResponse, HttpClient } from '@angular/common/http';
-import { GRAPH_URL } from 'app/models';
-import { RackhdHttpService } from 'app/utils/rackhd-http';
+import { HttpClient } from '@angular/common/http';
+import { GRAPH_URL } from '../../models';
+import { RackhdHttpService } from '../../utils/rackhd-http';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
@@ -17,10 +17,10 @@ export class GraphService extends RackhdHttpService {
 
   public getInitGraph(): any {
     return {
-      "friendlyName": "",
-      "injectableName": "",
-      "tasks": []
-    }
+      friendlyName: '',
+      injectableName: '',
+      tasks: []
+    };
   }
 
 }
