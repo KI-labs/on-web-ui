@@ -9,7 +9,7 @@
   margin-right: 2px;
 }
 
-div.row div {
+div.clr-row div {
   display: flex;
   label {
     white-space:nowrap
@@ -22,7 +22,7 @@ label.required:after {
 }
 
 // For default bootstrap/clarity form-group
-.row {
+.clr-row{
   div.form-group {
     display: table;
     label {
@@ -35,5 +35,21 @@ label.required:after {
     input {
       display: table-cell;
     }
+  }
+}
+
+.dropdown-input {
+  margin-top: 0;
+  flex-direction: row;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.search {
+  &-input-container{
+    padding: 0
+  }
+  &-clr-row{
+    margin: 0;
   }
 }

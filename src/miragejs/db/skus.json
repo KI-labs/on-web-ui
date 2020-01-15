@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Custom Inspur Provisioning SKU",
+        "id": "00185d5e-a035-4f5a-90ad-c952b1144f9e",
+        "discoveryGraphName": "Graph.Setup.Inspur.Custom",
+        "rules": [
+        {
+            "path": "dmi.Base Board Information.Manufacturer",
+            "equals": "Inspur"
+        }
+        ]
+    }
+]

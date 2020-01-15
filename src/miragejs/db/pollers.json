@@ -1,0 +1,1706 @@
+[
+        {
+          "id": "5d9b463a4588b5784bd4fab9",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:41.967Z",
+          "lastFinished": "2019-12-10T13:44:42.115Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4faba",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:16.046Z",
+          "lastFinished": "2019-12-10T13:44:16.730Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fabc",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:48.187Z",
+          "lastFinished": "2019-12-10T13:44:51.024Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fabd",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "0374",
+            "lastSelDeleteTimeLastRun": "2019-05-24T08:59:17.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:08.788Z",
+          "lastFinished": "2019-12-10T13:44:18.935Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fabe",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:29.517Z",
+          "lastFinished": "2019-12-10T13:44:29.626Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad4",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "07d7",
+            "lastSelDeleteTimeLastRun": "2019-05-24T09:02:40.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:07.724Z",
+          "lastFinished": "2019-12-10T13:44:27.495Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc89",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:21.333Z",
+          "lastFinished": "2019-12-10T13:44:21.871Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc8a",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:43:58.286Z",
+          "lastFinished": "2019-12-10T13:43:58.765Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc8b",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "04ae",
+            "lastSelDeleteTimeLastRun": "2019-05-24T09:24:40.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:07.694Z",
+          "lastFinished": "2019-12-10T13:44:39.938Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc8c",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:40.940Z",
+          "lastFinished": "2019-12-10T13:44:41.201Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc8d",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:06.647Z",
+          "lastFinished": "2019-12-10T13:44:41.461Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9a",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:47.068Z",
+          "lastFinished": "2019-12-10T13:44:52.817Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac1",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:31.533Z",
+          "lastFinished": "2019-12-10T13:44:36.262Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac3",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "035c",
+            "lastSelDeleteTimeLastRun": "2019-05-24T09:02:20.000Z"
+          },
+          "lastStarted": "2019-12-10T13:43:59.298Z",
+          "lastFinished": "2019-12-10T13:44:05.016Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac4",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:41.961Z",
+          "lastFinished": "2019-12-10T13:44:42.294Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac5",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:53.427Z",
+          "lastFinished": "2019-12-10T13:44:53.535Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac6",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:41.978Z",
+          "lastFinished": "2019-12-10T13:44:42.219Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fabb",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f963",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:14.000Z",
+          "lastFinished": "2019-12-10T13:44:23.395Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b463a4588b5784bd4fac2",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45b74588b5784bd4f980",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:32.644Z",
+          "lastFinished": "2019-12-10T13:44:39.869Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad3",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:18.160Z",
+          "lastFinished": "2019-12-10T13:44:19.047Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad5",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:52.367Z",
+          "lastFinished": "2019-12-10T13:44:52.549Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad6",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:47.088Z",
+          "lastFinished": "2019-12-10T13:44:47.233Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad8",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:18.266Z",
+          "lastFinished": "2019-12-10T13:44:24.673Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b464e4588b5784bd4fad7",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c14588b5784bd4f9ba",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:05.625Z",
+          "lastFinished": "2019-12-10T13:44:13.924Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb04",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:49.247Z",
+          "lastFinished": "2019-12-10T13:44:52.106Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb05",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:09.808Z",
+          "lastFinished": "2019-12-10T13:44:09.938Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb06",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "036a",
+            "lastSelDeleteTimeLastRun": "2019-05-24T09:10:34.000Z"
+          },
+          "lastStarted": "2019-12-10T13:43:51.132Z",
+          "lastFinished": "2019-12-10T13:43:56.282Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb07",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:21.324Z",
+          "lastFinished": "2019-12-10T13:44:21.663Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb08",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:49.226Z",
+          "lastFinished": "2019-12-10T13:44:49.340Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b46b44588b5784bd4fb03",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45c34588b5784bd4f9d7",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:16.059Z",
+          "lastFinished": "2019-12-10T13:44:25.041Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb16",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:34.837Z",
+          "lastFinished": "2019-12-10T13:44:35.070Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb17",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "1ae9",
+            "lastSelDeleteTimeLastRun": "2018-09-11T02:08:27.000Z"
+          },
+          "lastStarted": "2019-12-10T13:43:52.160Z",
+          "lastFinished": "2019-12-10T13:44:48.226Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb18",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:44.040Z",
+          "lastFinished": "2019-12-10T13:44:44.444Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb19",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:33.759Z",
+          "lastFinished": "2019-12-10T13:44:34.903Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb1a",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:15.033Z",
+          "lastFinished": "2019-12-10T13:44:29.355Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b473a4588b5784bd4fb1b",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b45d24588b5784bd4f9f4",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH0_DIMM1 (0x84)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM1 (0x86)": { "Presence Detected": true },
+                "CPU0_CH2_DIMM0 (0x87)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU0_CH5_DIMM0 (0x8d)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM1 (0x90)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM1 (0x92)": { "Presence Detected": true },
+                "CPU1_CH2_DIMM0 (0x93)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "CPU1_CH5_DIMM0 (0x99)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                },
+                "Event_Log (0xeb)": { "Log almost full": true }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:00.386Z",
+          "lastFinished": "2019-12-10T13:44:24.980Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbbf",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:09.868Z",
+          "lastFinished": "2019-12-10T13:44:10.103Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc0",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:06.637Z",
+          "lastFinished": "2019-12-10T13:44:06.934Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72b64588b5784bd4fc8e",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b72294588b5784bd4fc25",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:18.151Z",
+          "lastFinished": "2019-12-10T13:44:37.241Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9b",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:07.746Z",
+          "lastFinished": "2019-12-10T13:44:08.222Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9c",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "045c",
+            "lastSelDeleteTimeLastRun": "2019-05-21T15:40:06.000Z"
+          },
+          "lastStarted": "2019-12-10T13:43:49.099Z",
+          "lastFinished": "2019-12-10T13:44:08.443Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9e",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:51.285Z",
+          "lastFinished": "2019-12-10T13:44:51.503Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9f",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:24.441Z",
+          "lastFinished": "2019-12-10T13:44:25.058Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b72fc4588b5784bd4fc9d",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b72654588b5784bd4fc5f",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Fully Redundant": true
+                },
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "CPU0_C0D0 (0x83)": { "Presence Detected": true },
+                "CPU0_C0D1 (0x84)": { "Presence Detected": true },
+                "CPU0_C1D0 (0x85)": { "Presence Detected": true },
+                "CPU0_C1D1 (0x86)": { "Presence Detected": true },
+                "CPU0_C3D0 (0x89)": { "Presence Detected": true },
+                "CPU0_C3D1 (0x8a)": { "Presence Detected": true },
+                "CPU0_C4D0 (0x8b)": { "Presence Detected": true },
+                "CPU0_C4D1 (0x8c)": { "Presence Detected": true },
+                "CPU1_C0D0 (0x8f)": { "Presence Detected": true },
+                "CPU1_C0D1 (0x90)": { "Presence Detected": true },
+                "CPU1_C1D0 (0x91)": { "Presence Detected": true },
+                "CPU1_C1D1 (0x92)": { "Presence Detected": true },
+                "CPU1_C3D0 (0x95)": { "Presence Detected": true },
+                "CPU1_C3D1 (0x96)": { "Presence Detected": true },
+                "CPU1_C4D0 (0x97)": { "Presence Detected": true },
+                "CPU1_C4D1 (0x98)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "DISK10_Status (0xbe)": { "Drive Present": true },
+                "DISK11_Status (0xbf)": { "Drive Present": true },
+                "DISK12_Status (0xc0)": { "Drive Present": true },
+                "DISK13_Status (0xc1)": { "Drive Present": true },
+                "DISK14_Status (0xc2)": { "Drive Present": true },
+                "DISK15_Status (0xc3)": { "Drive Present": true },
+                "DISK16_Status (0xc4)": { "Drive Present": true },
+                "DISK17_Status (0xc5)": { "Drive Present": true },
+                "DISK18_Status (0xc6)": { "Drive Present": true },
+                "DISK19_Status (0xc7)": { "Drive Present": true },
+                "DISK20_Status (0xc8)": { "Drive Present": true },
+                "DISK21_Status (0xc9)": { "Drive Present": true },
+                "DISK22_Status (0xca)": { "Drive Present": true },
+                "DISK23_Status (0xcb)": { "Drive Present": true },
+                "DISK24_Status (0xcc)": { "Drive Present": true },
+                "DISK25_Status (0xcd)": { "Drive Present": true },
+                "DISK26_Status (0xce)": { "Drive Present": true },
+                "DISK27_Status (0xcf)": { "Drive Present": true },
+                "DISK28_Status (0xd0)": { "Drive Present": true },
+                "DISK29_Status (0xd1)": { "Drive Present": true },
+                "DISK30_Status (0xd2)": { "Drive Present": true },
+                "DISK31_Status (0xd3)": { "Drive Present": true },
+                "DISK32_Status (0xd4)": { "Drive Present": true },
+                "DISK33_Status (0xd5)": { "Drive Present": true },
+                "DISK34_Status (0xd6)": { "Drive Present": true },
+                "DISK35_Status (0xd7)": { "Drive Present": true },
+                "DISK36_Status (0xd8)": { "Drive Present": true },
+                "DISK37_Status (0xd9)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:43:53.221Z",
+          "lastFinished": "2019-12-10T13:44:17.375Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd07",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "11bd",
+            "lastSelDeleteTimeLastRun": "2019-05-21T14:29:11.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:52.353Z",
+          "lastFinished": "2019-12-10T13:43:51.673Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd08",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:07.703Z",
+          "lastFinished": "2019-12-10T13:44:08.119Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd09",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:52.362Z",
+          "lastFinished": "2019-12-10T13:44:22.115Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd0a",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:48.180Z",
+          "lastFinished": "2019-12-10T13:44:48.353Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd34",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:48.172Z",
+          "lastFinished": "2019-12-10T13:44:50.901Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc1",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:47.079Z",
+          "lastFinished": "2019-12-10T13:44:47.239Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc2",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "04a8",
+            "lastSelDeleteTimeLastRun": "2019-05-21T15:19:10.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:53.436Z",
+          "lastFinished": "2019-12-10T13:43:53.078Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc4",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:23.394Z",
+          "lastFinished": "2019-12-10T13:44:26.772Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5bcf4588b5784bd4fbc3",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b424588b5784bd4fb85",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Fully Redundant": true
+                },
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "CPU0_C0D0 (0x83)": { "Presence Detected": true },
+                "CPU0_C0D1 (0x84)": { "Presence Detected": true },
+                "CPU0_C1D0 (0x85)": { "Presence Detected": true },
+                "CPU0_C1D1 (0x86)": { "Presence Detected": true },
+                "CPU0_C3D0 (0x89)": { "Presence Detected": true },
+                "CPU0_C3D1 (0x8a)": { "Presence Detected": true },
+                "CPU0_C4D0 (0x8b)": { "Presence Detected": true },
+                "CPU0_C4D1 (0x8c)": { "Presence Detected": true },
+                "CPU1_C0D0 (0x8f)": { "Presence Detected": true },
+                "CPU1_C0D1 (0x90)": { "Presence Detected": true },
+                "CPU1_C1D0 (0x91)": { "Presence Detected": true },
+                "CPU1_C1D1 (0x92)": { "Presence Detected": true },
+                "CPU1_C3D0 (0x95)": { "Presence Detected": true },
+                "CPU1_C3D1 (0x96)": { "Presence Detected": true },
+                "CPU1_C4D0 (0x97)": { "Presence Detected": true },
+                "CPU1_C4D1 (0x98)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "DISK10_Status (0xbe)": { "Drive Present": true },
+                "DISK11_Status (0xbf)": { "Drive Present": true },
+                "DISK12_Status (0xc0)": { "Drive Present": true },
+                "DISK13_Status (0xc1)": { "Drive Present": true },
+                "DISK14_Status (0xc2)": { "Drive Present": true },
+                "DISK15_Status (0xc3)": { "Drive Present": true },
+                "DISK16_Status (0xc4)": { "Drive Present": true },
+                "DISK17_Status (0xc5)": { "Drive Present": true },
+                "DISK18_Status (0xc6)": { "Drive Present": true },
+                "DISK19_Status (0xc7)": { "Drive Present": true },
+                "DISK20_Status (0xc8)": { "Drive Present": true },
+                "DISK21_Status (0xc9)": { "Drive Present": true },
+                "DISK22_Status (0xca)": { "Drive Present": true },
+                "DISK23_Status (0xcb)": { "Drive Present": true },
+                "DISK24_Status (0xcc)": { "Drive Present": true },
+                "DISK25_Status (0xcd)": { "Drive Present": true },
+                "DISK26_Status (0xce)": { "Drive Present": true },
+                "DISK27_Status (0xcf)": { "Drive Present": true },
+                "DISK28_Status (0xd0)": { "Drive Present": true },
+                "DISK29_Status (0xd1)": { "Drive Present": true },
+                "DISK30_Status (0xd2)": { "Drive Present": true },
+                "DISK31_Status (0xd3)": { "Drive Present": true },
+                "DISK32_Status (0xd4)": { "Drive Present": true },
+                "DISK33_Status (0xd5)": { "Drive Present": true },
+                "DISK34_Status (0xd6)": { "Drive Present": true },
+                "DISK35_Status (0xd7)": { "Drive Present": true },
+                "DISK36_Status (0xd8)": { "Drive Present": true },
+                "DISK37_Status (0xd9)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:09.818Z",
+          "lastFinished": "2019-12-10T13:44:15.567Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd4",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:38.876Z",
+          "lastFinished": "2019-12-10T13:44:48.833Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd5",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:17.131Z",
+          "lastFinished": "2019-12-10T13:44:17.546Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd6",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:38.885Z",
+          "lastFinished": "2019-12-10T13:44:39.153Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd7",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "0533",
+            "lastSelDeleteTimeLastRun": "2019-05-25T20:44:39.000Z"
+          },
+          "lastStarted": "2019-12-10T13:43:59.308Z",
+          "lastFinished": "2019-12-10T13:44:16.269Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd8",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:14.004Z",
+          "lastFinished": "2019-12-10T13:44:14.312Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b5c9d4588b5784bd4fbd3",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b5b344588b5784bd4fb68",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH0_DIMM1 (0x84)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM1 (0x86)": { "Presence Detected": true },
+                "CPU0_CH2_DIMM0 (0x87)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU0_CH5_DIMM0 (0x8d)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM1 (0x90)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM1 (0x92)": { "Presence Detected": true },
+                "CPU1_CH2_DIMM0 (0x93)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "CPU1_CH5_DIMM0 (0x99)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:40.931Z",
+          "lastFinished": "2019-12-10T13:44:52.353Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd05",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:02.503Z",
+          "lastFinished": "2019-12-10T13:44:02.664Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b7e054588b5784bd4fd06",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b7d6e4588b5784bd4fcdb",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Fully Redundant": true
+                },
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "CPU0_C0D0 (0x83)": { "Presence Detected": true },
+                "CPU0_C0D1 (0x84)": { "Presence Detected": true },
+                "CPU0_C1D0 (0x85)": { "Presence Detected": true },
+                "CPU0_C1D1 (0x86)": { "Presence Detected": true },
+                "CPU0_C3D0 (0x89)": { "Presence Detected": true },
+                "CPU0_C3D1 (0x8a)": { "Presence Detected": true },
+                "CPU0_C4D0 (0x8b)": { "Presence Detected": true },
+                "CPU0_C4D1 (0x8c)": { "Presence Detected": true },
+                "CPU1_C0D0 (0x8f)": { "Presence Detected": true },
+                "CPU1_C0D1 (0x90)": { "Presence Detected": true },
+                "CPU1_C1D0 (0x91)": { "Presence Detected": true },
+                "CPU1_C1D1 (0x92)": { "Presence Detected": true },
+                "CPU1_C3D0 (0x95)": { "Presence Detected": true },
+                "CPU1_C3D1 (0x96)": { "Presence Detected": true },
+                "CPU1_C4D0 (0x97)": { "Presence Detected": true },
+                "CPU1_C4D1 (0x98)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "DISK10_Status (0xbe)": { "Drive Present": true },
+                "DISK11_Status (0xbf)": { "Drive Present": true },
+                "DISK12_Status (0xc0)": { "Drive Present": true },
+                "DISK13_Status (0xc1)": { "Drive Present": true },
+                "DISK14_Status (0xc2)": { "Drive Present": true },
+                "DISK15_Status (0xc3)": { "Drive Present": true },
+                "DISK16_Status (0xc4)": { "Drive Present": true },
+                "DISK17_Status (0xc5)": { "Drive Present": true },
+                "DISK18_Status (0xc6)": { "Drive Present": true },
+                "DISK19_Status (0xc7)": { "Drive Present": true },
+                "DISK20_Status (0xc8)": { "Drive Present": true },
+                "DISK21_Status (0xc9)": { "Drive Present": true },
+                "DISK22_Status (0xca)": { "Drive Present": true },
+                "DISK23_Status (0xcb)": { "Drive Present": true },
+                "DISK24_Status (0xcc)": { "Drive Present": true },
+                "DISK25_Status (0xcd)": { "Drive Present": true },
+                "DISK26_Status (0xce)": { "Drive Present": true },
+                "DISK27_Status (0xcf)": { "Drive Present": true },
+                "DISK28_Status (0xd0)": { "Drive Present": true },
+                "DISK29_Status (0xd1)": { "Drive Present": true },
+                "DISK30_Status (0xd2)": { "Drive Present": true },
+                "DISK31_Status (0xd3)": { "Drive Present": true },
+                "DISK32_Status (0xd4)": { "Drive Present": true },
+                "DISK33_Status (0xd5)": { "Drive Present": true },
+                "DISK34_Status (0xd6)": { "Drive Present": true },
+                "DISK35_Status (0xd7)": { "Drive Present": true },
+                "DISK36_Status (0xd8)": { "Drive Present": true },
+                "DISK37_Status (0xd9)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                },
+                "Event_Log (0xeb)": { "Log full": true }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:43:45.966Z",
+          "lastFinished": "2019-12-10T13:43:56.020Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd35",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "03a0",
+            "lastSelDeleteTimeLastRun": "2019-05-24T09:12:07.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:03.537Z",
+          "lastFinished": "2019-12-10T13:44:08.981Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd37",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:49.220Z",
+          "lastFinished": "2019-12-10T13:44:49.389Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd38",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:28.498Z",
+          "lastFinished": "2019-12-10T13:44:28.639Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd39",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:43:53.206Z",
+          "lastFinished": "2019-12-10T13:43:53.560Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b94894588b5784bd4fd36",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b94064588b5784bd4fd0b",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU1_Status (0x75)": { "Presence detected": true },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK6_Status (0xba)": { "Drive Present": true },
+                "DISK7_Status (0xbb)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:13.996Z",
+          "lastFinished": "2019-12-10T13:44:20.973Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd76",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": {
+            "command": "selEntries",
+            "lastPreviouslyReadSelEntry": "03e7",
+            "lastSelDeleteTimeLastRun": "2019-05-25T20:11:59.000Z"
+          },
+          "lastStarted": "2019-12-10T13:44:25.461Z",
+          "lastFinished": "2019-12-10T13:44:34.742Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd77",
+          "type": "ipmi",
+          "pollInterval": 30000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": { "command": "driveHealth" },
+          "lastStarted": "2019-12-10T13:44:46.056Z",
+          "lastFinished": "2019-12-10T13:44:48.825Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd78",
+          "type": "ipmi",
+          "pollInterval": 15000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": { "command": "chassis" },
+          "lastStarted": "2019-12-10T13:44:49.233Z",
+          "lastFinished": "2019-12-10T13:44:49.373Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd79",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": { "command": "selInformation" },
+          "lastStarted": "2019-12-10T13:44:41.952Z",
+          "lastFinished": "2019-12-10T13:44:42.100Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd7a",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": { "command": "sel" },
+          "lastStarted": "2019-12-10T13:44:11.906Z",
+          "lastFinished": "2019-12-10T13:44:12.203Z",
+          "paused": false,
+          "failureCount": 0
+        },
+        {
+          "id": "5d9b9b674588b5784bd4fd75",
+          "type": "ipmi",
+          "pollInterval": 60000,
+          "node": "/api/2.0/nodes/5d9b9a084588b5784bd4fd4c",
+          "config": {
+            "command": "sdr",
+            "inCondition": {
+              "discrete": {
+                "CPU0_Status (0x7d)": { "Presence detected": true },
+                "CPU1_Status (0x7e)": { "Presence detected": true },
+                "PSU0_Status (0x74)": { "Presence detected": true },
+                "PSU1_Status (0x75)": {
+                  "Presence detected": true,
+                  "Power Supply AC lost": true
+                },
+                "PSU_Redundant (0x78)": {
+                  "Redundancy State": true,
+                  "Redundancy Lost": true
+                },
+                "FAN0_Present (0x60)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN1_Present (0x61)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN2_Present (0x62)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN3_Present (0x63)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN4_Present (0x64)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN5_Present (0x65)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "FAN6_Present (0x66)": {
+                  "Availability State": true,
+                  "Device Present": true
+                },
+                "CPU0_CH0_DIMM0 (0x83)": { "Presence Detected": true },
+                "CPU0_CH0_DIMM1 (0x84)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM0 (0x85)": { "Presence Detected": true },
+                "CPU0_CH1_DIMM1 (0x86)": { "Presence Detected": true },
+                "CPU0_CH2_DIMM0 (0x87)": { "Presence Detected": true },
+                "CPU0_CH3_DIMM0 (0x89)": { "Presence Detected": true },
+                "CPU0_CH4_DIMM0 (0x8b)": { "Presence Detected": true },
+                "CPU0_CH5_DIMM0 (0x8d)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM0 (0x8f)": { "Presence Detected": true },
+                "CPU1_CH0_DIMM1 (0x90)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM0 (0x91)": { "Presence Detected": true },
+                "CPU1_CH1_DIMM1 (0x92)": { "Presence Detected": true },
+                "CPU1_CH2_DIMM0 (0x93)": { "Presence Detected": true },
+                "CPU1_CH3_DIMM0 (0x95)": { "Presence Detected": true },
+                "CPU1_CH4_DIMM0 (0x97)": { "Presence Detected": true },
+                "CPU1_CH5_DIMM0 (0x99)": { "Presence Detected": true },
+                "DISK0_Status (0xb4)": { "Drive Present": true },
+                "DISK1_Status (0xb5)": { "Drive Present": true },
+                "DISK2_Status (0xb6)": { "Drive Present": true },
+                "DISK3_Status (0xb7)": { "Drive Present": true },
+                "DISK4_Status (0xb8)": { "Drive Present": true },
+                "DISK5_Status (0xb9)": { "Drive Present": true },
+                "DISK8_Status (0xbc)": { "Drive Present": true },
+                "DISK9_Status (0xbd)": { "Drive Present": true },
+                "BMC_Boot_Up (0xec)": {
+                  "Availability State": true,
+                  "Device Enabled": true
+                }
+              },
+              "threshold": {}
+            }
+          },
+          "lastStarted": "2019-12-10T13:44:24.449Z",
+          "lastFinished": "2019-12-10T13:44:32.635Z",
+          "paused": false,
+          "failureCount": 0
+        }
+      ]
+      

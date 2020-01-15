@@ -1,14 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   AlphabeticalComparator,
   StringOperator,
   ObjectFilterByKey,
 } from '../../utils/inventory-operator';
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
 import { FileService } from '../services/file.service';
@@ -36,7 +31,7 @@ export class FilesComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No file found!'
+  dgPlaceholder = 'No file found!';
 
   public versionComparator = new AlphabeticalComparator<File>('version');
   public filenameComparator = new AlphabeticalComparator<File>('filename');
@@ -68,7 +63,7 @@ export class FilesComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
   getRawData(identifier: string): void {
@@ -76,29 +71,29 @@ export class FilesComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  searchFile(term: string){
+  searchFile(term: string) {
     this.dgDataLoading = true;
     this.filesStore = StringOperator.search(term, this.allFiles);
     this.dgDataLoading = false;
   }
 
-  getHttpMethod(){
+  getHttpMethod() {
   }
 
-  create(){
-    this.action = "Upload";
+  create() {
+    this.action = 'Upload';
     this.isShowModal = true;
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedFiles)){
-      this.action = "Delete";
+    if (!_.isEmpty(this.selectedFiles)) {
+      this.action = 'Delete';
       this.isShowModal = true;
     }
-  };
+  }
 
   refresh() {
     this.isShowModal = false;
@@ -106,19 +101,19 @@ export class FilesComponent implements OnInit {
     this.getAll();
   }
 
-  deleteSel(){
-    let idList = _.map(this.selectedFiles, file => {
+  deleteSel() {
+    const idList = _.map(this.selectedFiles, file => {
       return file.uuid;
     });
     this.isShowModal = false;
     this.fileService.deleteByIdentifiers(idList)
     .subscribe(
-      data => { this.refresh();}
-    )
+      data => { this.refresh(); }
+    );
   }
 
   onConfirm(value) {
-    switch(value) {
+    switch (value) {
       case 'reject':
         this.isShowModal = false;
         break;
@@ -127,8 +122,8 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -138,48 +133,48 @@ export class FilesComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
-  onFilter(filtered){
+  onFilter(filtered) {
     this.filesStore = filtered;
   }
 
-  onUpdate(file: File){
+  onUpdate(file: File) {
     this.selectedFile = file;
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onDelete(file: File) {
     this.selectedFiles = [file];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
-  };
+  }
 
   onGetDetails(file: File) {
     this.selectedFile = file;
-    this.action = "Meta";
+    this.action = 'Meta';
     this.getMetaData(file.filename);
-  };
+  }
 
   onGetRawData(file: File) {
     this.selectedFile = file;
-    this.action = "Raw"
+    this.action = 'Raw';
     this.getRawData(file.filename);
-  };
+  }
 
-  onChange(event){
+  onChange(event) {
     this.files =  event.target.files;
   }
 
-  onCreateSubmit(){
-    //existingFilename is used to store filename when updating file
-    let existingFilename = this.selectedFile && this.selectedFile.filename;
-    let file = this.files[0];
-    //TODO: Add more details on progress
-    //TODO: And use sync mode instead of async mode
-    //TODO: Add support on multiple files upload support
+  onCreateSubmit() {
+    // existingFilename is used to store filename when updating file
+    const existingFilename = this.selectedFile && this.selectedFile.filename;
+    const file = this.files[0];
+    // TODO: Add more details on progress
+    // TODO: And use sync mode instead of async mode
+    // TODO: Add support on multiple files upload support
     this.isShowModal = false;
     this.fileService.upload(file, existingFilename || file.name)
     .subscribe(() => {

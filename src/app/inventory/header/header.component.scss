@@ -20,7 +20,6 @@
   .search {
     float: right;
     width: 20%;
-    margin-top: 16px;
     display: table;
     label {
       display: table-cell;
@@ -32,6 +31,12 @@
     clr-icon {
       display: table-cell;
     }
+    .clr-form-control {
+      margin-top: 0;
+      .clr-control-container{
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -42,4 +47,12 @@
   .font-style {
     font-weight: 600;
   }
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
 }

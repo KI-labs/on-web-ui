@@ -1,2 +1,2 @@
-let JSONEditor = require('../../../node_modules/jsoneditor/src/js/JSONEditor.js');
+import JSONEditor from 'jsoneditor';
 export {JSONEditor};

@@ -11,4 +11,4 @@ export class Graph {
 export const GRAPH_URL = {
     getAllUrl: '/workflows/graphs',
     getByIdentifierUrl: '/workflows/graphs/',
-}
+};

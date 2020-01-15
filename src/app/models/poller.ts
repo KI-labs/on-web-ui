@@ -18,6 +18,6 @@ export const POLLER_URL = {
     getAllUrl: '/pollers',
     getByIdentifierUrl: '/pollers/',
     data: '/data/current'
-}
+};
 
 export const POLLER_INTERVAL = [30000, 60000, 120000, 300000, 600000];

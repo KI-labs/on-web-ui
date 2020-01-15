@@ -1,0 +1,170 @@
+[
+        {
+          "id": "fc87dbe6-ccac-424e-ae9b-9717f7bee71f",
+          "hash": "S8PR0gTTOMNwe5OK1CkG+Q==",
+          "name": "install-coreos.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "17c2f6a3-0b49-4918-b3d2-3c3c53b3fa15",
+          "hash": "2B2a9N5rRp2xua4O8MC2DA==",
+          "name": "install-suse.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "01ab935a-4691-42a9-a0be-c1d105bdce20",
+          "hash": "x3F5NRDi9DYmllMJe6fFtw==",
+          "name": "redirect.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "efbb61a5-1953-4ac0-a35f-a19fa573c37b",
+          "hash": "zGFDw2LSPSHkdO5AHzGhYw==",
+          "name": "zerotouch-configure.zt",
+          "scope": "global"
+        },
+        {
+          "id": "3653819b-2737-4d91-8211-4b1bad432e6d",
+          "hash": "7ZQ9ZTSs/6Gbgfw3EmFsxw==",
+          "name": "compute.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "0c119f79-3eb4-4fb4-b13e-d1c7a9bd06d3",
+          "hash": "KN+LxeqJ+R0LcljZ58vZNg==",
+          "name": "dell-onie.sh",
+          "scope": "global"
+        },
+        {
+          "id": "796ae772-05ab-488b-bc72-aca555e3332d",
+          "hash": "oNzHIB2/trjDcMxb21BtYQ==",
+          "name": "install-debian.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "34174339-f24a-4fc1-ba75-fffb5e9198e5",
+          "hash": "Hj71HEPWNw10BFv6eccrYA==",
+          "name": "ipxe-info.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "6d515870-7d95-4019-a77e-62f03904082a",
+          "hash": "1sktcicXW41qYNVbiLkYDg==",
+          "name": "run-uefi.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "0c85c85d-290e-4dae-98f9-eaf3be7f2620",
+          "hash": "kGk8+IkSxHjy6X3m+LJevg==",
+          "name": "zerotouch-default.zt",
+          "scope": "global"
+        },
+        {
+          "id": "fc17367b-7d2e-47e6-9940-591e14a799a8",
+          "hash": "bZsjNHh7Jq2ceoi8fcc9hA==",
+          "name": "bootdisk-firstdisk.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "5b05cba8-4aed-4f98-983a-073374f999d9",
+          "hash": "xqkh5lC4RU1zxzkD8vq3Yg==",
+          "name": "dos.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "48bf0e97-0fbb-4b73-9648-33fd9e07a50f",
+          "hash": "Zc54gkv1DUP+a7tNpH9SQA==",
+          "name": "install-esx.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "4ff37531-6229-4a54-8eeb-20fd208acbbb",
+          "hash": "X9dCW5apxV4ar9B/bvpYJw==",
+          "name": "linux-generic.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "235d72df-5fe6-4f05-8b4e-deae318ebc1d",
+          "hash": "w0Lg/bVZmYYaEu5CziNXlQ==",
+          "name": "taskrunner.py",
+          "scope": "global"
+        },
+        {
+          "id": "3ced3f5b-1edb-475f-be77-188e59864b09",
+          "hash": "7ZQ9ZTSs/6Gbgfw3EmFsxw==",
+          "name": "compute.ipxe.backup",
+          "scope": "global"
+        },
+        {
+          "id": "6a7bd268-a5bc-4ddd-b335-3e7a1078d951",
+          "hash": "lvj7C1UoQaLSPYw2xCou5A==",
+          "name": "end-ipxe.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "18e1b737-2d80-43e9-b51b-741c9687fcef",
+          "hash": "OVi00eFO0X7d80/YsM+JZQ==",
+          "name": "install-esx60.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "5d93a938-ab94-4869-8479-19584aeecfe9",
+          "hash": "UfCgfiEWfKobd6r8fn1TSA==",
+          "name": "linux.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "82462ed0-138a-433e-adcd-882418c43985",
+          "hash": "G4625N5y9wMoCOVkrpNzKA==",
+          "name": "ubuntu-custom.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "7eec3903-372d-409b-b667-5c56901020fd",
+          "hash": "ZlVDMMXjPWcdBobJbq9WGA==",
+          "name": "boilerplate.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "02b3d61b-ec2d-4d4b-9495-59462a413ca2",
+          "hash": "h52dDKvj7YJE1Ucy7mS+OA==",
+          "name": "defaultboot.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "a7433a80-7660-45a5-896c-9ddf736adbea",
+          "hash": "yhhUWj+Un1AKFLYIBAklvA==",
+          "name": "install-centos.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "4ab218d3-7b33-48a2-8b59-250a33028d26",
+          "hash": "L4TlIy49mjY8YVH7vPDN3w==",
+          "name": "install-photon-os.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "c464f27d-0d0f-4115-997c-10060994b9b3",
+          "hash": "s7G+YgZOl3pir8AdDjcx0Q==",
+          "name": "rancherOS.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "1d1efa0c-d190-4a39-90a5-c3f5979a5ebd",
+          "hash": "XT4exvPhlmeFwdYxy/nDGA==",
+          "name": "windows.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "85141a4b-6e19-40cb-bc58-f648903ab7d0",
+          "hash": "kXZ3dJqo+vUOT+Tvj1euOg==",
+          "name": "boot-livecd.ipxe",
+          "scope": "global"
+        },
+        {
+          "id": "f00d93d6-78d4-4346-934c-5e72ce385e3f",
+          "hash": "iKfjfkLIkpoh/Dx4TyGnkA==",
+          "name": "dell-bmp.sh",
+          "scope": "global"
+        }
+      ]
