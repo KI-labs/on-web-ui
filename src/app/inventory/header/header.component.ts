@@ -67,8 +67,8 @@ export class InventoryHeaderComponent implements OnInit {
     this.action.emit('Delete');
   }
 
-  onBatchClean(){
-    this.action.emit("Clean");
+  onBatchClean() {
+    this.action.emit('Clean');
   }
 
   onBatchCancel() {

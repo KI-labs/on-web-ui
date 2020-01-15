@@ -134,7 +134,7 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  batchClean(node?: Node): void{
+  batchClean(node?: Node): void {
     if (!_.isEmpty(this.selectedNodes)) {
       this.isClean = true;
     }
@@ -194,23 +194,23 @@ export class NodesComponent implements OnInit {
   }
 
   cleanSel(): void {
-    let listObms = [];
-    let listNodes = _.map(this.selectedNodes, node => {
+    const listObms = [];
+    const listNodes = _.map(this.selectedNodes, node => {
        if (node.obms.length > 0) {
-         for (let entry of node.obms) {
-           let obmId = entry['ref'].split('/').pop();
+         for (const entry of node.obms) {
+           const obmId = entry.ref.split('/').pop();
            listObms.push(obmId);
           }
         }
-        return node.id;
+       return node.id;
     });
 
-    this.obmService.deleteByIdentifiers(listObms).subscribe(result =>{
+    this.obmService.deleteByIdentifiers(listObms).subscribe(result => {
       this.nodeService.deleteByIdentifiers(listNodes)
         .subscribe(results => {
           this.refresh();
         });
-    })
+    });
 
 
   }
@@ -222,14 +222,14 @@ export class NodesComponent implements OnInit {
         this.isClean = false;
         break;
       case 'accept':
-        if(this.isDelete){
+        if (this.isDelete) {
           this.isDelete = false;
           this.deleteSel();
-        } else if (this.isClean){
+        } else if (this.isClean) {
           this.isClean = false;
           this.cleanSel();
         }
-        
+
     }
   }
 
@@ -247,7 +247,7 @@ export class NodesComponent implements OnInit {
       case 'Clean':
         this.batchClean();
         break;
-    };
+    }
   }
 
   onFilter(filtered) {
