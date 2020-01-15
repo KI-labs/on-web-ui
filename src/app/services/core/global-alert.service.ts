@@ -4,16 +4,16 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class GlobalAlertService {
   alertQueue: Subject<any>;
-  constructor(){
+  constructor() {
     this.alertQueue = new Subject<any>();
   }
 
 
-  putAlertMsg(msg: string, type: string = 'modal'): void{
-    this.alertQueue.next({msg: msg, type: type});
+  putAlertMsg(msg: string, type: string = 'modal'): void {
+    this.alertQueue.next({msg, type});
   }
 
-  getAlertQueue(): Subject<any>{
+  getAlertQueue(): Subject<any> {
     return this.alertQueue;
   }
 

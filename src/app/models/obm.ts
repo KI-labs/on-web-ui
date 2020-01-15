@@ -11,7 +11,7 @@ export class OBM {
 export const OBM_URL = {
   getAllUrl: '/obms',
   getByIdentifierUrl: '/obms/',
-}
+};
 
 // https://github.com/RackHD/on-http/blob/master/lib/services/obm-api-service.js
 export const OBM_TYPES = {
@@ -219,4 +219,4 @@ export const OBM_TYPES = {
       }
     }
   }
-}
+};

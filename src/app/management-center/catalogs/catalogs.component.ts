@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Catalog } from 'app/models';
-import { CatalogsService } from 'app/services/rackhd/catalogs.service';
-import { Subject } from 'rxjs/Subject';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Catalog } from '../../models';
+import { CatalogsService } from '../../services/rackhd/catalogs.service';
 
 import * as _ from 'lodash';
-import { AlphabeticalComparator, ObjectFilterByKey, StringOperator } from 'app/utils/inventory-operator';
+import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 
 @Component({
   selector: 'app-catalogs',
@@ -23,7 +21,7 @@ export class CatalogsComponent implements OnInit {
 
   // data grid helper
   dgDataLoading = false;
-  dgPlaceholder = 'No catalog found!'
+  dgPlaceholder = 'No catalog found!';
 
   constructor(public catalogsService: CatalogsService) {
     this.specCatalog = new Catalog();
@@ -62,15 +60,15 @@ export class CatalogsComponent implements OnInit {
     this.isShowDetail = true;
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
-    };
+    }
   }
 
-  onFilter(filtered){
+  onFilter(filtered) {
     this.catalogsStore = filtered;
   }
 }

@@ -1,8 +1,8 @@
 <div class="app-graph">
 
-  <inventory-header [allItems]="allWorkflows" [name]="'Workflow Defintion'"
+  <app-inventory-header [allItems]="allWorkflows" [name]="'Workflow Defintion'"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
@@ -56,10 +56,10 @@
     </div>
   </div>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
     <h3 class="modal-title">Are you sure you want to delete below workflows</h3>
@@ -78,34 +78,37 @@
     [clrModalSize]="'lg'">
     <h3 class="modal-title">{{action}} workflow</h3>
     <div class="modal-body">
-      <form [formGroup]="modalFormGroup" novalidate>
-        <section class="form-block compact">
-          <div class="form-group">
-            <label for="injectableName">injectableName: </label>
-            <input type="text" id="injectableName" class="input-size" formControlName="injectableName">
-          </div>
-          <div class="form-group">
-            <label for="friendlyName">friendlyName: </label>
-            <input type="text" id="friendlyName" class="input-size"
+      <form clrForm [formGroup]="modalFormGroup">
+       
+          <clr-input-container>
+            <label>injectableName: </label>
+            <input clrInput type="text" class="input-size" formControlName="injectableName">
+          </clr-input-container>
+
+          <clr-input-container>
+            <label >friendlyName: </label>
+            <input clrInput type="text" class="input-size"
               formControlName="friendlyName">
-          </div>
-          <div class="form-group">
-            <label for="options">options: </label>
-            <textarea id="options" rows='3' formControlName="options">
-            </textarea>
-            <div class="alertMessage" *ngIf="!optionsJsonValid">
+            </clr-input-container>
+
+            <clr-textarea-container>
+              <label>options: </label>
+              <textarea clrTextarea rows='3' formControlName="options" class='clr-textarea'>
+              </textarea>
+            </clr-textarea-container>
+            <div class="alertMessage" *ngIf="modalFormGroup.get('options').invalid">
                 Invalid JSON payload.
             </div>
-          </div>
-          <div class="form-group">
-            <label for="tasks">tasks: </label>
-            <textarea id="tasks" rows='8' formControlName="tasks">
-            </textarea>
-            <div class="alertMessage" *ngIf="!tasksJsonValid">
+       
+            <clr-textarea-container>
+              <label>tasks: </label>
+              <textarea clrTextarea rows='8' formControlName="tasks" class='clr-textarea'>
+              </textarea>
+            </clr-textarea-container>
+            <div class="alertMessage" *ngIf="modalFormGroup.get('tasks').invalid">
                 Invalid JSON payload.
             </div>
-          </div>
-        </section>
+
       </form>
     </div>
     <div class="modal-footer">

@@ -11,4 +11,4 @@ export class Catalog {
 export const CATALOG_URL = {
     getAllUrl: '/catalogs',
     getByIdentifierUrl: '/catalogs/',
-}
+};

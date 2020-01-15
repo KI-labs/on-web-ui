@@ -6,7 +6,7 @@ export default function catalogsRoutes(server) {
         return catalog.source === "dmi";
       } 
       return false
-    });
+    })[0];
   });
   server.get("nodes/:id/catalogs/", (schema, request) => {
     return server.db.catalogs.filter(catalog => {

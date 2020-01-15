@@ -8,6 +8,6 @@ export class Task {
     runJob: string;
     state: string;
     taskStartTime: string;
-    terminalOnStates: Array<String>;
+    terminalOnStates: Array<string>;
     waitingOn: {};
 }

@@ -13,4 +13,11 @@ export default function obmsRoutes(server) {
 
     return schema.obms.create(attrs);
   });
+  server.put("/obms", (schema, request) => {
+    let attrs = JSON.parse(request.requestBody);
+    
+    attrs.node = `/api/2.0/nodes/${attrs.nodeId}`
+
+    return schema.obms.create(attrs);
+  });
 }
