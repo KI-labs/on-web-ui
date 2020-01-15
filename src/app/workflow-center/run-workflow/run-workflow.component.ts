@@ -27,8 +27,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   @ViewChild('jsoneditor', {static: true}) jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
-    title: "",
-    note: "",
+    title: '',
+    note: '',
     type: 1,
     isLoading: false
   };
@@ -43,9 +43,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   nodeStore: Array<any> = [];
   selNodeStore: any [] = [];
   selectedNode: any;
-  
-  totalRetries: number = 1;
-  retries: number = 1;
+
+  totalRetries = 1;
+  retries = 1;
 
   filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
   filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
@@ -86,8 +86,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   resetModalInfo() {
     this.modalInformation = {
-      title: "",
-      note: "",
+      title: '',
+      note: '',
       type: 1,
       isLoading: false
     };
@@ -209,7 +209,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.modalInformation.isLoading = true;
-    if(this.retries <= this.totalRetries) {
+    if (this.retries <= this.totalRetries) {
       this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
         .subscribe(
           data => {
@@ -217,8 +217,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
             this.retries = 1;
             this.totalRetries = 1;
             this.modalInformation = {
-              title: "Post Workflow Successfully!",
-              note: "The workflow has post successfully! Do you want to check the status of the running workflow?",
+              title: 'Post Workflow Successfully!',
+              note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
               type: 2,
               isLoading: false
             };
