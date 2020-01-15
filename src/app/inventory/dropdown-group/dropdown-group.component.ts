@@ -201,7 +201,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     this.cleared.emit(field);
   }
 
-  onReset(field: string) {
+  onReset() {
     this.reset();
     this.cleared.emit('all');
   }

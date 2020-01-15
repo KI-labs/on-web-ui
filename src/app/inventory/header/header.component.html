@@ -6,7 +6,7 @@
     <div *ngIf="isSearchRequired" class="search">
       <clr-icon shape="search"></clr-icon>
       <input #searchBox clrInput type="text" id="search_box" placeholder="Search among all grid fields" [(ngModel)]="searchValue" (keyup)="onSearch(searchBox.value)" class='form-search'>
-      <clr-icon shape="times" *ngIf="searchBox.value" (click)="searchValue = '';onClear(searchBox.value);" title="Clear input"></clr-icon>
+      <clr-icon shape="times" *ngIf="searchBox.value" (click)="searchValue = '';onClear();" title="Clear input"></clr-icon>
     </div>
     <div class="buttons">
       <button *ngIf="isRefreshRequired" class="btn btn-icon refresh" (click)="searchValue = '';onRefresh()" title="Refresh">

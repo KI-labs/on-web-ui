@@ -136,7 +136,7 @@
       <p class="warning">The fields with * are required</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false; jsonValid = true;">Cancel</button>
+      <button type="button" class="btn btn-outline" (click)="isCreatePoller = false">Cancel</button>
       <button type="button" class="btn btn-primary" (click)="createPoller();" [disabled]="pollerForm.status!='VALID'">Ok</button>
     </div>
   </clr-modal>
