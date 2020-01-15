@@ -288,10 +288,10 @@ export class NodesComponent implements OnInit {
     this.catalogService.getSource(identifier, '')
       .subscribe(data => {
         data.forEach(catalog => {
-          if(catalog.data['IP Address']!== undefined){
-            this.selectedIPs.push(catalog.data['IP Address'])
+          if (catalog.data['IP Address'] !== undefined) {
+            this.selectedIPs.push(catalog.data['IP Address']);
           }
-        })
+        });
       });
   }
 
