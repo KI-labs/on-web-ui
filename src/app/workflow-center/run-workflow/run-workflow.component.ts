@@ -13,7 +13,7 @@ import { TagService } from '../../services/rackhd/tag.service';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, retry } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 import { JSONEditorOptions } from 'jsoneditor';
@@ -45,7 +45,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   selectedNode: any;
 
   totalRetries = 1;
-  retries = 1;
+  retries = 0;
 
   filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
   filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
@@ -74,14 +74,14 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const container = this.jsoneditor.nativeElement;
     const options: JSONEditorOptions = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
-    //this.getAllWorkflows();
+    // this.getAllWorkflows();
   }
 
   ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
     }
-    //this.getAllNodes();
+    // this.getAllNodes();
   }
 
   resetModalInfo() {
@@ -205,13 +205,16 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   postWorkflow() {
-    console.log('postWorkflow();')
+    console.log('postWorkflow();');
     const payload = this.editor.get();
     const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.modalInformation.isLoading = true;
     if (this.retries <= this.totalRetries) {
       this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
+        // .pipe(
+        //   retry(3)
+        // )
         .subscribe(
           data => {
             this.graphId = data.instanceId;
