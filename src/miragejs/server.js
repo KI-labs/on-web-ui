@@ -10,37 +10,42 @@ const CustomSerializer = Serializer.extend({
   }
 })
 
+export const standardConfig = {
+  serializers: {
+    application: CustomSerializer
+  },
+
+  models: {
+    node: Model,
+    obm: Model,
+    poller: Model,
+    profile: Model,
+    sku: Model,
+    template: Model,
+    graph: Model,
+    catalog: Model,
+    config: Model,
+    file: Model,
+    workflow: Model
+  },
+
+  seeds(server){
+    server.db.loadData(_db)
+  }
+
+}
+
 export function makeServer({ environment = "development" } = {}) {
   let server = new Server({
     environment,
 
-    serializers: {
-      application: CustomSerializer
-    },
+    ...standardConfig,
 
     timing: 2000,
-
-    models: {
-      node: Model,
-      obm: Model,
-      poller: Model,
-      profile: Model,
-      sku: Model,
-      template: Model,
-      graph: Model,
-      catalog: Model,
-      config: Model,
-      file: Model,
-      workflow: Model
-    },
-
+   
     routes(){
       _routes(this)
     },
-
-    seeds(server){
-      server.db.loadData(_db)
-    }
 
   });
 

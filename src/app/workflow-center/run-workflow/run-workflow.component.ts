@@ -24,7 +24,7 @@ import { JSONEditorOptions } from 'jsoneditor';
   styleUrls: ['./run-workflow.component.scss']
 })
 export class RunWorkflowComponent implements OnInit, AfterViewInit {
-  @ViewChild('jsoneditor', {static: true}) jsoneditor: ElementRef;
+  @ViewChild('jsoneditor', { static: true }) jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
     title: '',
@@ -41,7 +41,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   allNodes: Array<any> = [];
   nodeStore: Array<any> = [];
-  selNodeStore: any [] = [];
+  selNodeStore: any[] = [];
   selectedNode: any;
 
   totalRetries = 1;
@@ -62,7 +62,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     public skuService: SkusService,
     public tagService: TagService,
     private router: Router
-  ) {}
+  ) { }
 
 
 
@@ -72,16 +72,16 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
     this.showModal = false;
     const container = this.jsoneditor.nativeElement;
-    const options: JSONEditorOptions = {mode: 'code'};
+    const options: JSONEditorOptions = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
-    this.getAllWorkflows();
+    //this.getAllWorkflows();
   }
 
   ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
     }
-    this.getAllNodes();
+    //this.getAllNodes();
   }
 
   resetModalInfo() {
@@ -95,19 +95,19 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   selWorkflowById(id) {
     this.graphService.getByIdentifier(id)
-    .subscribe(data => {
-      this.selectedGraph = (data instanceof Array) ? data[0] : data;
-      this.graphStore = [this.selectedGraph];
-      this.updateEditor(data.options);
-    });
+      .subscribe(data => {
+        this.selectedGraph = (data instanceof Array) ? data[0] : data;
+        this.graphStore = [this.selectedGraph];
+        this.updateEditor(data.options);
+      });
   }
 
   getAllWorkflows() {
     this.graphService.getAll()
-    .subscribe(graphs => {
-      this.allGraphs = graphs;
-      this.graphStore = _.cloneDeep(graphs);
-    });
+      .subscribe(graphs => {
+        this.allGraphs = graphs;
+        this.graphStore = _.cloneDeep(graphs);
+      });
   }
 
   updateEditor(options: any) {
@@ -120,9 +120,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   getAllNodes() {
     this.nodeService.getAll()
-    .subscribe(data => {
-      this.renderNodeInfo(data);
-    });
+      .subscribe(data => {
+        this.renderNodeInfo(data);
+      });
   }
 
   getNodeSku(node): Observable<string> {
@@ -130,10 +130,10 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
       return this.skuService.getByIdentifier(node.sku.split('/').pop())
-      .pipe(map(data => data.name));
+        .pipe(map(data => data.name));
     } else if (isComputeWithoutSku) {
       return this.catalogsService.getSource(node.id, 'ohai')
-      .pipe(map(data => data.data.dmi.base_board.product_name));
+        .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
     }
@@ -143,7 +143,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     if (!_.isEmpty(node.obms)) {
       const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
-      .pipe(map(data => data.config.host));
+        .pipe(map(data => data.config.host));
     } else {
       return of(null);
     }
@@ -152,12 +152,12 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   getNodeTag(node): Observable<string> {
     if (!_.isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
-      .pipe(
-        map(data => {
-          if (_.isEmpty(data)) { return null; }
-          return data.attributes.name;
-        })
-      );
+        .pipe(
+          map(data => {
+            if (_.isEmpty(data)) { return null; }
+            return data.attributes.name;
+          })
+        );
     } else {
       return of(null);
     }
@@ -166,24 +166,24 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   renderNodeInfo(nodes) {
     const list = _.map(nodes, node => {
       return forkJoin([
-        this.getNodeSku(node).pipe(catchError( () => of(null))),
-        this.getNodeObm(node).pipe(catchError( () => of(null))),
-        this.getNodeTag(node).pipe(catchError( () => of(null)))
+        this.getNodeSku(node).pipe(catchError(() => of(null))),
+        this.getNodeObm(node).pipe(catchError(() => of(null))),
+        this.getNodeTag(node).pipe(catchError(() => of(null)))
       ]).pipe(
-          map(results => {
-            node.sku = results[0];
-            node.obms = results[1];
-            node.tags = results[2];
-          })
+        map(results => {
+          node.sku = results[0];
+          node.obms = results[1];
+          node.tags = results[2];
+        })
       );
     });
 
     forkJoin(list)
-    .subscribe((data) => {
-      this.allNodes = _.cloneDeep(nodes);
-      this.nodeStore = _.cloneDeep(nodes);
-      this.selNodeStore = _.cloneDeep(nodes);
-    });
+      .subscribe((data) => {
+        this.allNodes = _.cloneDeep(nodes);
+        this.nodeStore = _.cloneDeep(nodes);
+        this.selNodeStore = _.cloneDeep(nodes);
+      });
   }
 
   goToRunWorkflow() {
@@ -205,6 +205,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   postWorkflow() {
+    console.log('postWorkflow();')
     const payload = this.editor.get();
     const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
@@ -229,17 +230,17 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
           }
         );
     } else {
-    this.retries = 1;
-    this.totalRetries = 1;
-    this.showModal = false;
+      this.retries = 1;
+      this.totalRetries = 1;
+      this.showModal = false;
+    }
   }
-   }
 
   goToViewer() {
     this.resetModalInfo();
     this.showModal = false;
     this.router.navigate(['workflowCenter/workflowViewer'], {
-      queryParams: {graphId: this.graphId}
+      queryParams: { graphId: this.graphId }
     });
   }
 
@@ -258,7 +259,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   onFilterSelect(node) {
     this.selectedNode = node;
     if (this.selNodeStore.length === 1 && _.isEqual(this.selNodeStore[0], node)) { return; }
-    setTimeout( () => this.selNodeStore = [node]);
+    setTimeout(() => this.selNodeStore = [node]);
   }
 
   onFilterRefresh(item: string) {
@@ -272,7 +273,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   onNodeSelect(node) {
     this.selectedNode = node;
     if (this.nodeStore.length === 1 && _.isEqual(this.nodeStore[0], node)) { return; }
-    setTimeout( () => this.nodeStore = [node]);
+    setTimeout(() => this.nodeStore = [node]);
   }
 
   onReset() {
