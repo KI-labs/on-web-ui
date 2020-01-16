@@ -9,7 +9,7 @@
   </div>
 
   <div class="grid-header">
-    <app-inventory-header [allItems]="allNodes" [name]="'Node'" (action)="onAction($event)" (filter)="onFilter($event)">
+    <app-inventory-header [allItems]="allNodes" [name]="'Node'" (action)="onAction($event)" (filter)="onFilter($event)" [isCleanRequired]=true >
     </app-inventory-header>
   </div>
 
@@ -57,6 +57,7 @@
         </clr-dg-cell>
         <clr-dg-action-overflow class="more-action">
           <button class="action-item" (click)="willDelete(node)">Delete</button>
+          <button class="action-item" (click)="willClean(node)">Delete and Clean</button>
           <button class="action-item" (click)="goToDetail(node)">Details</button>
         </clr-dg-action-overflow>
       </clr-dg-row>
@@ -138,5 +139,10 @@
 
   <app-confirm-modal [(isPop)]="isDelete" title="nodes" (confirm)="onConfirm($event)" [data]="selectedNodes">
   </app-confirm-modal>
+
+  <confirm-modal [(isPop)]="isClean" title="nodes" action='delete and clean related OBMs from'
+    (confirm)="onConfirm($event)" [data]="selectedNodes">
+  </confirm-modal>
+
 
 </div>

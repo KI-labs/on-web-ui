@@ -47,6 +47,7 @@ export class NodesComponent implements OnInit {
 
   isCreateNode: boolean;
   isDelete: boolean;
+  isClean: boolean;
   nodeForm: FormGroup;
 
   selectableNodeTypes: string[];
@@ -135,9 +136,20 @@ export class NodesComponent implements OnInit {
     }
   }
 
+  batchClean(node?: Node): void {
+    if (!_.isEmpty(this.selectedNodes)) {
+      this.isClean = true;
+    }
+  }
+
   willDelete(node: Node): void {
     this.selectedNodes = [node];
     this.isDelete = true;
+  }
+
+  willClean(node: Node): void {
+    this.selectedNodes = [node];
+    this.isClean = true;
   }
 
   refresh() {
@@ -183,14 +195,43 @@ export class NodesComponent implements OnInit {
       });
   }
 
+  cleanSel(): void {
+    const listObms = [];
+    const listNodes = _.map(this.selectedNodes, node => {
+       if (node.obms.length > 0) {
+         for (const entry of node.obms) {
+           const obmId = entry.ref.split('/').pop();
+           listObms.push(obmId);
+          }
+        }
+       return node.id;
+    });
+
+    this.obmService.deleteByIdentifiers(listObms).subscribe(result => {
+      this.nodeService.deleteByIdentifiers(listNodes)
+        .subscribe(results => {
+          this.refresh();
+        });
+    });
+
+
+  }
+
   onConfirm(value) {
     switch (value) {
       case 'reject':
         this.isDelete = false;
+        this.isClean = false;
         break;
       case 'accept':
-        this.isDelete = false;
-        this.deleteSel();
+        if (this.isDelete) {
+          this.isDelete = false;
+          this.deleteSel();
+        } else if (this.isClean) {
+          this.isClean = false;
+          this.cleanSel();
+        }
+
     }
   }
 
@@ -204,6 +245,9 @@ export class NodesComponent implements OnInit {
         break;
       case 'Delete':
         this.batchDelete();
+        break;
+      case 'Clean':
+        this.batchClean();
         break;
     }
   }
