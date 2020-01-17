@@ -21,19 +21,6 @@
     }
   }
   position: relative;
-  .form-group {
-    width: 100%;
-    .select {
-      width: 100%;
-    }
-    .root-password {
-      margin: 0%;
-    }
-
-    .os-install-repo {
-      top: 0px;
-    }
-  }
 
   .offset-bottom {
     margin-bottom: 60px
@@ -85,17 +72,16 @@
 
   .bottom-gap {
     margin-bottom: 10px;
-    .col-md-3 {
+    .clr-col-md-3 {
       padding-left: 0;
     }
   }
 
   .networkOptions {
-    .row {
+    .clr-row {
       margin-top: 15px;
     }
     input {
-      float: right;
       margin-bottom: -8px;
     }
     margin-bottom: 20px;
@@ -137,8 +123,27 @@
     background: #fafafa;
   }
 
-  .input-width {
-    width: 100%;
+  .required {
+    &:after{
+      content: "*";
+      font-size: 1.1em;
+      color: #c92100;
+      margin-left: .25rem;
+    }
+  }
+
+  .label-one-line {
+    white-space: nowrap;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .form-control{
+    flex-wrap: nowrap;
+  }
+
+  .input-width{
+    width: 100%
   }
 }
 

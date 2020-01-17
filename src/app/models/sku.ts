@@ -15,4 +15,4 @@ export const SKU_URL = {
     getByIdentifierUrl: '/skus/',
     uploadUrl: '/skus/pack',
     uploadSuffix: '/pack',
-}
+};

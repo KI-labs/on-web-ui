@@ -5,12 +5,12 @@ import { ClarityModule } from '@clr/angular';
 
 import { SolutionCenterComponent } from './solution-center.component';
 import { SolutionCenterRoutingModule } from './solution-center-routing.module';
-import { OsInstallComponent } from 'app/solution-center/os-install/os-install.component';
-import { InventoryModule } from 'app/inventory/inventory.module';
+import { OsInstallComponent } from '../solution-center/os-install/os-install.component';
+import { InventoryModule } from '../inventory/inventory.module';
 
 @NgModule({
   imports: [
-    ClarityModule.forChild(),
+    ClarityModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

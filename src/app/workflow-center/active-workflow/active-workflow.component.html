@@ -1,9 +1,9 @@
 <div class="app-active-workflows">
 
-  <inventory-header [allItems]="allWorkflows" [name]="'Active Workflow'"
+  <app-inventory-header [allItems]="allWorkflows" [name]="'Active Workflow'"
     [isDeleteRequired]="false" [isCreateRequired]="false" [isCancelRequired]="true"
     (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
     <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedWorkflows">
@@ -124,13 +124,13 @@
     </div>
   </div>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" [data]="rawData" [dataType]="action" [title]="selectedWorkflow.injectableName">
-  </details-modal>
+  </app-details-modal>
 
-  <confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
+  <app-confirm-modal *ngIf="modalTypes.alertActions.indexOf(action) != -1"
     [(isPop)]="isShowModal" title="active workflows" displayAttr="instanceId" action="cancel"
     (confirm)="onConfirm($event)" [data]="selectedWorkflows">
-  </confirm-modal>
+  </app-confirm-modal>
 
 </div>

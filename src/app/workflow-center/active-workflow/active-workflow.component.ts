@@ -1,25 +1,17 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Comparator, StringFilter } from "@clr/angular";
-import { Subject } from 'rxjs/Subject';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import {forkJoin} from 'rxjs/observable/forkJoin';
 
 import {
-  AlphabeticalComparator,
-  StringOperator,
-  ObjectFilterByKey,
   createFilters,
   createComparator
-} from 'app/utils/inventory-operator';
+} from '../../utils/inventory-operator';
 
-import { FormsModule, ReactiveFormsModule, FormGroup,FormControl }   from '@angular/forms';
 import * as _ from 'lodash';
 
-import { WorkflowService } from 'app/services/rackhd/workflow.service';
-import { GraphService } from 'app/services/rackhd/graph.service';
-import { Workflow, ModalTypes } from 'app/models';
+import { WorkflowService } from '../../services/rackhd/workflow.service';
+import { GraphService } from '../../services/rackhd/graph.service';
+import { Workflow, ModalTypes } from '../../models';
 
 @Component({
   selector: 'app-active-workflow',
@@ -51,7 +43,7 @@ export class ActiveWorkflowComponent implements OnInit {
     private workflowService: WorkflowService,
     private graphService: GraphService,
     private router: Router
-  ){}
+  ) {}
 
   ngOnInit() {
     createFilters(
@@ -62,9 +54,9 @@ export class ActiveWorkflowComponent implements OnInit {
       ],
       new Workflow()
     );
-    createComparator(this.gridComparator, ["node", "name", "injectableName", "domain"], new Workflow());
+    createComparator(this.gridComparator, ['node', 'name', 'injectableName', 'domain'], new Workflow());
     this.modalTypes = new ModalTypes(
-      ["Detail", "Tasks", "Options", "Instance Id", "Context", "Definition"]
+      ['Detail', 'Tasks', 'Options', 'Instance Id', 'Context', 'Definition']
     );
     this.isShowModal = false;
     this.getAll();
@@ -84,13 +76,13 @@ export class ActiveWorkflowComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
-  deleteSel(){
-    let list = [];
+  deleteSel() {
+    const list = [];
     _.forEach(this.selectedWorkflows, workflow => {
-      if(!workflow.serviceGraph || workflow.serviceGraph === "false"){
+      if (!workflow.serviceGraph || workflow.serviceGraph === 'false') {
         list.push(this.workflowService.cancelActiveWorkflow(workflow.node));
       }
     });
@@ -106,25 +98,26 @@ export class ActiveWorkflowComponent implements OnInit {
     });
   }
 
-  getChild(objKey: string, workflow: Workflow){
+  getChild(objKey: string, workflow: Workflow) {
     this.selectedWorkflow = workflow;
     this.action = _.startCase(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData))
+    if (!_.isEmpty(this.rawData)) {
       this.isShowModal = true;
+    }
   }
 
-  getDefinition(workflow: Workflow){
+  getDefinition(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    let graphName = workflow.definition.split('/').pop();
+    const graphName = workflow.definition.split('/').pop();
     this.graphService.getByIdentifier(graphName)
     .subscribe(
       data => {
         this.rawData = data;
-        this.action = "Definition"
+        this.action = 'Definition';
         this.isShowModal = true;
       }
-    )
+    );
   }
 
   refresh() {
@@ -134,14 +127,14 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   batchCancel() {
-    if (!_.isEmpty(this.selectedWorkflows)){
-      this.action = "Cancel";
+    if (!_.isEmpty(this.selectedWorkflows)) {
+      this.action = 'Cancel';
       this.isShowModal = true;
     }
-  };
+  }
 
   onConfirm(value) {
-    switch(value) {
+    switch (value) {
       case 'reject':
         this.isShowModal = false;
         break;
@@ -151,36 +144,36 @@ export class ActiveWorkflowComponent implements OnInit {
     }
   }
 
-  onFilter(filtered: Workflow[]){
+  onFilter(filtered: Workflow[]) {
     this.workflowsStore = filtered;
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
       case 'Cancel':
         this.batchCancel();
         break;
-    };
+    }
   }
 
   onCancel(workflow: Workflow) {
     this.selectedWorkflows = [workflow];
-    this.action = "Cancel";
+    this.action = 'Cancel';
     this.isShowModal = true;
-  };
+  }
 
   onGetDetails(workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(workflow.instanceId);
-  };
+  }
 
-  gotoCanvas(workflow){
-    let graphId = workflow.instanceId;
-    let url = "/workflowCenter/workflowViewer?graphId=" + graphId;
+  gotoCanvas(workflow) {
+    const graphId = workflow.instanceId;
+    const url = '/workflowCenter/workflowViewer?graphId=' + graphId;
     this.router.navigateByUrl(url);
   }
 }

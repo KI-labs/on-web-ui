@@ -11,18 +11,27 @@ export class Node {
     id: string;
     identifiers: Array<string>;
     name: string;
-    obms: string[];
+    obms: Obms[];
     tags: string;
     pollers: string;
     relations: string[];
     sku?: string;
     type: string;
     workflows: string;
-    ibms: string[];
+    ibms: Ibms[];
 
     discoveredTime: string;
     manufacturer?: string;
     model: string;
+}
+
+interface Obms {
+    service: string;
+    ref: string;
+}
+
+interface Ibms {
+    ref: string;
 }
 
 export class NodeType {
@@ -47,7 +56,7 @@ export const NODE_TYPES = [
 export const NODE_URL = {
     getAllUrl: '/nodes',
     getByIdentifierUrl: '/nodes/',
-}
+};
 
 export const NODE_TYPE_MAP = {
   compute: 'Compute',
@@ -56,4 +65,4 @@ export const NODE_TYPE_MAP = {
   pdu: 'PDU',
   mgmt: 'MGMT',
   others: 'Others',
-}
+};
