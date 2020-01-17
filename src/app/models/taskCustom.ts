@@ -5,6 +5,6 @@ export class TaskCustom {
     friendlyName : string
     implementsTask : string
     injectableName : string
-    options?: {}
-    properties?: {}
+    options?: string
+    properties?: string
 }

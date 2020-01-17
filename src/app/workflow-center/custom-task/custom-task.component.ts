@@ -7,8 +7,7 @@ import * as _ from 'lodash';
 import { GraphTaskService } from 'app/services/rackhd/task.service';
 
 import { FormControl, FormGroup } from '@angular/forms';
-import { TaskCustom, Task, ModalTypes } from 'app/models';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { TaskCustom, ModalTypes } from 'app/models';
 
 @Component({
   selector: 'app-custom-task',
@@ -74,7 +73,6 @@ export class CustomTaskComponent implements OnInit {
     this.selectedTask = task;
     this.action = _.capitalize(objKey);
     this.rawData = task && task[objKey];
-    debugger
     if (!_.isEmpty(this.rawData))
       this.isShowModal = true;
   }
@@ -180,7 +178,7 @@ export class CustomTaskComponent implements OnInit {
     this.propertiesJsonValid = isJsonTextValid(payload.tasks);
     if (this.optionsJsonValid && this.propertiesJsonValid) {
       payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
-      payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
+      payload.properties = _.isEmpty(payload.properties) ? [] : JSON.parse(payload.properties);
       this.updateTask(payload)
     }
   }

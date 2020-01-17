@@ -1,6 +1,6 @@
-<div class='custom-task'>
+<div class="custom-task">
 
-  <inventory-header [allItems]="allTasks" [name]="'Tasks'"
+  <inventory-header [allItems]="allTasks" name="Tasks"
   (action)="onAction($event)" (filter)="onFilter($event)">
   </inventory-header>
 
@@ -42,10 +42,10 @@
           <clr-dg-cell >{{task.injectableName}}</clr-dg-cell>
           <clr-dg-cell >{{task.implementsTask}}</clr-dg-cell>
           <clr-dg-cell (click)="getChild('options', task)">
-            <u *ngIf="task.options  && (task.options | json) != '{}'" class="grid-item">Options</u>
+            <u *ngIf="(task.options | json) != '{}'" class="grid-item">Options</u>
           </clr-dg-cell>
           <clr-dg-cell (click)="getChild('properties', task)">
-            <u *ngIf="task.properties && (task.properties | json) != '{}'" class="grid-item">Properties</u>
+            <u *ngIf="(task.properties | json) != '{}'" class="grid-item">Properties</u>
           </clr-dg-cell>
         </clr-dg-row>
   
@@ -54,7 +54,7 @@
   
     <div class="selected">
       Selected Tasks:
-      <span *ngFor="let task of selectedTasks; let isLast = last">{{task? task.injectableName : null}}{{isLast ? '' : ', '}}</span>
+      <span *ngFor="let task of selectedTasks; let isLast = last">{{task ? task.injectableName : null}}{{isLast ? '' : ', '}}</span>
     </div>
   </div>
 
@@ -63,11 +63,11 @@
     [dataType]="action" [title]="selectedTask.injectableName">
   </details-modal>
 
-  <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" [clrModalSize]="'xl'">
+  <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" clrModalSize="xl">
     <h3 class="modal-title">Are you sure you want to delete below tasks</h3>
     <div class="modal-body">
       <span *ngFor="let task of selectedTasks; let isLast = last">
-        {{task? task.injectableName : null}}{{isLast ? '' : ', '}}
+        {{task ? task.injectableName : null}}{{isLast ? '' : ', '}}
       </span>
     </div>
     <div class="modal-footer">
@@ -78,7 +78,7 @@
 
   <clr-modal *ngIf="modalTypes.formActions.indexOf(action) !== -1"
   [(clrModalOpen)]="isShowModal"
-  [clrModalSize]="'lg'">
+  clrModalSize="lg">
   <h3 class="modal-title">{{action}} task</h3>
   <div class="modal-body">
     <form [formGroup]="customTaskFormGroup">
@@ -102,7 +102,7 @@
 
         <div class="form-group">
           <label for="options">options: </label>
-          <textarea id="options" rows='4' formControlName="options">
+          <textarea id="options" rows=4 formControlName="options">
           </textarea>
           <div class="alertMessage" *ngIf="!optionsJsonValid">
               Invalid JSON payload.
@@ -111,7 +111,7 @@
 
         <div class="form-group">
           <label for="properties">properties: </label>
-          <textarea id="properties" rows='4' formControlName="properties">
+          <textarea id="properties" rows=4 formControlName="properties">
           </textarea>
           <div class="alertMessage" *ngIf="!propertiesJsonValid">
               Invalid JSON payload.
