@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { isJsonTextValid } from 'app/utils/inventory-operator';
+import { isJsonTextValid } from '../../utils/inventory-operator';
 import { forkJoin } from 'rxjs/observable/forkJoin'
 
 import * as _ from 'lodash';
 
-import { GraphTaskService } from 'app/services/rackhd/task.service';
+import { GraphTaskService } from '../..//services/rackhd/task.service';
 
-import { FormControl, FormGroup } from '@angular/forms';
-import { TaskCustom, ModalTypes } from 'app/models';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TaskCustom, ModalTypes } from '../../models'
+import { validateJSON } from '../../management-center/shared/validation-rules'
+
 
 @Component({
   selector: 'app-custom-task',
@@ -34,6 +36,7 @@ export class CustomTaskComponent implements OnInit {
 
   constructor(
     private taskService: GraphTaskService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
@@ -117,13 +120,15 @@ export class CustomTaskComponent implements OnInit {
   }
 
   createFormGroup(taskCustom?: TaskCustom){
-    this.customTaskFormGroup = new FormGroup({
-      injectableName: new FormControl(''),
-      friendlyName: new FormControl(''),
-      implementsTask: new FormControl(''),
-      options: new FormControl(''),
-      properties: new FormControl('')
+
+    this.customTaskFormGroup = this.fb.group({
+      injectableName: ['', Validators.required],
+      friendlyName: ['', Validators.required],
+      implementsTask: ['', Validators.required],
+      options: ['', validateJSON],
+      properties: ['', validateJSON],
     });
+
     if (!_.isEmpty(taskCustom)) {
       let _taskCustom = _.cloneDeep(taskCustom);
       _taskCustom.options = JSON.stringify(_taskCustom.options);
@@ -174,11 +179,9 @@ export class CustomTaskComponent implements OnInit {
 
   onSubmit(){
     let payload = this.customTaskFormGroup.value;
-    this.optionsJsonValid = isJsonTextValid(payload.options);
-    this.propertiesJsonValid = isJsonTextValid(payload.tasks);
-    if (this.optionsJsonValid && this.propertiesJsonValid) {
+    if (this.customTaskFormGroup.valid) {
       payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
-      payload.properties = _.isEmpty(payload.properties) ? [] : JSON.parse(payload.properties);
+      payload.properties = _.isEmpty(payload.properties) ? {} : JSON.parse(payload.properties);
       this.updateTask(payload)
     }
   }

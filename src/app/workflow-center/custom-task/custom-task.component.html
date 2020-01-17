@@ -1,8 +1,8 @@
 <div class="custom-task">
 
-  <inventory-header [allItems]="allTasks" name="Tasks"
+  <app-inventory-header [allItems]="allTasks" name="Tasks"
   (action)="onAction($event)" (filter)="onFilter($event)">
-  </inventory-header>
+  </app-inventory-header>
 
   <div class="inventory">
       <clr-datagrid [clrDgLoading]="dgDataLoading" [(clrDgSelected)]="selectedTasks">
@@ -58,10 +58,10 @@
     </div>
   </div>
 
-  <details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
+  <app-details-modal *ngIf="modalTypes.detailActions.indexOf(action) !== -1"
     [(isPop)]="isShowModal" [data]="rawData"
     [dataType]="action" [title]="selectedTask.injectableName">
-  </details-modal>
+  </app-details-modal>
 
   <clr-modal *ngIf="action === 'Delete'" [(clrModalOpen)]="isShowModal" clrModalSize="xl">
     <h3 class="modal-title">Are you sure you want to delete below tasks</h3>
@@ -81,49 +81,47 @@
   clrModalSize="lg">
   <h3 class="modal-title">{{action}} task</h3>
   <div class="modal-body">
-    <form [formGroup]="customTaskFormGroup">
-      <section class="form-block compact">
+    <form clrForm [formGroup]="customTaskFormGroup">
 
-        <div class="form-group">
-          <label for="friendlyName">friendlyName: </label>
-          <input type="text" id="friendlyName" class="input-size"
+        <clr-input-container>
+          <label>friendlyName: </label>
+          <input clrInput type="text" class="input-size"
             formControlName="friendlyName">
-        </div>
+        </clr-input-container>
 
-        <div class="form-group">
-          <label for="implementsTask">implementsTask: </label>
-          <input type="text" id="implementsTask" class="input-size" formControlName="implementsTask">
-        </div>
+        <clr-input-container>
+          <label>implementsTask: </label>
+          <input clrInput type="text" class="input-size" formControlName="implementsTask">
+        </clr-input-container>
 
-        <div class="form-group">
-          <label for="injectableName">injectableName: </label>
-          <input type="text" id="injectableName" class="input-size" formControlName="injectableName">
-        </div>
+        <clr-input-container>
+          <label>injectableName: </label>
+          <input clrInput type="text" class="input-size" formControlName="injectableName">
+        </clr-input-container>
 
-        <div class="form-group">
-          <label for="options">options: </label>
-          <textarea id="options" rows=4 formControlName="options">
+        <clr-textarea-container>
+          <label>options: </label>
+          <textarea clrTextarea rows=3 formControlName="options">
           </textarea>
-          <div class="alertMessage" *ngIf="!optionsJsonValid">
-              Invalid JSON payload.
-          </div>
+        </clr-textarea-container>
+        <div class="alertMessage" *ngIf="customTaskFormGroup.get('options').invalid">
+            Invalid JSON payload.
         </div>
 
-        <div class="form-group">
-          <label for="properties">properties: </label>
-          <textarea id="properties" rows=4 formControlName="properties">
+        <clr-textarea-container>
+          <label>properties: </label>
+          <textarea clrTextarea rows=3 formControlName="properties">
           </textarea>
-          <div class="alertMessage" *ngIf="!propertiesJsonValid">
-              Invalid JSON payload.
-          </div>
+        </clr-textarea-container>
+        <div class="alertMessage" *ngIf="customTaskFormGroup.get('properties').invalid">
+            Invalid JSON payload.
         </div>
 
-      </section>
     </form>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
-    <button class="btn btn-primary" type="button" (click)="onSubmit()">Confirm</button>
+    <button class="btn btn-primary" type="button" [disabled]="customTaskFormGroup.invalid" (click)="onSubmit()">Confirm</button>
   </div>
 </clr-modal>
 
