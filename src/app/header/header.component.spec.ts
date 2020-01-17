@@ -1,4 +1,3 @@
-import { async } from '@angular/core/testing';
 
 
 describe('<at least one test case>', () => {
