@@ -10,6 +10,7 @@ import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { TagService } from '../../services/rackhd/tag.service';
 
+import { defer } from 'rxjs'
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
@@ -74,14 +75,14 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const container = this.jsoneditor.nativeElement;
     const options: JSONEditorOptions = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
-    // this.getAllWorkflows();
+    this.getAllWorkflows();
   }
 
   ngAfterViewInit() {
     if (this.graphId) {
       this.selWorkflowById(this.graphId);
     }
-    // this.getAllNodes();
+    this.getAllNodes();
   }
 
   resetModalInfo() {
@@ -205,38 +206,32 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   postWorkflow() {
-    console.log('postWorkflow();');
     const payload = this.editor.get();
     const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.modalInformation.isLoading = true;
-    if (this.retries <= this.totalRetries) {
-      this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-        // .pipe(
-        //   retry(3)
-        // )
-        .subscribe(
-          data => {
-            this.graphId = data.instanceId;
-            this.retries = 1;
-            this.totalRetries = 1;
-            this.modalInformation = {
-              title: 'Post Workflow Successfully!',
-              note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
-              type: 2,
-              isLoading: false
-            };
-          },
-          err => {
-            this.retries += 1;
-            this.postWorkflow();
-          }
-        );
-    } else {
-      this.retries = 1;
-      this.totalRetries = 1;
-      this.showModal = false;
-    }
+    this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
+      .pipe(doOnSubscribe(() => {this.retries += 1; console.log('retries', this.retries) }))
+      .pipe(retry(this.totalRetries - 1 ))
+      .subscribe(
+        data => {
+          this.graphId = data.instanceId;
+          this.retries = 0;
+          this.totalRetries = 1;
+          this.modalInformation = {
+            title: 'Post Workflow Successfully!',
+            note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
+            type: 2,
+            isLoading: false
+          };
+        },
+        err => {
+          console.error(err);
+          this.showModal = false;
+        },
+
+      );
+
   }
 
   goToViewer() {
@@ -287,4 +282,13 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
       this.selNodeStore = _.cloneDeep(this.allNodes);
     });
   }
+}
+
+function doOnSubscribe<T>(onSubscribe: () => void) {
+  return (source: Observable<T>) => {
+      return defer(() => {
+          onSubscribe();
+          return source;
+      });
+  };
 }
