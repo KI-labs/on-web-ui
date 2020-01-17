@@ -1,5 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 import { RunWorkflowComponent } from './run-workflow.component';
@@ -10,7 +10,6 @@ import { AppModule } from '../../../app/app.module';
 import { standardConfig } from '../../../miragejs/server.js';
 import { Server, Response } from 'miragejs';
 import { InventoryModule } from 'src/app/inventory/inventory.module';
-import { FormsModule } from '@angular/forms';
 
 
 function makeTestServer() {
@@ -46,16 +45,19 @@ describe('RunWorkflowComponent', () => {
 
     fixture = TestBed.createComponent(RunWorkflowComponent);
     component = fixture.componentInstance;
+    spyOn(component, 'getAllWorkflows').and.callFake(() => []);
+    spyOn(component, 'getAllNodes').and.callFake(() => []);
     fixture.detectChanges();
   });
 
-  it('retries 2 times and then success', async (done: DoneFn) => {
+  it('retries 2 times and then success', fakeAsync(() => {
 
-    let counter = 0;
+    let counter = 1;
 
     server.post('/nodes/:id/workflows', (schema, request) => {
-
+      console.log('route-counter:', counter);
       if (counter === 3) {
+
         return {
           injectableName: 'Graph.Service.Docker',
           instanceId: 'a44e7b50-5bd9-40f2-b9a1-8ee5e6faeaa0'
@@ -75,38 +77,19 @@ describe('RunWorkflowComponent', () => {
     component.selectedNode = { id: '1d23456789' };
     component.selectedGraph = { injectableName: 'Graph.Service.Docker' };
     component.totalRetries = 3;
-    const postWorkflowSpied = spyOn(component, 'postWorkflow').and.callThrough().bind(component);
-    postWorkflowSpied();
 
+    component.postWorkflow();
+    console.log('test-counter', counter);
 
+    flush(27);
 
+    console.log(component.modalInformation);
+    expect(component.modalInformation).toEqual({
+      title: 'Post Workflow Successfully!',
+      note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
+      type: 2,
+      isLoading: false
+    });
 
-
-    if (counter === 1) {
-      console.log('1', component.modalInformation.isLoading);
-      console.log('1', component.retries);
-      expect(component.modalInformation.isLoading).toBeTruthy();
-      expect(component.retries).toBe(2);
-    } else if (counter === 2) {
-      console.log('2', component.modalInformation.isLoading);
-      console.log('2', component.retries);
-      expect(component.modalInformation.isLoading).toBeTruthy();
-      expect(component.retries).toBe(1);
-    } else if (counter === 3) {
-      console.log('3', component.modalInformation);
-      expect(component.modalInformation).toEqual({
-        title: 'Post Workflow Successfully!',
-        note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
-        type: 2,
-        isLoading: false
-      });
-    }
-
-
-    expect(component.postWorkflow).toHaveBeenCalledTimes(3);
-
-    done();
-    console.log('end');
-
-  });
+  }));
 });
