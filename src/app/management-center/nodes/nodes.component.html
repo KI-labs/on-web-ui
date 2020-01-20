@@ -140,9 +140,9 @@
   <app-confirm-modal [(isPop)]="isDelete" title="nodes" (confirm)="onConfirm($event)" [data]="selectedNodes">
   </app-confirm-modal>
 
-  <confirm-modal [(isPop)]="isClean" title="nodes" action='delete and clean related OBMs from'
+  <app-confirm-modal [(isPop)]="isClean" title="nodes" action='delete and clean related OBMs from'
     (confirm)="onConfirm($event)" [data]="selectedNodes">
-  </confirm-modal>
+  </app-confirm-modal>
 
 
 </div>
