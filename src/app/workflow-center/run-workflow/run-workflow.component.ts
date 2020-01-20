@@ -10,11 +10,10 @@ import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { TagService } from '../../services/rackhd/tag.service';
 
-import { defer } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
-import { map, catchError, retry } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 import { JSONEditorOptions } from 'jsoneditor';
@@ -211,8 +210,6 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.graphId = this.graphId || this.selectedGraph.injectableName;
     this.modalInformation.isLoading = true;
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-      .pipe(doOnSubscribe(() => {this.retries += 1; console.log('retries', this.retries); }))
-      .pipe(retry(this.totalRetries - 1 ))
       .subscribe(
         data => {
           this.graphId = data.instanceId;
@@ -226,8 +223,14 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
           };
         },
         err => {
+          this.retries += 1;
           console.error(err);
-          this.showModal = false;
+
+          if (this.retries <= this.totalRetries) {
+            this.postWorkflow();
+          } else {
+            this.showModal = false;
+          }
         },
 
       );
@@ -284,11 +287,3 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 }
 
-function doOnSubscribe<T>(onSubscribe: () => void) {
-  return (source: Observable<T>) => {
-      return defer(() => {
-          onSubscribe();
-          return source;
-      });
-  };
-}
