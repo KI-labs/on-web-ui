@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { isJsonTextValid } from '../../utils/inventory-operator';
-import { forkJoin } from 'rxjs/observable/forkJoin'
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import * as _ from 'lodash';
 
 import { GraphTaskService } from '../..//services/rackhd/task.service';
 
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TaskCustom, ModalTypes } from '../../models'
-import { validateJSON } from '../../management-center/shared/validation-rules'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TaskCustom, ModalTypes } from '../../models';
+import { validateJSON } from '../../management-center/shared/validation-rules';
 
 
 @Component({
@@ -21,12 +20,12 @@ export class CustomTaskComponent implements OnInit {
   allTasks: TaskCustom[] = [];
   selectedTasks: TaskCustom[] = [];
   selectedTask: TaskCustom;
-  
+
   customTaskFormGroup: FormGroup;
-  dgDataLoading: boolean = false
-  dgPlaceholder: string = 'No task found!';
-  optionsJsonValid: boolean = true;
-  propertiesJsonValid: boolean = true;
+  dgDataLoading = false;
+  dgPlaceholder = 'No task found!';
+  optionsJsonValid = true;
+  propertiesJsonValid = true;
   action: string;
 
   isShowModal = false;
@@ -42,7 +41,7 @@ export class CustomTaskComponent implements OnInit {
   ngOnInit() {
     this.isShowModal = false;
     this.getAll();
-    this.modalTypes = new ModalTypes(["Tasks", "Detail", "Options", "Properties"]);
+    this.modalTypes = new ModalTypes(['Tasks', 'Detail', 'Options', 'Properties']);
   }
 
   getAll(): void {
@@ -59,25 +58,26 @@ export class CustomTaskComponent implements OnInit {
     .subscribe(data => {
       this.rawData = data;
       this.isShowModal = true;
-    })
+    });
   }
 
   updateTask(payload: object): void {
     this.isShowModal = false;
     this.createFormGroup();
     this.taskService.put(payload, 'text')
-    .subscribe(()=>{
+    .subscribe(() => {
       this.dgDataLoading = true;
-      this.getAll()
-    })
+      this.getAll();
+    });
   }
 
-  getChild(objKey: string, task: TaskCustom){
+  getChild(objKey: string, task: TaskCustom) {
     this.selectedTask = task;
     this.action = _.capitalize(objKey);
     this.rawData = task && task[objKey];
-    if (!_.isEmpty(this.rawData))
+    if (!_.isEmpty(this.rawData)) {
       this.isShowModal = true;
+    }
   }
 
   refresh() {
@@ -86,27 +86,27 @@ export class CustomTaskComponent implements OnInit {
     this.getAll();
   }
 
-  create(){
-    if(!this.customTaskFormGroup){
+  create() {
+    if (!this.customTaskFormGroup) {
       this.createFormGroup();
     }
-    this.action = "Create";
+    this.action = 'Create';
     this.isShowModal = true;
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedTasks)){
-      this.action = "Delete";
+    if (!_.isEmpty(this.selectedTasks)) {
+      this.action = 'Delete';
       this.isShowModal = true;
     }
-  };
+  }
 
-  onFilter(filtered: TaskCustom[]){
+  onFilter(filtered: TaskCustom[]) {
     this.tasksStore = filtered;
   }
 
-  onAction(action){
-    switch(action) {
+  onAction(action) {
+    switch (action) {
       case 'Refresh':
         this.refresh();
         break;
@@ -116,10 +116,10 @@ export class CustomTaskComponent implements OnInit {
       case 'Delete':
         this.batchDelete();
         break;
-    };
+    }
   }
 
-  createFormGroup(taskCustom?: TaskCustom){
+  createFormGroup(taskCustom?: TaskCustom) {
 
     this.customTaskFormGroup = this.fb.group({
       injectableName: ['', Validators.required],
@@ -130,14 +130,14 @@ export class CustomTaskComponent implements OnInit {
     });
 
     if (!_.isEmpty(taskCustom)) {
-      let _taskCustom = _.cloneDeep(taskCustom);
+      const _taskCustom = _.cloneDeep(taskCustom);
       _taskCustom.options = JSON.stringify(_taskCustom.options);
       _taskCustom.properties = JSON.stringify(_taskCustom.properties);
       this.customTaskFormGroup.patchValue(_taskCustom);
     }
   }
 
-  onCancel(){
+  onCancel() {
     this.action = '';
     this.selectedTask = null;
     this.selectedTasks = [];
@@ -147,42 +147,42 @@ export class CustomTaskComponent implements OnInit {
   }
 
 
-  onUpdate(task: TaskCustom){
+  onUpdate(task: TaskCustom) {
     this.selectedTask = task;
     this.createFormGroup(this.selectedTask);
-    this.action = "Update";
+    this.action = 'Update';
     this.isShowModal = true;
   }
 
   onGetDetails(task: TaskCustom) {
     this.selectedTask = task;
-    this.action = "Detail";
+    this.action = 'Detail';
     this.getMetaData(task.injectableName);
-  };
+  }
 
   onDelete(task: TaskCustom) {
     this.selectedTasks = [task];
-    this.action = "Delete";
+    this.action = 'Delete';
     this.isShowModal = true;
-  };
+  }
 
-  onDeleteSubmit(){
-    let list = _.map(this.selectedTasks, task =>{
+  onDeleteSubmit() {
+    const list = _.map(this.selectedTasks, task => {
       return this.taskService.delete(task.injectableName);
     });
     this.isShowModal = false;
     return forkJoin(list)
     .subscribe(
       data => { this.refresh(); }
-    )
+    );
   }
 
-  onSubmit(){
-    let payload = this.customTaskFormGroup.value;
+  onSubmit() {
+    const payload = this.customTaskFormGroup.value;
     if (this.customTaskFormGroup.valid) {
       payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
       payload.properties = _.isEmpty(payload.properties) ? {} : JSON.parse(payload.properties);
-      this.updateTask(payload)
+      this.updateTask(payload);
     }
   }
 

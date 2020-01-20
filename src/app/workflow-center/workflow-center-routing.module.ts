@@ -7,7 +7,7 @@ import { HistoryWorkflowComponent } from './history-workflow/history-workflow.co
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
 import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 import { WorkflowEditorComponent } from './workflow-editor/workflow-editor.component';
-import { CustomTaskComponent } from './custom-task/custom-task.component'
+import { CustomTaskComponent } from './custom-task/custom-task.component';
 
 const WorkflowCenterRoutes: Routes = [
   {
