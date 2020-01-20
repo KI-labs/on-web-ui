@@ -45,8 +45,14 @@ describe('RunWorkflowComponent', () => {
 
     fixture = TestBed.createComponent(RunWorkflowComponent);
     component = fixture.componentInstance;
+
     spyOn(component, 'getAllWorkflows').and.callFake(() => []);
     spyOn(component, 'getAllNodes').and.callFake(() => []);
+
+    window.localStorage.getItem = () => {
+      return '0.0.0.0/api/2.0';
+    };
+
     fixture.detectChanges();
   });
 
@@ -54,10 +60,8 @@ describe('RunWorkflowComponent', () => {
 
     let counter = 1;
 
-    server.post('/nodes/:id/workflows', (schema, request) => {
-      console.log('route-counter:', counter);
+    server.post('/nodes/:id/workflows', () => {
       if (counter === 3) {
-
         return {
           injectableName: 'Graph.Service.Docker',
           instanceId: 'a44e7b50-5bd9-40f2-b9a1-8ee5e6faeaa0'
@@ -78,18 +82,41 @@ describe('RunWorkflowComponent', () => {
     component.selectedGraph = { injectableName: 'Graph.Service.Docker' };
     component.totalRetries = 3;
 
+    spyOn(console, 'error').and.callThrough();
+    spyOn(component, 'postWorkflow').and.callThrough();
     component.postWorkflow();
-    console.log('test-counter', counter);
 
     flush(27);
 
-    console.log(component.modalInformation);
     expect(component.modalInformation).toEqual({
       title: 'Post Workflow Successfully!',
       note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
       type: 2,
       isLoading: false
     });
+    expect(console.error).toHaveBeenCalledTimes(2);
+    expect(component.postWorkflow).toHaveBeenCalledTimes(3);
+
+  }));
+
+  it('retries 2 times and then fail', fakeAsync(() => {
+
+    server.post('/nodes/:id/workflows', () =>  new Response(501) );
+
+    component.editor.get = () => ({});
+    component.selectedNode = { id: '1d23456789' };
+    component.selectedGraph = { injectableName: 'Graph.Service.Docker' };
+    component.totalRetries = 3;
+
+    spyOn(console, 'error').and.callThrough();
+    spyOn(component, 'postWorkflow').and.callThrough();
+    component.postWorkflow();
+
+    flush(36);
+
+    expect(component.showModal).toBeFalsy();
+    expect(console.error).toHaveBeenCalledTimes(4);
+    expect(component.postWorkflow).toHaveBeenCalledTimes(4);
 
   }));
 });
