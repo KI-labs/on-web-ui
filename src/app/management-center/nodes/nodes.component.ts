@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
-import { CatalogsService } from 'app/services/rackhd/catalogs.service';
+import { CatalogsService } from '../../services/rackhd/catalogs.service';
 
 import {
   AlphabeticalComparator,
@@ -288,7 +288,7 @@ export class NodesComponent implements OnInit {
     this.catalogService.getSource(identifier, '')
       .subscribe(data => {
         data.forEach(catalog => {
-          if (catalog.data['IP Address'] !== undefined) {
+          if (catalog.data['IP Address'] !== undefined && catalog.data['IP Address'] !== '0.0.0.0') {
             this.selectedIPs.push(catalog.data['IP Address']);
           }
         });
