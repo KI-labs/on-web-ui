@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs/observable/forkJoin';
+import {
+  AlphabeticalComparator,
+  ObjectFilterByKey
+} from '../../utils/inventory-operator';
 
 import * as _ from 'lodash';
 
@@ -19,7 +23,7 @@ export class TasksComponent implements OnInit {
   tasksStore: TaskCustom[] = [];
   allTasks: TaskCustom[] = [];
   selectedTasks: TaskCustom[] = [];
-  selectedTask: TaskCustom;
+  selectedTask: TaskCustom = null;
 
   customTaskFormGroup: FormGroup;
   dgDataLoading = false;
@@ -32,6 +36,16 @@ export class TasksComponent implements OnInit {
   rawData: string;
 
   modalTypes: ModalTypes;
+
+  public friendlyNameComparator = new AlphabeticalComparator<TaskCustom>('friendlyName');
+  public injectableNameComparator = new AlphabeticalComparator<TaskCustom>('injectableName');
+  public implementsTaskComparator = new AlphabeticalComparator<TaskCustom>('implementsTask');
+
+  public friendlyNameFilter = new ObjectFilterByKey<TaskCustom>('friendlyName');
+  public injectableNameFilter = new ObjectFilterByKey<TaskCustom>('injectableName');
+  public implementsTaskFilter = new ObjectFilterByKey<TaskCustom>('implementsTask');
+  public optionsFilter = new ObjectFilterByKey<TaskCustom>('options');
+  public propertiesFilter = new ObjectFilterByKey<TaskCustom>('properties');
 
   constructor(
     private taskService: GraphTaskService,
@@ -142,6 +156,7 @@ export class TasksComponent implements OnInit {
     this.selectedTask = null;
     this.selectedTasks = [];
     this.isShowModal = false;
+    this.createFormGroup();
     this.optionsJsonValid = true;
     this.propertiesJsonValid = true;
   }
