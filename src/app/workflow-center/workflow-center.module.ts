@@ -10,7 +10,6 @@ import { ActiveWorkflowComponent } from './active-workflow/active-workflow.compo
 import { HistoryWorkflowComponent } from './history-workflow/history-workflow.component';
 import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.component';
 import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
-import { CustomTaskComponent } from './custom-task/custom-task.component';
 
 import { WorkflowCenterComponent } from './workflow-center.component';
 import { WorkflowCenterRoutingModule } from './workflow-center-routing.module';
@@ -37,7 +36,6 @@ import { WorkflowEditorComponent } from './workflow-editor/workflow-editor.compo
     WorkflowViewerComponent,
     RunWorkflowComponent,
     WorkflowEditorComponent,
-    CustomTaskComponent
   ],
   providers: [NodeExtensionService ]
 })

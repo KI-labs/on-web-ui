@@ -60,6 +60,7 @@ export class WorkflowsComponent implements OnInit {
         this.workflowsStore = data;
         this.allWorkflows = data;
         this.dgDataLoading = false;
+         console.log(data[0])
       });
   }
 
@@ -193,6 +194,7 @@ export class WorkflowsComponent implements OnInit {
     if (this.modalFormGroup.valid) {
       payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
       payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
+      console.log(payload)
       this.upsertGraph(payload);
     }
   }

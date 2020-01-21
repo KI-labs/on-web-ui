@@ -3,19 +3,19 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import * as _ from 'lodash';
 
-import { GraphTaskService } from '../..//services/rackhd/task.service';
+import { GraphTaskService } from '../../services/rackhd/task.service';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskCustom, ModalTypes } from '../../models';
-import { validateJSON } from '../../management-center/shared/validation-rules';
+import { validateJSON } from '../shared/validation-rules';
 
 
 @Component({
-  selector: 'app-custom-task',
-  templateUrl: './custom-task.component.html',
-  styleUrls: ['./custom-task.component.scss']
+  selector: 'app-tasks',
+  templateUrl: './tasks.component.html',
+  styleUrls: ['./tasks.component.scss']
 })
-export class CustomTaskComponent implements OnInit {
+export class TasksComponent implements OnInit {
   tasksStore: TaskCustom[] = [];
   allTasks: TaskCustom[] = [];
   selectedTasks: TaskCustom[] = [];

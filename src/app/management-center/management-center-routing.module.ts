@@ -13,6 +13,7 @@ import { SkuComponent } from './skus/sku.component';
 import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ConfigComponent } from './configs/config.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 const ManagementCenterRoutes: Routes = [
   {
@@ -29,7 +30,8 @@ const ManagementCenterRoutes: Routes = [
       {path: 'skus', component: SkuComponent},
       {path: 'files', component: FilesComponent},
       {path: 'templates', component: TemplatesComponent},
-      {path: 'configs', component: ConfigComponent}
+      {path: 'configs', component: ConfigComponent},
+      {path: 'tasks', component: TasksComponent},
     ]
   }
 ];
