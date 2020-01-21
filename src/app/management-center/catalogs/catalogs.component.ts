@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Catalog } from '../../models';
 import { CatalogsService } from '../../services/rackhd/catalogs.service';
 
-import * as _ from 'lodash';
 import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 
 @Component({

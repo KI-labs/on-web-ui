@@ -11,7 +11,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
 import { map, catchError } from 'rxjs/operators';
 
-import * as _ from 'lodash';
+import { assign, filter, isEmpty, map as mapLodash, split, cloneDeep, isEqual } from 'lodash';
 import { CatalogsService } from '../../services/rackhd/catalogs.service';
 import { NodeService } from '../../services/rackhd/node.service';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
@@ -139,7 +139,7 @@ export class OsInstallComponent implements OnInit {
   getAllNodes(): void {
     this.nodeService.getAll()
       .subscribe(data => {
-        const computeNodes = _.filter(data, (item) => {
+        const computeNodes = filter(data, (item) => {
           return item.type === 'compute';
         });
         this.allNodes = computeNodes;
@@ -205,12 +205,12 @@ export class OsInstallComponent implements OnInit {
       this.enableNetworkSetting = false;
       this.modifyDefaultSetting = false;
     }
-    const device = _.split(item, ',');
+    const device = split(item, ',');
     this.selectedNetworkDevice = device[0];
   }
 
   renderNodeInfo(nodes) {
-    const list = _.map(nodes, node => {
+    const list = mapLodash(nodes, node => {
       return forkJoin([
         this.getNodeSku(node).pipe(catchError( () => of(null))),
         this.getNodeObm(node).pipe(catchError( () => of(null))),
@@ -226,9 +226,9 @@ export class OsInstallComponent implements OnInit {
 
     return forkJoin(list)
     .subscribe((data) => {
-      this.allNodes = _.cloneDeep(nodes);
-      this.nodeStore = _.cloneDeep(nodes);
-      this.selNodeStore = _.cloneDeep(nodes);
+      this.allNodes = cloneDeep(nodes);
+      this.nodeStore = cloneDeep(nodes);
+      this.selNodeStore = cloneDeep(nodes);
     });
   }
 
@@ -247,7 +247,7 @@ export class OsInstallComponent implements OnInit {
   }
 
   getNodeObm(node): Observable<string> {
-    if (!_.isEmpty(node.obms)) {
+    if (!isEmpty(node.obms)) {
       const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
         .pipe( map(data => data.config.host) );
@@ -257,11 +257,11 @@ export class OsInstallComponent implements OnInit {
   }
 
   getNodeTag(node): Observable<string> {
-    if (!_.isEmpty(node.tags)) {
+    if (!isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
         .pipe(
           map(data => {
-            if (_.isEmpty(data)) { return null; }
+            if (isEmpty(data)) { return null; }
             return data.attributes.name;
           })
         );
@@ -272,7 +272,7 @@ export class OsInstallComponent implements OnInit {
 
   onFilterSelect(node) {
     this.selectedNode = node;
-    if (!_.isEqual(this.selNodeStore, [node])) {
+    if (!isEqual(this.selNodeStore, [node])) {
       setTimeout(() => {
         this.selNodeStore = [node];
       });
@@ -282,8 +282,8 @@ export class OsInstallComponent implements OnInit {
   onFilterRefresh() {
     this.selNodeStore = [];
     setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-      this.selNodeStore = _.cloneDeep(this.allNodes);
+      this.nodeStore = cloneDeep(this.allNodes);
+      this.selNodeStore = cloneDeep(this.allNodes);
     });
   }
 
@@ -297,14 +297,14 @@ export class OsInstallComponent implements OnInit {
     this.modifyDefaultSetting = false;
 
     setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-      this.selNodeStore = _.cloneDeep(this.allNodes);
+      this.nodeStore = cloneDeep(this.allNodes);
+      this.selNodeStore = cloneDeep(this.allNodes);
     });
   }
 
   onNodeSelect(node) {
     this.selectedNode = node;
-    if (!_.isEqual(this.nodeStore, [node])) {
+    if (!isEqual(this.nodeStore, [node])) {
       this.nodeStore = [node];
     }
     this.onNodeIdChange(node.id);
@@ -313,7 +313,7 @@ export class OsInstallComponent implements OnInit {
   onNodeRefresh() {
     this.nodeStore = [];
     setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
+      this.nodeStore = cloneDeep(this.allNodes);
     });
   }
 
@@ -393,9 +393,9 @@ export class OsInstallComponent implements OnInit {
           'live-installer/net-image': this.payloadForm.value.repoUrl + '/ubuntu/install/filesystem.squashfs'
         }
       };
-      _.assign(generalJson, ubuntuOnly);
+      assign(generalJson, ubuntuOnly);
     }
-    if (!_.isEmpty(this.payloadForm.value.installDisk)) {
+    if (!isEmpty(this.payloadForm.value.installDisk)) {
       if (this.payloadForm.value.osType === 'esxi') {
         installDisk = { installDisk: this.payloadForm.value.installDisk };
       } else {
@@ -403,12 +403,12 @@ export class OsInstallComponent implements OnInit {
       }
     }
 
-    _.assign(generalJson, version, repo, rootPassword, installDisk);
+    assign(generalJson, version, repo, rootPassword, installDisk);
 
     if (this.enableNetworkSetting) {
-      if (!_.isEmpty(this.payloadForm.value.dnsServers)) {
+      if (!isEmpty(this.payloadForm.value.dnsServers)) {
         const dnsServers = { dnsServers: [this.payloadForm.value.dnsServers] };
-        _.assign(generalJson, dnsServers);
+        assign(generalJson, dnsServers);
       }
 
       const ipv4 = {
@@ -425,7 +425,7 @@ export class OsInstallComponent implements OnInit {
             ipv4
           }]
         };
-        _.assign(generalJson, networkDevices);
+        assign(generalJson, networkDevices);
       } else {
         const networkDevices = {
           networkDevices: [{
@@ -433,10 +433,10 @@ export class OsInstallComponent implements OnInit {
             ipv4
           }]
         };
-        _.assign(generalJson, networkDevices);
+        assign(generalJson, networkDevices);
       }
     }
-    tmpJson = _.assign(tmpJson, { options: { defaults: generalJson } });
+    tmpJson = assign(tmpJson, { options: { defaults: generalJson } });
     return tmpJson;
   }
 

@@ -6,7 +6,7 @@ import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory
 
 import { ObmService } from '../../services/rackhd/obm.service';
 import { NodeService } from '../../services/rackhd/node.service';
-import * as _ from 'lodash';
+import { sortBy, keys, capitalize, merge, forEach } from 'lodash';
 
 @Component({
   selector: 'app-obm',
@@ -57,7 +57,7 @@ export class ObmComponent implements OnInit {
   ngOnInit() {
     this.getAllObms();
     this.getAllNodes();
-    this.obmTypes = _.sortBy(_.keys(this.obmMetaList));
+    this.obmTypes = sortBy(keys(this.obmMetaList));
     this.createForm();
     this.selectedObms = [];
   }
@@ -116,7 +116,7 @@ export class ObmComponent implements OnInit {
 
   getChild(objKey: string, obm: OBM) {
     this.selectedObm = obm;
-    this.action = _.capitalize(objKey);
+    this.action = capitalize(objKey);
     this.rawData = obm && obm[objKey];
     this.action = 'Config';
     this.isShowModal = true;
@@ -146,8 +146,8 @@ export class ObmComponent implements OnInit {
   updateFormInputs(service: string) {
     this.selObmService = this.obmMetaList[service];
     const config = this.selObmService.config;
-    this.configFields = _.keys(config);
-    _.forEach(this.configFields, field => {
+    this.configFields = keys(config);
+    forEach(this.configFields, field => {
       this.obmForm.addControl(field, new FormControl('', Validators.required));
     });
   }
@@ -175,7 +175,7 @@ export class ObmComponent implements OnInit {
       config: {}
     };
     if (values.port) { values.port = parseInt(values.port, 10); }
-    _.merge(payload.config, values);
+    merge(payload.config, values);
 
     this.obmsService.creatObm(payload)
     .subscribe(data => {
@@ -185,7 +185,7 @@ export class ObmComponent implements OnInit {
   }
 
   closeUpsertModal() {
-    _.forEach(_.keys(this.obmForm.value), field => {
+    forEach(keys(this.obmForm.value), field => {
       if (field === 'nodeId' || field === 'service') { return true; }
       this.obmForm.removeControl(field);
     });
@@ -202,7 +202,7 @@ export class ObmComponent implements OnInit {
       service: obm.service,
       nodeId: this.selNodeId
     };
-    _.merge(formValues, obm.config);
+    merge(formValues, obm.config);
     this.obmForm.patchValue(formValues);
     this.isShowModal = true;
     this.action = 'update';
@@ -216,7 +216,7 @@ export class ObmComponent implements OnInit {
 
   deleteSel(): void {
     const list = [];
-    _.forEach(this.selectedObms, obm => {
+    forEach(this.selectedObms, obm => {
       list.push(obm.id);
     });
 

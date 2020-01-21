@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { _throw } from 'rxjs/observable/throw';
 import { timeout } from 'rxjs/operators/timeout';
 import { RackhdLocalStorage as RackHD } from './globals-util';
-import * as _ from 'lodash';
+import { isEmpty, forEach } from 'lodash';
 
 export class RackhdHttpService {
 
@@ -23,7 +23,7 @@ export class RackhdHttpService {
       header = header || {};
       header.authorization = 'JWT ' + token;
     }
-    if (!_.isEmpty(query)) {
+    if (!isEmpty(query)) {
       options.params = query;
     }
     if (responseType) {
@@ -106,7 +106,7 @@ export class RackhdHttpService {
 
   public deleteByIdentifiers(idList: string [], responseType?: string): Observable<any> {
     const list = [];
-    _.forEach(idList, id => {
+    forEach(idList, id => {
       list.push(this.delete(id, responseType));
     });
     return forkJoin(list);

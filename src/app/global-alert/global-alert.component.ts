@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import * as _ from 'lodash';
+import { findIndex, remove } from 'lodash';
 import {GlobalAlertService} from '../services/core/global-alert.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class GlobalAlertComponent implements OnInit {
       alertObj => {
         const msg = alertObj.msg;
         if (alertObj.type === 'modal') {
-          if (_.findIndex(this.modalErrorMsges, (cMsg) => cMsg.text === msg) === -1) {
+          if (findIndex(this.modalErrorMsges, (cMsg) => cMsg.text === msg) === -1) {
             let errorContent;
             try {
               errorContent = JSON.parse(msg);
@@ -34,7 +34,7 @@ export class GlobalAlertComponent implements OnInit {
             this.msgId += 1;
           }
         } else if (alertObj.type === 'bar') {
-          if (_.findIndex(this.barErrorMsges, (cMsg) => cMsg.text === msg) === -1) {
+          if (findIndex(this.barErrorMsges, (cMsg) => cMsg.text === msg) === -1) {
             this.barErrorMsges.push({id: this.msgId, text: msg});
             this.barErrorMsges = [].concat(this.barErrorMsges);
             this.msgId += 1;
@@ -45,12 +45,12 @@ export class GlobalAlertComponent implements OnInit {
   }
 
   closeModalAlert() {
-    _.remove(this.modalErrorMsges);
+    remove(this.modalErrorMsges);
     this.showErrors = false;
   }
 
   closeBarAlert(msgId: string) {
-    _.remove(this.barErrorMsges, (msg) => msg.id === msgId);
+    remove(this.barErrorMsges, (msg) => msg.id === msgId);
   }
 
 }

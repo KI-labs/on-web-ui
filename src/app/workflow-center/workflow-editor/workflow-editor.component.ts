@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import * as _ from 'lodash';
+import { map, unionBy,  cloneDeep, startsWith, flatten, includes, keys} from 'lodash';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { JSONEditor } from '../../utils/json-editor';
 import { JSONEditorOptions } from 'jsoneditor';
@@ -93,10 +93,10 @@ export class WorkflowEditorComponent implements OnInit, AfterViewInit  {
   isTaskWaitOnLegal(obj: any): boolean {
     let isLegal = true;
     if (obj && obj.tasks) {
-      const taskLables = _.map(obj.tasks, 'label');
-      const waitOnLables = _.unionBy(_.flatten(_.map(obj.tasks, 'waitOn').map(_.keys)));
+      const taskLables = map(obj.tasks, 'label');
+      const waitOnLables = unionBy(flatten(map(obj.tasks, 'waitOn').map(keys)));
       for (const label of waitOnLables) {
-        isLegal = _.includes(taskLables, label);
+        isLegal = includes(taskLables, label);
         if (isLegal === false) {
           break;
         }
@@ -119,7 +119,7 @@ export class WorkflowEditorComponent implements OnInit, AfterViewInit  {
 
   saveConfirm() {
     this.isWorkflowValid = this.selectWorkflow && this.selectWorkflow.injectableName
-      && this.selectWorkflow.friendlyName && _.startsWith(this.selectWorkflow.injectableName, 'Graph.')
+      && this.selectWorkflow.friendlyName && startsWith(this.selectWorkflow.injectableName, 'Graph.')
       && this.selectWorkflow.tasks && (this.selectWorkflow.tasks.length > 0);
     if (this.isWorkflowValid) {
       this.saveGraphInfo = {
@@ -159,7 +159,7 @@ export class WorkflowEditorComponent implements OnInit, AfterViewInit  {
   }
 
   pushDataToCanvas() {
-    this.onWorkflowInput.emit(_.cloneDeep(this.selectWorkflow));
+    this.onWorkflowInput.emit(cloneDeep(this.selectWorkflow));
   }
 
   onWorkflowChanged(workflow: any) {

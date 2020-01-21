@@ -11,8 +11,6 @@ import { WorkflowService } from '../../services/rackhd/workflow.service';
 import { Workflow } from '../../models';
 import { GraphService } from '../../services/rackhd/graph.service';
 
-import * as _ from 'lodash';
-
 @Component({
   selector: 'app-workflow-viewer',
   templateUrl: './workflow-viewer.component.html',

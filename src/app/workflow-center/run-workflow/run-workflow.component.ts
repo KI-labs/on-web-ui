@@ -15,7 +15,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
 import { map, catchError } from 'rxjs/operators';
 
-import * as _ from 'lodash';
+import { map as mapLodash, isEmpty,  cloneDeep, isEqual } from 'lodash';
 import { JSONEditorOptions } from 'jsoneditor';
 
 @Component({
@@ -101,7 +101,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.graphService.getAll()
     .subscribe(graphs => {
       this.allGraphs = graphs;
-      this.graphStore = _.cloneDeep(graphs);
+      this.graphStore = cloneDeep(graphs);
     });
   }
 
@@ -135,7 +135,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   getNodeObm(node): Observable<string> {
-    if (!_.isEmpty(node.obms)) {
+    if (!isEmpty(node.obms)) {
       const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
       .pipe(map(data => data.config.host));
@@ -145,11 +145,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   getNodeTag(node): Observable<string> {
-    if (!_.isEmpty(node.tags)) {
+    if (!isEmpty(node.tags)) {
       return this.tagService.getTagByNodeId(node.id)
       .pipe(
         map(data => {
-          if (_.isEmpty(data)) { return null; }
+          if (isEmpty(data)) { return null; }
           return data.attributes.name;
         })
       );
@@ -159,7 +159,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   }
 
   renderNodeInfo(nodes) {
-    const list = _.map(nodes, node => {
+    const list = mapLodash(nodes, node => {
       return forkJoin([
         this.getNodeSku(node).pipe(catchError( () => of(null))),
         this.getNodeObm(node).pipe(catchError( () => of(null))),
@@ -175,9 +175,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
     forkJoin(list)
     .subscribe((data) => {
-      this.allNodes = _.cloneDeep(nodes);
-      this.nodeStore = _.cloneDeep(nodes);
-      this.selNodeStore = _.cloneDeep(nodes);
+      this.allNodes = cloneDeep(nodes);
+      this.nodeStore = cloneDeep(nodes);
+      this.selNodeStore = cloneDeep(nodes);
     });
   }
 
@@ -231,28 +231,28 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   onGraphRefresh() {
     this.selectedGraph = null;
-    this.graphStore = _.cloneDeep(this.allGraphs);
+    this.graphStore = cloneDeep(this.allGraphs);
     this.updateEditor({});
     this.router.navigateByUrl('workflowCenter/runWorkflow');
   }
 
   onFilterSelect(node) {
     this.selectedNode = node;
-    if (this.selNodeStore.length === 1 && _.isEqual(this.selNodeStore[0], node)) { return; }
+    if (this.selNodeStore.length === 1 && isEqual(this.selNodeStore[0], node)) { return; }
     setTimeout( () => this.selNodeStore = [node]);
   }
 
   onFilterRefresh(item: string) {
     this.selNodeStore = [];
     setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-      this.selNodeStore = _.cloneDeep(this.allNodes);
+      this.nodeStore = cloneDeep(this.allNodes);
+      this.selNodeStore = cloneDeep(this.allNodes);
     });
   }
 
   onNodeSelect(node) {
     this.selectedNode = node;
-    if (this.nodeStore.length === 1 && _.isEqual(this.nodeStore[0], node)) { return; }
+    if (this.nodeStore.length === 1 && isEqual(this.nodeStore[0], node)) { return; }
     setTimeout( () => this.nodeStore = [node]);
   }
 
@@ -260,8 +260,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.selNodeStore = [];
     this.nodeStore = [];
     setTimeout(() => {
-      this.nodeStore = _.cloneDeep(this.allNodes);
-      this.selNodeStore = _.cloneDeep(this.allNodes);
+      this.nodeStore = cloneDeep(this.allNodes);
+      this.selNodeStore = cloneDeep(this.allNodes);
     });
   }
 }

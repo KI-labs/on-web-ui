@@ -5,7 +5,7 @@ import {
   createFilters,
   createComparator
 } from '../../utils/inventory-operator';
-import * as _ from 'lodash';
+import { transform, map, startCase, isEmpty } from 'lodash';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from '../../models';
@@ -89,7 +89,7 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   collectStatusType() {
-    this.statusCountMatrix = _.transform(this.allWorkflows, (result, item) => {
+    this.statusCountMatrix = transform(this.allWorkflows, (result, item) => {
       const type = item.status;
       result[type] ? result[type] += 1 : result[type] = 1;
     }, []);
@@ -104,7 +104,7 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   deleteSel() {
-    const list = _.map(this.selectedWorkflows, workflow => {
+    const list = map(this.selectedWorkflows, workflow => {
       return workflow.instanceId;
     });
     this.isShowModal = false;
@@ -121,7 +121,7 @@ export class HistoryWorkflowComponent implements OnInit {
 
   getChild(objKey: string, workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = _.startCase(objKey);
+    this.action = startCase(objKey);
     this.rawData = workflow && workflow[objKey];
     this.isShowModal = true;
   }
@@ -146,7 +146,7 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedWorkflows)) {
+    if (!isEmpty(this.selectedWorkflows)) {
       this.action = 'Delete';
       this.isShowModal = true;
     }
@@ -185,7 +185,7 @@ export class HistoryWorkflowComponent implements OnInit {
   }
 
   onBatchCancel() {
-    if (!_.isEmpty(this.selectedWorkflows)) {
+    if (!isEmpty(this.selectedWorkflows)) {
       this.action = 'Cancel';
       this.isShowModal = true;
     }

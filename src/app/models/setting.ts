@@ -1,11 +1,11 @@
 /*
  This defines the data model of web user.
 */
-import * as _ from 'lodash';
+import { assign } from 'lodash';
 
 export class RackhdSetting {
     constructor(payload: any) {
-        _.assign(this, payload);
+        assign(this, payload);
     }
     northboundApi: string;
     websocketUrl: string;

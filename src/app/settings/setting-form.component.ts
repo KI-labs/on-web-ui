@@ -15,7 +15,7 @@ import {
 import { API_PATTERN, ADDR_PATTERN } from '../models/index';
 import { SettingService } from './setting.service';
 import { NodeService } from '../services/rackhd/node.service';
-import * as _ from 'lodash';
+import { forEach } from 'lodash';
 
 @Component({
   selector: 'app-setting-form',
@@ -130,7 +130,7 @@ export class SettingComponent implements OnInit, AfterViewInit {
 
   handleAuthChanged(value: boolean) {
     const authItems = ['rackhdPassword', 'rackhdUsername', 'rackhdAuthToken'];
-    _.forEach(authItems, (item) => {
+    forEach(authItems, (item) => {
       const formItem = this.settingFormGroup.get('rackhdAuth.' + item);
       value ? formItem.enable() : formItem.disable();
     });

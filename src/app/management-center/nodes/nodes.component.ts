@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as _ from 'lodash';
+import { transform, has, isEmpty, map, values } from 'lodash';
 
 import { NodeService } from '../../services/rackhd/node.service';
 import { Node, NODE_TYPE_MAP, NodeType, OBM } from '../../models';
@@ -86,14 +86,14 @@ export class NodesComponent implements OnInit {
   ngOnInit() {
     this.selectedType = 'Compute';
     this.typeFilterValue = this.selectedType;
-    this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
+    this.selectableNodeTypes = values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
-        this.nodeTypes = _.transform(
+        this.nodeTypes = transform(
           data,
           (result, item) => {
             const dt = new NodeType();
-            if (_.has(NODE_TYPE_MAP, item)) {
+            if (has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;
               dt.displayName = NODE_TYPE_MAP[item];
               result.push(dt);
@@ -107,9 +107,9 @@ export class NodesComponent implements OnInit {
   }
 
   afterGetNodes() {
-    this.nodesTypeCountMatrix = _.transform(this.nodeStore, (result, item) => {
+    this.nodesTypeCountMatrix = transform(this.nodeStore, (result, item) => {
       let type = item.type;
-      if (!_.has(NODE_TYPE_MAP, type)) {
+      if (!has(NODE_TYPE_MAP, type)) {
         type = 'other';
       }
       result[type] ? result[type] += 1 : result[type] = 1;
@@ -131,13 +131,13 @@ export class NodesComponent implements OnInit {
   }
 
   batchDelete(node?: Node): void {
-    if (!_.isEmpty(this.selectedNodes)) {
+    if (!isEmpty(this.selectedNodes)) {
       this.isDelete = true;
     }
   }
 
   batchClean(node?: Node): void {
-    if (!_.isEmpty(this.selectedNodes)) {
+    if (!isEmpty(this.selectedNodes)) {
       this.isClean = true;
     }
   }
@@ -185,7 +185,7 @@ export class NodesComponent implements OnInit {
   }
 
   deleteSel(): void {
-    const list = _.map(this.selectedNodes, node => {
+    const list = map(this.selectedNodes, node => {
       return node.id;
     });
 
@@ -197,7 +197,7 @@ export class NodesComponent implements OnInit {
 
   cleanSel(): void {
     const listObms = [];
-    const listNodes = _.map(this.selectedNodes, node => {
+    const listNodes = map(this.selectedNodes, node => {
        if (node.obms.length > 0) {
          for (const entry of node.obms) {
            const obmId = entry.ref.split('/').pop();

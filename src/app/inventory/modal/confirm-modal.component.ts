@@ -6,8 +6,6 @@ import {
   EventEmitter
 } from '@angular/core';
 
-import * as _ from 'lodash';
-
 @Component({
   selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.component.html',

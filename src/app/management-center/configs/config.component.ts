@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlphabeticalComparator, ObjectFilterByKey} from '../../utils/inventory-operator';
 import { FormGroup, FormControl } from '@angular/forms';
-import * as _ from 'lodash';
+import { keys, forEach  } from 'lodash';
 
 import { ConfigService } from '../services/config.service';
 import { Config } from '../../models';
@@ -45,7 +45,7 @@ export class ConfigComponent implements OnInit {
     this.configService.getAll()
       .subscribe(data => {
         const newData = [];
-        _.forEach(_.keys(data), (key) => {
+        forEach(keys(data), (key) => {
           // Remove unnecessary enviroment configures
           if (key.match('^[a-z].*')) {
             newData.push({key, value: data[key]});
