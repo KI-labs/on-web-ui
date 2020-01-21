@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "start-docker": "ng serve --host=0.0.0.0",
-    "build": "ng build --prod=true --progress=true",
+    "build": "ng build --prod=true --progress=true --stats-json",
+    "analyze": "webpack-bundle-analyzer ./dist/on-web-ki/stats-es2015.json",
     "test": "ng test",
     "lint": "ng lint --fix=true",
     "e2e": "ng e2e"
