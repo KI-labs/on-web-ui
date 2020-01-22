@@ -50,7 +50,15 @@ export class TasksComponent implements OnInit {
   constructor(
     private taskService: GraphTaskService,
     private fb: FormBuilder
-  ) { }
+  ) {
+    this.customTaskFormGroup = this.fb.group({
+      injectableName: [{value: '', disabled: this.action === 'Update'}, Validators.required],
+      friendlyName: ['', Validators.required],
+      implementsTask: ['', Validators.required],
+      options: ['', validateJSON],
+      properties: ['', validateJSON],
+    });
+  }
 
   ngOnInit() {
     this.isShowModal = false;
@@ -77,7 +85,7 @@ export class TasksComponent implements OnInit {
 
   updateTask(payload: object): void {
     this.isShowModal = false;
-    this.createFormGroup();
+    this.updateFormGroup();
     this.taskService.put(payload, 'text')
     .subscribe(() => {
       this.dgDataLoading = true;
@@ -101,10 +109,8 @@ export class TasksComponent implements OnInit {
   }
 
   create() {
-    if (!this.customTaskFormGroup) {
-      this.createFormGroup();
-    }
     this.action = 'Create';
+    this.updateFormGroup()
     this.isShowModal = true;
   }
 
@@ -133,16 +139,9 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  createFormGroup(taskCustom?: TaskCustom) {
-
-    this.customTaskFormGroup = this.fb.group({
-      injectableName: ['', Validators.required],
-      friendlyName: ['', Validators.required],
-      implementsTask: ['', Validators.required],
-      options: ['', validateJSON],
-      properties: ['', validateJSON],
-    });
-
+  updateFormGroup(taskCustom?: TaskCustom) {
+    const control = this.customTaskFormGroup.get('injectableName');
+    this.action === 'Update' ? control.disable() : control.enable()
     if (!_.isEmpty(taskCustom)) {
       const _taskCustom = _.cloneDeep(taskCustom);
       _taskCustom.options = JSON.stringify(_taskCustom.options);
@@ -156,7 +155,7 @@ export class TasksComponent implements OnInit {
     this.selectedTask = null;
     this.selectedTasks = [];
     this.isShowModal = false;
-    this.createFormGroup();
+    this.customTaskFormGroup.reset();
     this.optionsJsonValid = true;
     this.propertiesJsonValid = true;
   }
@@ -164,8 +163,8 @@ export class TasksComponent implements OnInit {
 
   onUpdate(task: TaskCustom) {
     this.selectedTask = task;
-    this.createFormGroup(this.selectedTask);
     this.action = 'Update';
+    this.updateFormGroup(this.selectedTask);
     this.isShowModal = true;
   }
 

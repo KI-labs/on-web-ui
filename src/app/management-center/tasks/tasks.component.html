@@ -78,7 +78,7 @@
 
   <clr-modal *ngIf="modalTypes.formActions.indexOf(action) !== -1"
   [(clrModalOpen)]="isShowModal"
-  clrModalSize="lg">
+  clrModalSize="lg" [clrModalClosable]="false">
   <h3 class="modal-title">{{action}} task</h3>
   <div class="modal-body">
     <form clrForm [formGroup]="customTaskFormGroup">
@@ -96,8 +96,8 @@
 
         <clr-input-container>
           <label>injectableName: </label>
-          <input *ngIf="action === 'Update'" clrInput type="text" disabled class="input-size" formControlName="injectableName">
-          <input *ngIf="action === 'Create'" clrInput type="text" class="input-size" formControlName="injectableName">
+          <input clrInput type="text" class="input-size" formControlName="injectableName">
+          <!-- <input *ngIf="action === 'Create'" clrInput type="text" class="input-size" formControlName="injectableName"> -->
         </clr-input-container>
 
         <clr-textarea-container>
@@ -105,7 +105,7 @@
           <textarea clrTextarea rows=3 formControlName="options">
           </textarea>
         </clr-textarea-container>
-        <div class="alertMessage" *ngIf="customTaskFormGroup.get('options').invalid">
+        <div class="alertMessage" *ngIf="customTaskFormGroup.get('options').dirty && customTaskFormGroup.get('options').invalid">
             Invalid JSON payload.
         </div>
 
@@ -114,7 +114,7 @@
           <textarea clrTextarea rows=3 formControlName="properties">
           </textarea>
         </clr-textarea-container>
-        <div class="alertMessage" *ngIf="customTaskFormGroup.get('properties').invalid">
+        <div class="alertMessage" *ngIf="customTaskFormGroup.get('properties').dirty && customTaskFormGroup.get('properties').invalid">
             Invalid JSON payload.
         </div>
 
