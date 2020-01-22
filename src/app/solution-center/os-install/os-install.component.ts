@@ -11,11 +11,11 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
 import { map, catchError } from 'rxjs/operators';
 
-import { assign, filter, isEmpty, map as mapLodash, split, cloneDeep, isEqual } from 'lodash';
+import { assign, filter, isEmpty, map as mapLodash, split, cloneDeep, isEqual } from 'lodash-es';
 import { CatalogsService } from '../../services/rackhd/catalogs.service';
 import { NodeService } from '../../services/rackhd/node.service';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
-import { JSONEditor } from '../../utils/json-editor';
+import JSONEditor from 'jsoneditor';
 import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { TagService } from '../../services/rackhd/tag.service';

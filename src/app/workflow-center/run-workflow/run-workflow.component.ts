@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JSONEditor } from '../../utils/json-editor';
+import JSONEditor from 'jsoneditor';
 
 import { NodeService } from '../../services/rackhd/node.service';
 import { GraphService } from '../../services/rackhd/graph.service';
@@ -15,7 +15,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
 import { map, catchError } from 'rxjs/operators';
 
-import { map as mapLodash, isEmpty,  cloneDeep, isEqual } from 'lodash';
+import { map as mapLodash, isEmpty,  cloneDeep, isEqual } from 'lodash-es';
 import { JSONEditorOptions } from 'jsoneditor';
 
 @Component({

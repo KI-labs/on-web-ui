@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlphabeticalComparator, ObjectFilterByKey} from '../../utils/inventory-operator';
 import { FormGroup, FormControl } from '@angular/forms';
-import { keys, forEach  } from 'lodash';
+import { keys, forEach  } from 'lodash-es';
 
 import { ConfigService } from '../services/config.service';
 import { Config } from '../../models';

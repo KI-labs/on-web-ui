@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SKU, ModalTypes } from '../../models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
-import { map, isUndefined, isEmpty, startCase, forEach } from 'lodash';
+import { map, isUndefined, isEmpty, startCase, forEach } from 'lodash-es';
 import { SkusService } from '../../services/rackhd/sku.service';
 
 

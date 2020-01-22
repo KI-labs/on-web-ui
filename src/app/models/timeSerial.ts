@@ -1,7 +1,7 @@
 /*
  This defines the data model of time serial data.
 */
-import { assign } from 'lodash';
+import { assign } from 'lodash-es';
 
 export class TimeSerialData {
     constructor(d: any) {

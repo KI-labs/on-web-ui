@@ -4,7 +4,7 @@ import {
   StringOperator,
   ObjectFilterByKey,
 } from '../../utils/inventory-operator';
-import {isEmpty, map} from 'lodash';
+import {isEmpty, map} from 'lodash-es';
 
 import { FileService } from '../services/file.service';
 import { File, ModalTypes } from '../../models';

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { transform, has, isEmpty, map, values } from 'lodash';
+import { transform, has, isEmpty, map, values } from 'lodash-es';
 
 import { NodeService } from '../../services/rackhd/node.service';
 import { Node, NODE_TYPE_MAP, NodeType, OBM } from '../../models';

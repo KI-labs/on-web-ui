@@ -1,7 +1,7 @@
 /*
  This defines the data model of web user.
 */
-import { assign } from 'lodash';
+import { assign } from 'lodash-es';
 
 export class RackhdSetting {
     constructor(payload: any) {

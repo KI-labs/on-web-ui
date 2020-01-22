@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { findIndex, remove } from 'lodash';
+import { findIndex, remove } from 'lodash-es';
 import {GlobalAlertService} from '../services/core/global-alert.service';
 
 @Component({

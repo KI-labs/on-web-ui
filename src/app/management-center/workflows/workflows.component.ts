@@ -7,7 +7,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { map, capitalize, isEmpty, cloneDeep } from 'lodash';
+import { map, capitalize, isEmpty, cloneDeep } from 'lodash-es';
 
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Graph, ModalTypes } from '../../models';

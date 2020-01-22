@@ -1,4 +1,4 @@
-import { compact, flatten, keys, transform, max, forEach, isEmpty, isUndefined, concat, includes } from 'lodash';
+import { compact, flatten, keys, transform, max, forEach, isEmpty, isUndefined, concat, includes } from 'lodash-es';
 import { CONSTS } from '../../config/consts';
 
 const global = (window as any);

@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, DateComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import { PollersService } from '../../services/rackhd/pollers.service';
 import { NodeService } from '../../services/rackhd/node.service';
-import { includes, isEmpty, forEach } from 'lodash';
+import { includes, isEmpty, forEach } from 'lodash-es';
 
 import { validateJSON } from '../shared/validation-rules';
 

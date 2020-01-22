@@ -15,7 +15,7 @@ import {
 import { API_PATTERN, ADDR_PATTERN } from '../models/index';
 import { SettingService } from './setting.service';
 import { NodeService } from '../services/rackhd/node.service';
-import { forEach } from 'lodash';
+import { forEach } from 'lodash-es';
 
 @Component({
   selector: 'app-setting-form',

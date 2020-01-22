@@ -11,7 +11,7 @@ import { Subject } from 'rxjs/Subject';
 import { DrawUtils, PositionUtils } from './canvas-helper';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-import { isEqual, remove, cloneDeep, assign, max, forEach, filter, toLower, values as valuesLodash } from 'lodash';
+import { isEqual, remove, cloneDeep, assign, max, forEach, filter, toLower, values as valuesLodash } from 'lodash-es';
 import { uuid } from 'uuid/v4';
 
 import { NodeExtensionService } from './node-extension.service';

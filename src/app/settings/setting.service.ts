@@ -4,7 +4,7 @@ import { RACKHD_CONFIG } from '../models/index';
 import { Observable } from 'rxjs/Observable';
 import { timeout } from 'rxjs/operators/timeout';
 
-import { forEach, keys } from 'lodash';
+import { forEach, keys } from 'lodash-es';
 
 @Injectable()
 export class SettingService {

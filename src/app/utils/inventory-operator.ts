@@ -1,5 +1,5 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
-import { sortBy as sortByLodash, filter, isEmpty, map, findIndex, get, without, keys, forEach } from 'lodash';
+import { sortBy as sortByLodash, filter, isEmpty, map, findIndex, get, without, keys, forEach } from 'lodash-es';
 
 export class AlphabeticalComparator<T> implements ClrDatagridComparatorInterface<T> {
     sortBy: string;

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, unionBy,  cloneDeep, startsWith, flatten, includes, keys} from 'lodash';
+import { map, unionBy,  cloneDeep, startsWith, flatten, includes, keys} from 'lodash-es';
 import { GraphService } from '../../services/rackhd/graph.service';
-import { JSONEditor } from '../../utils/json-editor';
+import JSONEditor from 'jsoneditor';
 import { JSONEditorOptions } from 'jsoneditor';
 
 @Component({

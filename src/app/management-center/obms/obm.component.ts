@@ -6,7 +6,7 @@ import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory
 
 import { ObmService } from '../../services/rackhd/obm.service';
 import { NodeService } from '../../services/rackhd/node.service';
-import { sortBy, keys, capitalize, merge, forEach } from 'lodash';
+import { sortBy, keys, capitalize, merge, forEach } from 'lodash-es';
 
 @Component({
   selector: 'app-obm',

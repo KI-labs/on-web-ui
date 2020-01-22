@@ -12,7 +12,7 @@ import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StringOperator } from '../../utils/inventory-operator';
 
-import { map, pick, floor, isEmpty, fill, sum, forEach, uniq, slice, cloneDeep, remove  } from 'lodash';
+import { map, pick, floor, isEmpty, fill, sum, forEach, uniq, slice, cloneDeep, remove  } from 'lodash-es';
 
 @Component({
   selector: 'app-dropdown-group',

@@ -5,7 +5,7 @@ import {
   createFilters,
   createComparator
 } from '../../utils/inventory-operator';
-import { transform, map, startCase, isEmpty } from 'lodash';
+import { transform, map, startCase, isEmpty } from 'lodash-es';
 import { WorkflowService } from '../../services/rackhd/workflow.service';
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Workflow, ModalTypes, HISTORY_WORKFLOW_STATUS } from '../../models';

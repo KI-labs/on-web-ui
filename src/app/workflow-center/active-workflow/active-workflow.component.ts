@@ -7,7 +7,7 @@ import {
   createComparator
 } from '../../utils/inventory-operator';
 
-import { forEach, isEmpty, startCase } from 'lodash';
+import { forEach, isEmpty, startCase } from 'lodash-es';
 
 import { WorkflowService } from '../../services/rackhd/workflow.service';
 import { GraphService } from '../../services/rackhd/graph.service';
