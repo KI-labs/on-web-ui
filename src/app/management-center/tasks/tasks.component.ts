@@ -110,7 +110,7 @@ export class TasksComponent implements OnInit {
 
   create() {
     this.action = 'Create';
-    this.updateFormGroup()
+    this.updateFormGroup();
     this.isShowModal = true;
   }
 
@@ -141,7 +141,7 @@ export class TasksComponent implements OnInit {
 
   updateFormGroup(taskCustom?: TaskCustom) {
     const control = this.customTaskFormGroup.get('injectableName');
-    this.action === 'Update' ? control.disable() : control.enable()
+    this.action === 'Update' ? control.disable() : control.enable();
     if (!_.isEmpty(taskCustom)) {
       const _taskCustom = _.cloneDeep(taskCustom);
       _taskCustom.options = JSON.stringify(_taskCustom.options);
