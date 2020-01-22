@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, DateComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
 import { PollersService } from '../../services/rackhd/pollers.service';
 import { NodeService } from '../../services/rackhd/node.service';
-import * as _ from 'lodash';
+import { includes, isEmpty, forEach } from 'lodash-es';
 
 import { validateJSON } from '../shared/validation-rules';
 
@@ -101,7 +101,7 @@ export class PollersComponent implements OnInit {
   getAllPollers(): void {
     this.pollersService.getAll()
       .subscribe(data => {
-        if (_.isEmpty(data)) {
+        if (isEmpty(data)) {
           this.dgDataLoading = false;
           this.allPollers = [];
           this.pollerStore = [];
@@ -125,7 +125,7 @@ export class PollersComponent implements OnInit {
   }
 
   batchDelete(): void {
-    if (!_.isEmpty(this.selectedPollers)) {
+    if (!isEmpty(this.selectedPollers)) {
       this.isDelete = true;
     }
   }
@@ -138,7 +138,7 @@ export class PollersComponent implements OnInit {
   willUpdate(poller: Poller): void {
     this.updatePoller = poller;
     this.defaultInterval = poller.pollInterval;
-    if (!_.includes(this.pollerInterval, poller.pollInterval)) {
+    if (!includes(this.pollerInterval, poller.pollInterval)) {
       this.pollerInterval.push(poller.pollInterval);
       this.pollerInterval.sort();
     }
@@ -210,8 +210,8 @@ export class PollersComponent implements OnInit {
       // data transform
       jsonData.type = value.type;
       jsonData.node = value.node;
-      jsonData.pollInterval = _.isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval, 10);
-      jsonData.config = _.isEmpty(value.config) ? {} : JSON.parse(value.config);
+      jsonData.pollInterval = isEmpty(value.pollInterval) ? 60000 : parseInt(value.pollInterval, 10);
+      jsonData.config = isEmpty(value.config) ? {} : JSON.parse(value.config);
 
       this.isCreatePoller = false;
       this.pollersService.createPoller(jsonData)
@@ -223,7 +223,7 @@ export class PollersComponent implements OnInit {
 
   deleteSel(): void {
     const list = [];
-    _.forEach(this.selectedPollers, poller => {
+    forEach(this.selectedPollers, poller => {
       list.push(poller.id);
     });
 

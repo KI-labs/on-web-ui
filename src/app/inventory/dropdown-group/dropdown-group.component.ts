@@ -12,7 +12,7 @@ import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StringOperator } from '../../utils/inventory-operator';
 
-import * as _ from 'lodash';
+import { map, pick, floor, isEmpty, fill, sum, forEach, uniq, slice, cloneDeep, remove  } from 'lodash-es';
 
 @Component({
   selector: 'app-dropdown-group',
@@ -60,13 +60,13 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
         if (this.filterForm) { this.reset(); }
         break;
       case 1:
-        const formValues = _.pick(this.data[0], this.fields);
+        const formValues = pick(this.data[0], this.fields);
         this.filterForm.patchValue(formValues);
         this.selected.emit(this.data[0]);
         break;
       default:
-        this.allData = _.map(this.data, (value, key) => {
-          const _value = _.pick(value, this.fields);
+        this.allData = map(this.data, (value, key) => {
+          const _value = pick(value, this.fields);
           _value.index = key;
           return _value;
         });
@@ -96,40 +96,40 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   setDefaultParams() {
     const inputCount = this.fields.length;
 
-    const columnSize = _.floor(12 / inputCount, 1);
-    if (_.isEmpty(this.columns)) {
-      this.columns = _.fill(Array(inputCount), columnSize);
+    const columnSize = floor(12 / inputCount, 1);
+    if (isEmpty(this.columns)) {
+      this.columns = fill(Array(inputCount), columnSize);
     }
-    if (_.isEmpty(this.offsets)) {
-      this.offsets = _.fill(Array(inputCount), 0);
+    if (isEmpty(this.offsets)) {
+      this.offsets = fill(Array(inputCount), 0);
     }
-    if (_.isEmpty(this.disable)) {
-      this.disable = _.fill(Array(inputCount), false);
+    if (isEmpty(this.disable)) {
+      this.disable = fill(Array(inputCount), false);
     }
-    if (_.isEmpty(this.fieldsRequired)) {
-      this.fieldsRequired = _.fill(Array(inputCount), false);
+    if (isEmpty(this.fieldsRequired)) {
+      this.fieldsRequired = fill(Array(inputCount), false);
     }
-    this.classList = _.map(this.offsets, (offset, key) => {
+    this.classList = map(this.offsets, (offset, key) => {
       return `clr-col-lg-${this.columns[key]} clr-col-lg-offset-${offset}`;
     });
     let buttonColumn = 12;
-    buttonColumn = Math.abs(12 - _.sum(this.columns) - _.sum(this.offsets)) % 12;
+    buttonColumn = Math.abs(12 - sum(this.columns) - sum(this.offsets)) % 12;
     buttonColumn = buttonColumn ? buttonColumn : 12;
     this.resetClass = `clr-col-lg-${buttonColumn}`;
   }
 
   createFormGroup(): void {
     this.filterForm = new FormGroup({});
-    _.forEach(this.fields, (field, index) => {
+    forEach(this.fields, (field, index) => {
       this.filterForm.addControl(field, new FormControl({value: '', disabled: this.disable[index]}));
     });
   }
 
   getDropdownLists(data): void {
-    _.forEach(this.fields, field => {
-      let list = _.map(data, field);
-      list = _.uniq(list.sort());
-      this.dropdownLists[field] = list.length > this.size ? _.slice(list, 0, this.size) : list;
+    forEach(this.fields, field => {
+      let list = map(data, field);
+      list = uniq(list.sort());
+      this.dropdownLists[field] = list.length > this.size ? slice(list, 0, this.size) : list;
     });
   }
 
@@ -137,7 +137,7 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
     // Filter only selected item
     // StringOperator does match not exactly compare
     const matched = [];
-    _.forEach(dataStore, data => {
+    forEach(dataStore, data => {
       if (data[field] === term) {
         matched.push(data);
       }
@@ -148,11 +148,11 @@ export class DropdownGroupComponent implements OnInit, OnDestroy, OnChanges  {
   filterByFormGroup(allData) {
     if (!this.filterForm) { return allData; }
     const formValues = this.filterForm.value;
-    let filtered = _.cloneDeep(allData);
-    _.forEach(this.fields, (field) => {
+    let filtered = cloneDeep(allData);
+    forEach(this.fields, (field) => {
       const term = formValues[field];
       if (term) {
-        const excludeFields = _.remove(this.fields, field);
+        const excludeFields = remove(this.fields, field);
         filtered = StringOperator.search(term, filtered, excludeFields);
       }
     });

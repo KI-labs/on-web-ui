@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AlphabeticalComparator, ObjectFilterByKey } from '../../utils/inventory-operator';
-import * as _ from 'lodash';
 
 import { TemplateService } from '../services/template.service';
 import { Template, ModalTypes } from '../../models';

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as _ from 'lodash';
+import { transform, has, isEmpty, map, values } from 'lodash-es';
 
 import { NodeService } from '../../services/rackhd/node.service';
 import { Node, NODE_TYPE_MAP, NodeType, OBM } from '../../models';
@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ObmService } from '../../services/rackhd/obm.service';
 import { SkusService } from '../../services/rackhd/sku.service';
 import { IbmService } from '../services/ibm.service';
+import { CatalogsService } from '../../services/rackhd/catalogs.service';
+
 import {
   AlphabeticalComparator,
   DateComparator,
@@ -39,6 +41,9 @@ export class NodesComponent implements OnInit {
   isShowObmDetail: boolean;
   selectedObms: OBM[];
 
+  isShowIPsDetail: boolean;
+  selectedIPs: string[];
+
   isShowIbmDetail: boolean;
   selectedIbms: OBM[];
 
@@ -47,6 +52,7 @@ export class NodesComponent implements OnInit {
 
   isCreateNode: boolean;
   isDelete: boolean;
+  isClean: boolean;
   nodeForm: FormGroup;
 
   selectableNodeTypes: string[];
@@ -79,18 +85,21 @@ export class NodesComponent implements OnInit {
     public nodeService: NodeService,
     public obmService: ObmService,
     public ibmService: IbmService,
+    public catalogService: CatalogsService,
     public skuService: SkusService,
-    private fb: FormBuilder) {}
+    private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.selectableNodeTypes = _.values(NODE_TYPE_MAP);
+    this.selectedType = 'Compute';
+    this.typeFilterValue = this.selectedType;
+    this.selectableNodeTypes = values(NODE_TYPE_MAP);
     this.nodeService.getNodeTypes().subscribe(
       data => {
-        this.nodeTypes = _.transform(
+        this.nodeTypes = transform(
           data,
           (result, item) => {
             const dt = new NodeType();
-            if (_.has(NODE_TYPE_MAP, item)) {
+            if (has(NODE_TYPE_MAP, item)) {
               dt.identifier = item;
               dt.displayName = NODE_TYPE_MAP[item];
               result.push(dt);
@@ -104,9 +113,9 @@ export class NodesComponent implements OnInit {
   }
 
   afterGetNodes() {
-    this.nodesTypeCountMatrix = _.transform(this.nodeStore, (result, item) => {
+    this.nodesTypeCountMatrix = transform(this.nodeStore, (result, item) => {
       let type = item.type;
-      if (!_.has(NODE_TYPE_MAP, type)) {
+      if (!has(NODE_TYPE_MAP, type)) {
         type = 'other';
       }
       result[type] ? result[type] += 1 : result[type] = 1;
@@ -128,14 +137,25 @@ export class NodesComponent implements OnInit {
   }
 
   batchDelete(node?: Node): void {
-    if (!_.isEmpty(this.selectedNodes)) {
+    if (!isEmpty(this.selectedNodes)) {
       this.isDelete = true;
+    }
+  }
+
+  batchClean(node?: Node): void {
+    if (!isEmpty(this.selectedNodes)) {
+      this.isClean = true;
     }
   }
 
   willDelete(node: Node): void {
     this.selectedNodes = [node];
     this.isDelete = true;
+  }
+
+  willClean(node: Node): void {
+    this.selectedNodes = [node];
+    this.isClean = true;
   }
 
   refresh() {
@@ -171,7 +191,7 @@ export class NodesComponent implements OnInit {
   }
 
   deleteSel(): void {
-    const list = _.map(this.selectedNodes, node => {
+    const list = map(this.selectedNodes, node => {
       return node.id;
     });
 
@@ -181,14 +201,43 @@ export class NodesComponent implements OnInit {
       });
   }
 
+  cleanSel(): void {
+    const listObms = [];
+    const listNodes = map(this.selectedNodes, node => {
+       if (node.obms.length > 0) {
+         for (const entry of node.obms) {
+           const obmId = entry.ref.split('/').pop();
+           listObms.push(obmId);
+          }
+        }
+       return node.id;
+    });
+
+    this.obmService.deleteByIdentifiers(listObms).subscribe(result => {
+      this.nodeService.deleteByIdentifiers(listNodes)
+        .subscribe(results => {
+          this.refresh();
+        });
+    });
+
+
+  }
+
   onConfirm(value) {
     switch (value) {
       case 'reject':
         this.isDelete = false;
+        this.isClean = false;
         break;
       case 'accept':
-        this.isDelete = false;
-        this.deleteSel();
+        if (this.isDelete) {
+          this.isDelete = false;
+          this.deleteSel();
+        } else if (this.isClean) {
+          this.isClean = false;
+          this.cleanSel();
+        }
+
     }
   }
 
@@ -202,6 +251,9 @@ export class NodesComponent implements OnInit {
         break;
       case 'Delete':
         this.batchDelete();
+        break;
+      case 'Clean':
+        this.batchClean();
         break;
     }
   }
@@ -238,6 +290,13 @@ export class NodesComponent implements OnInit {
 
   }
 
+  goToShowIPsDetail(node: Node) {
+    this.selectedNode = node;
+    this.selectedIPs = [];
+    this.getIPsById(node.id);
+    this.isShowIPsDetail = true;
+  }
+
   goToShowIbmDetail(node: Node) {
     this.selectedNode = node;
     this.selectedObms = [];
@@ -268,6 +327,17 @@ export class NodesComponent implements OnInit {
     this.obmService.getByIdentifier(identifier)
       .subscribe(data => {
         this.selectedObms.push(data);
+      });
+  }
+
+  getIPsById(identifier: string): void {
+    this.catalogService.getSource(identifier, '')
+      .subscribe(data => {
+        data.forEach(catalog => {
+          if (catalog.data['IP Address'] !== undefined && catalog.data['IP Address'] !== '0.0.0.0') {
+            this.selectedIPs.push(catalog.data['IP Address']);
+          }
+        });
       });
   }
 

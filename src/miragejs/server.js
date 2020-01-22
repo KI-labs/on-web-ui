@@ -42,7 +42,7 @@ export function makeServer({ environment = "development" } = {}) {
     ...standardConfig,
 
     timing: 2000,
-   
+
     routes(){
       _routes(this)
     },

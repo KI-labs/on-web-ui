@@ -15,6 +15,9 @@
       <button *ngIf="isDeleteRequired" class="btn btn-icon delete" (click)="onBatchDelete()" title="Batch delete">
         <clr-icon shape="trash"></clr-icon>
       </button>
+      <button *ngIf="isCleanRequired" type="button" class="btn btn-icon clean" (click)="onBatchClean()" title="Batch delete and clean">
+        <clr-icon shape="flame"></clr-icon>
+      </button>
       <button *ngIf="isCreateRequired" class="btn btn-icon create" (click)="onCreate()" title="Create">
         <clr-icon shape="add"></clr-icon>
       </button>

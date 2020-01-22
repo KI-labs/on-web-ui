@@ -6,6 +6,7 @@ export * from './obm';
 export * from './ibm';
 export * from './poller';
 export * from './task';
+export * from './taskCustom';
 export * from './workflow';
 export * from './profile';
 export * from './config';

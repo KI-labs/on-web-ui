@@ -9,7 +9,7 @@
   </div>
 
   <div class="grid-header">
-    <app-inventory-header [allItems]="allNodes" [name]="'Node'" (action)="onAction($event)" (filter)="onFilter($event)">
+    <app-inventory-header [allItems]="allNodes" [name]="'Node'" (action)="onAction($event)" (filter)="onFilter($event)" [isCleanRequired]=true >
     </app-inventory-header>
   </div>
 
@@ -34,6 +34,9 @@
         <ng-container *clrDgHideableColumn="{hidden: false}">OBM</ng-container>
       </clr-dg-column>
       <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">IP</ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
         <ng-container *clrDgHideableColumn="{hidden: true}">IBM</ng-container>
       </clr-dg-column>
       <clr-dg-column [clrDgSortBy]="skuComparator">
@@ -49,6 +52,9 @@
         <clr-dg-cell (click)="goToShowObmDetail(node)">
           <u *ngIf="node.obms && node.obms.length > 0" class="grid-item">{{node.obms ? node.obms.length : 0}} OBMs</u>
         </clr-dg-cell>
+        <clr-dg-cell (click)="goToShowIPsDetail(node)">
+            <u *ngIf="node.type === 'compute'" class="grid-item">Show IPs</u>
+        </clr-dg-cell>
         <clr-dg-cell (click)="goToShowIbmDetail(node)">
           <u *ngIf="node.ibms && node.ibms.length > 0" class="grid-item">{{node.ibms ? node.ibms.length : 0}} IBMs</u>
         </clr-dg-cell>
@@ -57,6 +63,7 @@
         </clr-dg-cell>
         <clr-dg-action-overflow class="more-action">
           <button class="action-item" (click)="willDelete(node)">Delete</button>
+          <button class="action-item" (click)="willClean(node)">Delete and Clean</button>
           <button class="action-item" (click)="goToDetail(node)">Details</button>
         </clr-dg-action-overflow>
       </clr-dg-row>
@@ -76,6 +83,10 @@
 
   <app-details-modal [(isPop)]="isShowObmDetail" [data]="selectedObms"
     [title]="'obm for node ' + (selectedObms && selectedObms[0] && selectedObms[0].node)">
+  </app-details-modal>
+
+  <app-details-modal [(isPop)]="isShowIPsDetail" [data]="selectedIPs"
+    [title]="'IPs for node ' + (selectedNode && selectedNode.id)">
   </app-details-modal>
 
   <app-details-modal [(isPop)]="isShowIbmDetail" [data]="selectedIbms"
@@ -138,5 +149,10 @@
 
   <app-confirm-modal [(isPop)]="isDelete" title="nodes" (confirm)="onConfirm($event)" [data]="selectedNodes">
   </app-confirm-modal>
+
+  <app-confirm-modal [(isPop)]="isClean" title="nodes" action='delete and clean related OBMs from'
+    (confirm)="onConfirm($event)" [data]="selectedNodes">
+  </app-confirm-modal>
+
 
 </div>

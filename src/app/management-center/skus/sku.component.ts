@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SKU, ModalTypes } from '../../models';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlphabeticalComparator, ObjectFilterByKey, isJsonTextValid } from '../../utils/inventory-operator';
-import * as _ from 'lodash';
+import { map, isUndefined, isEmpty, startCase, forEach } from 'lodash-es';
 import { SkusService } from '../../services/rackhd/sku.service';
 
 
@@ -114,9 +114,9 @@ export class SkuComponent implements OnInit {
 
   getChild(objKey: string, sku: SKU) {
     this.selectedSku = sku;
-    this.action = _.startCase(objKey);
+    this.action = startCase(objKey);
     this.rawData = sku && sku[objKey];
-    if (this.selectedSku && this.action && (!_.isEmpty(this.rawData))) {
+    if (this.selectedSku && this.action && (!isEmpty(this.rawData))) {
       this.isShowModal = true;
     }
   }
@@ -147,7 +147,7 @@ export class SkuComponent implements OnInit {
   }
 
   batchDelete(): void {
-    if (!_.isEmpty(this.selectedSkus)) {
+    if (!isEmpty(this.selectedSkus)) {
       this.isDelete = true;
     }
   }
@@ -181,18 +181,18 @@ export class SkuComponent implements OnInit {
     if (this.rulesJsonValid) {
       jsonData.rules = value.rules ? JSON.parse(value.rules) : [];
       const self = this;
-      if (_.isEmpty(jsonData.rules)) {
+      if (isEmpty(jsonData.rules)) {
         self.rulesJsonValid = false;
       }
-      _.forEach(_.map(jsonData.rules, 'path'), (item) => {
-          if (_.isUndefined(item)) {
+      forEach(map(jsonData.rules, 'path'), (item) => {
+          if (isUndefined(item)) {
             self.rulesJsonValid = false;
           }
       });
     }
     if (this.optionsJsonValid) {
       const data = value.discoveryGraphOptions  && JSON.parse(value.discoveryGraphOptions);
-      if (!_.isEmpty(data)) {
+      if (!isEmpty(data)) {
         jsonData.discoveryGraphOptions = data;
       }
     }
@@ -226,7 +226,7 @@ export class SkuComponent implements OnInit {
 
   deleteSel(): void {
     const list = [];
-    _.forEach(this.selectedSkus, sku => {
+    forEach(this.selectedSkus, sku => {
       list.push(sku.id);
     });
 
