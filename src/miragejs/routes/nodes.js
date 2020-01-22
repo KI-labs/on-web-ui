@@ -1,3 +1,5 @@
+import { Response } from 'miragejs';
+
 export default function nodesRoutes(server){
     server.get("/nodes", () => server.db.nodes);
     server.delete("/nodes/:id", (schema, request) => {
@@ -8,6 +10,22 @@ export default function nodesRoutes(server){
       let attrs = JSON.parse(request.requestBody);
     
       return schema.nodes.create(attrs);
+    });
+    server.post("/nodes/:id/workflows", (schema, request) => {
+      const injectableName = request.queryParams.name
+      const random = Math.floor(Math.random()*10)
+
+      //According to Aguiar, this route fails just because
+      if(random % 5 == 0){   
+        //Just to ensure it returns something, in db there is some injectableName without workflow
+        return schema.workflows.findBy({injectableName})
+        ? 
+        schema.workflows.findBy({injectableName})
+        :
+        schema.workflows.findBy({injectableName: 'Graph.Service.Docker'}) 
+      }
+
+      return new Response(500)
     });
 }
 

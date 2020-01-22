@@ -24,12 +24,13 @@ import { JSONEditorOptions } from 'jsoneditor';
   styleUrls: ['./run-workflow.component.scss']
 })
 export class RunWorkflowComponent implements OnInit, AfterViewInit {
-  @ViewChild('jsoneditor', {static: true}) jsoneditor: ElementRef;
+  @ViewChild('jsoneditor', { static: true }) jsoneditor: ElementRef;
   editor: any;
   modalInformation = {
     title: '',
     note: '',
-    type: 1
+    type: 1,
+    isLoading: false
   };
   showModal: boolean;
 
@@ -40,8 +41,11 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   allNodes: Array<any> = [];
   nodeStore: Array<any> = [];
-  selNodeStore: any [] = [];
+  selNodeStore: any[] = [];
   selectedNode: any;
+
+  totalRetries = 1;
+  retries = 0;
 
   filterFields = ['type', 'name', 'sku', 'id', 'obms', 'tags'];
   filterLabels = ['Node Type', 'Node Name', 'SKU Name', 'Node ID', 'OBM Host', 'Tag Name'];
@@ -58,7 +62,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     public skuService: SkusService,
     public tagService: TagService,
     private router: Router
-  ) {}
+  ) { }
 
 
 
@@ -68,7 +72,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
     this.showModal = false;
     const container = this.jsoneditor.nativeElement;
-    const options: JSONEditorOptions = {mode: 'code'};
+    const options: JSONEditorOptions = { mode: 'code' };
     this.editor = new JSONEditor(container, options);
     this.getAllWorkflows();
   }
@@ -84,17 +88,18 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.modalInformation = {
       title: '',
       note: '',
-      type: 1
+      type: 1,
+      isLoading: false
     };
   }
 
   selWorkflowById(id) {
     this.graphService.getByIdentifier(id)
-    .subscribe(data => {
-      this.selectedGraph = (data instanceof Array) ? data[0] : data;
-      this.graphStore = [this.selectedGraph];
-      this.updateEditor(data.options);
-    });
+      .subscribe(data => {
+        this.selectedGraph = (data instanceof Array) ? data[0] : data;
+        this.graphStore = [this.selectedGraph];
+        this.updateEditor(data.options);
+      });
   }
 
   getAllWorkflows() {
@@ -115,9 +120,9 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
 
   getAllNodes() {
     this.nodeService.getAll()
-    .subscribe(data => {
-      this.renderNodeInfo(data);
-    });
+      .subscribe(data => {
+        this.renderNodeInfo(data);
+      });
   }
 
   getNodeSku(node): Observable<string> {
@@ -125,10 +130,10 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const isComputeWithoutSku = (node.sku === null) && node.type === 'compute';
     if (hasSkuId) {
       return this.skuService.getByIdentifier(node.sku.split('/').pop())
-      .pipe(map(data => data.name));
+        .pipe(map(data => data.name));
     } else if (isComputeWithoutSku) {
       return this.catalogsService.getSource(node.id, 'ohai')
-      .pipe(map(data => data.data.dmi.base_board.product_name));
+        .pipe(map(data => data.data.dmi.base_board.product_name));
     } else {
       return of(null);
     }
@@ -138,7 +143,7 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     if (!isEmpty(node.obms)) {
       const obmId = node.obms[0].ref.split('/').pop();
       return this.obmService.getByIdentifier(obmId)
-      .pipe(map(data => data.config.host));
+        .pipe(map(data => data.config.host));
     } else {
       return of(null);
     }
@@ -161,15 +166,15 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
   renderNodeInfo(nodes) {
     const list = mapLodash(nodes, node => {
       return forkJoin([
-        this.getNodeSku(node).pipe(catchError( () => of(null))),
-        this.getNodeObm(node).pipe(catchError( () => of(null))),
-        this.getNodeTag(node).pipe(catchError( () => of(null)))
+        this.getNodeSku(node).pipe(catchError(() => of(null))),
+        this.getNodeObm(node).pipe(catchError(() => of(null))),
+        this.getNodeTag(node).pipe(catchError(() => of(null)))
       ]).pipe(
-          map(results => {
-            node.sku = results[0];
-            node.obms = results[1];
-            node.tags = results[2];
-          })
+        map(results => {
+          node.sku = results[0];
+          node.obms = results[1];
+          node.tags = results[2];
+        })
       );
     });
 
@@ -194,7 +199,8 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     this.modalInformation = {
       title: 'Reminder',
       note: `Are you sure to run workflow ${this.graphId} ${subNote}`,
-      type: 1
+      type: 1,
+      isLoading: false
     };
   }
 
@@ -202,25 +208,40 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     const payload = this.editor.get();
     const selectedNodeId = this.selectedNode && this.selectedNode.id;
     this.graphId = this.graphId || this.selectedGraph.injectableName;
+    this.modalInformation.isLoading = true;
     this.workflowService.runWorkflow(selectedNodeId, this.graphId, payload)
-    .subscribe(
-      data => {
-        this.graphId = data.instanceId;
-        this.modalInformation = {
-          title: 'Post Workflow Successfully!',
-          note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
-          type: 2
-        };
-      },
-      err => { this.showModal = false; }
-    );
-   }
+      .subscribe(
+        data => {
+          this.graphId = data.instanceId;
+          this.retries = 0;
+          this.totalRetries = 1;
+          this.modalInformation = {
+            title: 'Post Workflow Successfully!',
+            note: 'The workflow has post successfully! Do you want to check the status of the running workflow?',
+            type: 2,
+            isLoading: false
+          };
+        },
+        err => {
+          this.retries += 1;
+          console.error(err);
+
+          if (this.retries <= this.totalRetries) {
+            this.postWorkflow();
+          } else {
+            this.showModal = false;
+          }
+        },
+
+      );
+
+  }
 
   goToViewer() {
     this.resetModalInfo();
     this.showModal = false;
     this.router.navigate(['workflowCenter/workflowViewer'], {
-      queryParams: {graphId: this.graphId}
+      queryParams: { graphId: this.graphId }
     });
   }
 
@@ -265,3 +286,4 @@ export class RunWorkflowComponent implements OnInit, AfterViewInit {
     });
   }
 }
+

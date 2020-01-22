@@ -28,6 +28,7 @@ import { SettingModule } from './settings/setting.module';
     NoContentModule,
     SettingModule
   ],
+  exports: [FormsModule],
   providers: [],
   bootstrap: [AppComponent]
 })

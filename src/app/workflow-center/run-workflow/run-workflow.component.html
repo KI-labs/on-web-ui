@@ -36,21 +36,56 @@
       </app-dropdown-group>
     </span>
   </p>
+
   <div class="clr-col-md-7 json-editor">
     <p class="run-workflow-row"><label><b>Payload:</b></label></p>
     <div #jsoneditor id="jsoneditor"></div>
   </div>
-  <div class="clr-col-md-7 bottom-button clearfix">
-    <button class="btn btn-success" (click)="goToRunWorkflow()"
-      [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName)">
-      Run Workflow
-    </button>
+
+  <div class='clr-row run-workflow-last-row'>
+    <div class="clr-col-md-3 retry">
+        <clr-input-container class='input-container'>
+          <label>
+            <b>Retry</b>
+            <a role="tooltip" aria-haspopup="true" class="tooltip tooltip-xs">
+              <clr-icon shape="info-circle" size="24"></clr-icon>
+              <span class="tooltip-content run-workflow-tooltip">Number of retries to run a workflow</span>
+          </a>
+          </label>
+          <input clrInput type="number" min='1' [(ngModel)]="totalRetries" class='retry-input'>
+    </clr-input-container>
+    </div>
+
+    
+    <div class="clr-col-md-4 bottom-button clearfix">
+      <button class="btn btn-success" (click)="goToRunWorkflow()"
+        [disabled]="!(this.selectedGraph && this.selectedGraph.injectableName && this.totalRetries > 0)">
+        Run Workflow
+      </button>
+    </div>
+
+  </div>
+  <div *ngIf='!(totalRetries > 0)' class='reminder'>
+      The retry must be higher than zero.
   </div>
 
+
   <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'lg'">
-    <h3 class="modal-title" *ngIf="showModal">{{modalInformation.title}}</h3>
+    <h3 class="modal-title" *ngIf="showModal">
+      {{
+        modalInformation.isLoading
+        ? 
+        'Running trying: ' + retries + '/' + totalRetries
+        :
+        modalInformation.title
+      }}
+    </h3>
     <div class="modal-body" *ngIf="showModal">
-      <p>{{modalInformation.note}}</p>
+      <div *ngIf='modalInformation.isLoading'>
+          <span class="spinner spinner-inline"></span>
+          <span>Running...</span>
+      </div>      
+      <p *ngIf='!modalInformation.isLoading'>{{modalInformation.note}}</p>
     </div>
     <div class="modal-footer" *ngIf="showModal && modalInformation.type === 1">
       <button class="btn btn-outline" type="button" (click)="showModal = false">No</button>
