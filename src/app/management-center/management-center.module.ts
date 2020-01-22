@@ -15,6 +15,7 @@ import { ObmComponent } from './obms/obm.component';
 import { SkuComponent } from './skus/sku.component';
 import { FilesComponent } from './files/files.component';
 import { TemplatesComponent } from './templates/templates.component';
+import { TasksComponent } from './tasks/tasks.component';
 import { ConfigComponent } from './configs/config.component';
 import { ManagementCenterServicesModule } from './services/management-center-service.module';
 import { InventoryModule } from '../inventory/inventory.module';
@@ -43,6 +44,7 @@ import { NgxSelectModule } from 'ngx-select-ex';
     ObmComponent,
     SkuComponent,
     FilesComponent,
+    TasksComponent,
     TemplatesComponent,
     ConfigComponent,
   ]

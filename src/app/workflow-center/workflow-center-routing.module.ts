@@ -8,6 +8,7 @@ import { WorkflowViewerComponent } from './workflow-viewer/workflow-viewer.compo
 import { RunWorkflowComponent } from './run-workflow/run-workflow.component';
 import { WorkflowEditorComponent } from './workflow-editor/workflow-editor.component';
 
+
 const WorkflowCenterRoutes: Routes = [
   {
     path: '',
