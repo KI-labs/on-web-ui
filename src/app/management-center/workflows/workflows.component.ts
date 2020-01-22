@@ -7,7 +7,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import * as _ from 'lodash';
+import { map, capitalize, isEmpty, cloneDeep } from 'lodash-es';
 
 import { GraphService } from '../../services/rackhd/graph.service';
 import { Graph, ModalTypes } from '../../models';
@@ -79,9 +79,9 @@ export class WorkflowsComponent implements OnInit {
 
   getChild(objKey: string, workflow: Graph) {
     this.selectedWorkflow = workflow;
-    this.action = _.capitalize(objKey);
+    this.action = capitalize(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData)) {
+    if (!isEmpty(this.rawData)) {
       this.isShowModal = true;
     }
   }
@@ -93,8 +93,8 @@ export class WorkflowsComponent implements OnInit {
       options: new FormControl(''),
       tasks: new FormControl('')
     });
-    if (!_.isEmpty(workflow)) {
-      const workflowCloned = _.cloneDeep(workflow);
+    if (!isEmpty(workflow)) {
+      const workflowCloned = cloneDeep(workflow);
       workflowCloned.options = JSON.stringify(workflowCloned.options);
       workflowCloned.tasks = JSON.stringify(workflowCloned.tasks);
       this.modalFormGroup.patchValue(workflowCloned);
@@ -108,7 +108,7 @@ export class WorkflowsComponent implements OnInit {
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedWorkflows)) {
+    if (!isEmpty(this.selectedWorkflows)) {
       this.action = 'Delete';
       this.isShowModal = true;
     }
@@ -172,7 +172,7 @@ export class WorkflowsComponent implements OnInit {
   }
 
   onDeleteSubmit() {
-    const list = _.map(this.selectedWorkflows, workflow => {
+    const list = map(this.selectedWorkflows, workflow => {
       return this.workflowService.delete(workflow.injectableName);
     });
     this.isShowModal = false;
@@ -191,8 +191,8 @@ export class WorkflowsComponent implements OnInit {
   onSubmit() {
     const payload = this.modalFormGroup.value;
     if (this.modalFormGroup.valid) {
-      payload.options = _.isEmpty(payload.options) ? {} : JSON.parse(payload.options);
-      payload.tasks = _.isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
+      payload.options = isEmpty(payload.options) ? {} : JSON.parse(payload.options);
+      payload.tasks = isEmpty(payload.tasks) ? [] : JSON.parse(payload.tasks);
       this.upsertGraph(payload);
     }
   }

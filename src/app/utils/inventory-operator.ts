@@ -1,5 +1,5 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
-import * as _ from 'lodash';
+import { sortBy as sortByLodash, filter, isEmpty, map, findIndex, get, without, keys, forEach } from 'lodash-es';
 
 export class AlphabeticalComparator<T> implements ClrDatagridComparatorInterface<T> {
     sortBy: string;
@@ -7,9 +7,9 @@ export class AlphabeticalComparator<T> implements ClrDatagridComparatorInterface
         this.sortBy = sortBy;
     }
     compare(a: T, b: T) {
-        const sortedArray = _.sortBy([a, b], [o =>
+        const sortedArray = sortByLodash([a, b], [o =>
             (JSON.stringify(o[this.sortBy]))]);
-        return _.findIndex(sortedArray, a) - _.findIndex(sortedArray, b);
+        return findIndex(sortedArray, a) - findIndex(sortedArray, b);
     }
 }
 
@@ -41,7 +41,7 @@ export class ObjectFilterByKey<T> implements ClrDatagridStringFilterInterface<T>
 
   accepts(obj: T, searchKey: string): boolean {
     let stringValue: string;
-    const originValue: any = obj && _.get(obj, this._field);
+    const originValue: any = obj && get(obj, this._field);
     if (typeof originValue === 'undefined') {
       return false;
     }
@@ -62,11 +62,11 @@ export class StringOperator {
   }
 
   static search<T>(term: string, tableData: Array<T>, skipDomain: string[] = []): Array<T> {
-    const searchDomain: string[] = _.without(_.keys(tableData[0]), ...skipDomain);
-    return _.filter(tableData, data => {
+    const searchDomain: string[] = without(keys(tableData[0]), ...skipDomain);
+    return filter(tableData, data => {
       let flag = false;
-      _.forEach(searchDomain, item => {
-        const originValue: any = data && _.get(data, item);
+      forEach(searchDomain, item => {
+        const originValue: any = data && get(data, item);
         if (typeof originValue === 'undefined') {
           return true;
         }
@@ -82,14 +82,14 @@ export class StringOperator {
 }
 
 export function createFilters<T>(obj: any, filterKeys: string[], model: T): void {
-  _.map(filterKeys, key => {
+  map(filterKeys, key => {
     const _key = key + 'Filter';
     obj[_key] = new ObjectFilterByKey<T>(key);
   });
 }
 
 export function createComparator<T>(obj: any, comparatorKeys: string[], model: T): void {
-  _.map(comparatorKeys, key => {
+  map(comparatorKeys, key => {
     const _key = key + 'Comparator';
     obj[_key] = new AlphabeticalComparator<T>(key);
   });
@@ -97,7 +97,7 @@ export function createComparator<T>(obj: any, comparatorKeys: string[], model: T
 
 export function isJsonTextValid(input): boolean {
   try {
-    if (!_.isEmpty(input)) {
+    if (!isEmpty(input)) {
       JSON.parse(input);
       return true;
     } else {

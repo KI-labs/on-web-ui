@@ -4,7 +4,7 @@ import {
   StringOperator,
   ObjectFilterByKey,
 } from '../../utils/inventory-operator';
-import * as _ from 'lodash';
+import {isEmpty, map} from 'lodash-es';
 
 import { FileService } from '../services/file.service';
 import { File, ModalTypes } from '../../models';
@@ -89,7 +89,7 @@ export class FilesComponent implements OnInit {
   }
 
   batchDelete() {
-    if (!_.isEmpty(this.selectedFiles)) {
+    if (!isEmpty(this.selectedFiles)) {
       this.action = 'Delete';
       this.isShowModal = true;
     }
@@ -102,7 +102,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteSel() {
-    const idList = _.map(this.selectedFiles, file => {
+    const idList = map(this.selectedFiles, file => {
       return file.uuid;
     });
     this.isShowModal = false;

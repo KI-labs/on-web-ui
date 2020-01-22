@@ -6,8 +6,6 @@ import {
   EventEmitter
 } from '@angular/core';
 
-import * as _ from 'lodash';
-
 @Component({
   selector: 'app-details-modal',
   templateUrl: './details-modal.component.html',

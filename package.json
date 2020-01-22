@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "start-docker": "ng serve --host=0.0.0.0",
-    "build": "ng build --prod=true --progress=true",
+    "build": "ng build --prod=true --progress=true --stats-json",
+    "analyze": "webpack-bundle-analyzer ./dist/on-web-ki/stats-es2015.json",
     "test": "ng test",
     "lint": "ng lint --fix=true",
     "e2e": "ng e2e"
@@ -32,7 +33,7 @@
     "@webcomponents/custom-elements": "^1.3.2",
     "jsoneditor": "^8.1.0",
     "litegraph.js": "^0.7.2",
-    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15",
     "miragejs": "^0.1.32",
     "ngx-cookie": "^4.1.2",
     "ngx-select-ex": "^3.7.4",

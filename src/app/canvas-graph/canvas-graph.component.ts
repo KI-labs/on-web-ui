@@ -11,8 +11,8 @@ import { Subject } from 'rxjs/Subject';
 import { DrawUtils, PositionUtils } from './canvas-helper';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-import * as _ from 'lodash';
-import * as uuid from 'uuid/v4';
+import { isEqual, remove, cloneDeep, assign, max, forEach, filter, toLower, values as valuesLodash } from 'lodash-es';
+import { uuid } from 'uuid/v4';
 
 import { NodeExtensionService } from './node-extension.service';
 import { CONSTS } from '../../config/consts';
@@ -64,7 +64,7 @@ export class CanvasGraphComponent implements OnInit {
 
     this.onWorkflowInput.subscribe(
       workflow => {
-        if (!_.isEqual(this.workflow, workflow)) {
+        if (!isEqual(this.workflow, workflow)) {
           this.workflow = workflow;
           this.afterWorkflowUpdate(true);
         }
@@ -108,7 +108,7 @@ export class CanvasGraphComponent implements OnInit {
 
   // refresh graph
   afterWorkflowUpdate(reRender = false) {
-    this.workflowChanged.emit(_.cloneDeep(this.workflow));
+    this.workflowChanged.emit(cloneDeep(this.workflow));
     if (reRender) {
       this.drawNodes();
     }
@@ -121,7 +121,7 @@ export class CanvasGraphComponent implements OnInit {
   }
 
   delTaskForWorkflow(task: any) {
-    _.remove(this.workflow.tasks, (t) => _.isEqual(task, t));
+    remove(this.workflow.tasks, (t) => isEqual(task, t));
     this.afterWorkflowUpdate();
   }
 
@@ -167,16 +167,16 @@ export class CanvasGraphComponent implements OnInit {
   // helpers
   changeTaskWaitOn(taskToBeChanged, preTask?, waitOnText?) {
     if (!preTask && !waitOnText) {
-      _.forEach(this.workflow && this.workflow.tasks, (task) => {
-        if (_.isEqual(task, taskToBeChanged)) {
+      forEach(this.workflow && this.workflow.tasks, (task) => {
+        if (isEqual(task, taskToBeChanged)) {
           delete task.waitOn[preTask];
         }
       });
     } else {
       // this.workflow may be undefined.
-      _.forEach(this.workflow && this.workflow.tasks, (task) => {
-        if (_.isEqual(task, taskToBeChanged)) {
-          task.waitOn = _.assign(task.waitOn || {}, {[preTask.label]: waitOnText});
+      forEach(this.workflow && this.workflow.tasks, (task) => {
+        if (isEqual(task, taskToBeChanged)) {
+          task.waitOn = assign(task.waitOn || {}, {[preTask.label]: waitOnText});
         }
       });
     }
@@ -208,7 +208,7 @@ export class CanvasGraphComponent implements OnInit {
       const taskNames = self.taskInjectableNames.slice(0, 9);
       const values = [];
       values.push({content: filterInputHtml});
-      _.forEach(taskNames, name => {
+      forEach(taskNames, name => {
         values.push({content: name});
       });
 
@@ -242,8 +242,8 @@ export class CanvasGraphComponent implements OnInit {
         taskMenu.close(undefined, true);
         const newValues = [];
         newValues.push({content: filterInputHtml});
-        const filteredTaskNames = _.filter(self.taskInjectableNames, (type) => {
-          return _.toLower(type).includes(_.toLower(term));
+        const filteredTaskNames = filter(self.taskInjectableNames, (type) => {
+          return toLower(type).includes(toLower(term));
         });
         for (const injectableName of filteredTaskNames.slice(0, 9)) {
           newValues.push({content: injectableName});
@@ -285,8 +285,8 @@ export class CanvasGraphComponent implements OnInit {
           .subscribe(task => {
             const data = {};
             const label = 'new-task-' + uuid().substr(0, 10);
-            _.assign(data, {label});
-            _.assign(data, {taskDefinition: task});
+            assign(data, {label});
+            assign(data, {taskDefinition: task});
             createdNode.properties.task = data;
             createdNode.title = createdNode.properties.task.label;
             canvas.graph.add(createdNode);
@@ -351,7 +351,7 @@ export class CanvasGraphComponent implements OnInit {
     const taskNodeMatrix = {};
     const nodeInputSlotIndexes = {};
     const drawUtils = new DrawUtils(taskIdentifierKey, taskWaitOnKey, this.workflow.tasks);
-    _.forEach(this.workflow.tasks, (task) => {
+    forEach(this.workflow.tasks, (task) => {
       if ( task.taskStartTime && task.state === 'pending') {
         task.state = 'running';
       }
@@ -388,12 +388,12 @@ export class CanvasGraphComponent implements OnInit {
     const colPosMatrix = utils.generateColPos(waitOnsMatrix);
     const rowPosMatrix = utils.generateRowPos(colPosMatrix, waitOnsMatrix);
 
-    const colCount = _.max(_.values(colPosMatrix)) + 1;
-    const rowCount = _.max(_.values(rowPosMatrix)) + 1;
-    const xGridSize = _.max([canvasWidth / colCount, xGridSizeMin]);
-    const yGridSize = _.max([canvasHeight / rowCount, yGridSizeMin]);
+    const colCount = max(valuesLodash(colPosMatrix)) + 1;
+    const rowCount = max(valuesLodash(rowPosMatrix)) + 1;
+    const xGridSize = max([canvasWidth / colCount, xGridSizeMin]);
+    const yGridSize = max([canvasHeight / rowCount, yGridSizeMin]);
 
-    _.forEach(this.workflow.tasks, task => {
+    forEach(this.workflow.tasks, task => {
       const taskId = task[taskIdKeyName];
       let x = colPosMatrix[taskId];
       let y = rowPosMatrix[taskId];

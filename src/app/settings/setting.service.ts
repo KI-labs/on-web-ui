@@ -4,7 +4,7 @@ import { RACKHD_CONFIG } from '../models/index';
 import { Observable } from 'rxjs/Observable';
 import { timeout } from 'rxjs/operators/timeout';
 
-import * as _ from 'lodash';
+import { forEach, keys } from 'lodash-es';
 
 @Injectable()
 export class SettingService {
@@ -47,7 +47,7 @@ export class SettingService {
   }
 
   loadInitialConfig() {
-    _.forEach(_.keys(RACKHD_CONFIG), key => {
+    forEach(keys(RACKHD_CONFIG), key => {
       const keyString = 'rackhd.' + key;
       if (!window.localStorage.getItem(keyString)) {
         this[key] = RACKHD_CONFIG[key];
@@ -56,7 +56,7 @@ export class SettingService {
   }
 
   clearAllConfig() {
-    _.forEach(_.keys(RACKHD_CONFIG), (key) => {
+    forEach(keys(RACKHD_CONFIG), (key) => {
       key = 'rackhd.' + key;
       if (window.localStorage.getItem(key)) {
         window.localStorage.removeItem(key);

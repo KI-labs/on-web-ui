@@ -1,10 +1,10 @@
-import * as _ from 'lodash';
+import { assign } from 'lodash-es';
 /*
  This defines the data model of Node.
 */
 export class Node {
     constructor(data: any) {
-        _.assign(this, data);
+        assign(this, data);
     }
     autoDiscover: boolean;
     catalogs: string;

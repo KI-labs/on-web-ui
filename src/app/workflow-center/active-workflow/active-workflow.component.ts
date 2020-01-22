@@ -7,7 +7,7 @@ import {
   createComparator
 } from '../../utils/inventory-operator';
 
-import * as _ from 'lodash';
+import { forEach, isEmpty, startCase } from 'lodash-es';
 
 import { WorkflowService } from '../../services/rackhd/workflow.service';
 import { GraphService } from '../../services/rackhd/graph.service';
@@ -81,12 +81,12 @@ export class ActiveWorkflowComponent implements OnInit {
 
   deleteSel() {
     const list = [];
-    _.forEach(this.selectedWorkflows, workflow => {
+    forEach(this.selectedWorkflows, workflow => {
       if (!workflow.serviceGraph || workflow.serviceGraph === 'false') {
         list.push(this.workflowService.cancelActiveWorkflow(workflow.node));
       }
     });
-    if (_.isEmpty(list)) {
+    if (isEmpty(list)) {
       this.isShowModal = false;
       return;
     }
@@ -100,9 +100,9 @@ export class ActiveWorkflowComponent implements OnInit {
 
   getChild(objKey: string, workflow: Workflow) {
     this.selectedWorkflow = workflow;
-    this.action = _.startCase(objKey);
+    this.action = startCase(objKey);
     this.rawData = workflow && workflow[objKey];
-    if (!_.isEmpty(this.rawData)) {
+    if (!isEmpty(this.rawData)) {
       this.isShowModal = true;
     }
   }
@@ -127,7 +127,7 @@ export class ActiveWorkflowComponent implements OnInit {
   }
 
   batchCancel() {
-    if (!_.isEmpty(this.selectedWorkflows)) {
+    if (!isEmpty(this.selectedWorkflows)) {
       this.action = 'Cancel';
       this.isShowModal = true;
     }
